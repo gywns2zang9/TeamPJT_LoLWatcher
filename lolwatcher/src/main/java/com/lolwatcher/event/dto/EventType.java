@@ -14,6 +14,7 @@ public enum EventType {
     SKILL_LEVEL_UP(SkillLevelUpEvent.class),
     CHAMPION_KILL(ChampionKillEvent.class),
     BUILDING_KILL(BuildingKillEvent.class),
+    TURRET_PLATE_DESTROYED(TurretPlateDestroyedEvent.class),
     CHAMPION_SPECIAL_KILL(ChampionSpecialKillEvent.class),
     GAME_END(GameEndEvent.class),
     ELITE_MONSTER_KILL(EliteMonsterKillEvent.class),
