@@ -1,5 +1,8 @@
-package com.lolwatcher.event.dto.extendDto.subData;
+package com.lolwatcher.event.dto.subData;
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 public class Damage {
     boolean basic;
     int magicDamage;

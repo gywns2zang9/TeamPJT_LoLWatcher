@@ -2,8 +2,8 @@ package com.lolwatcher.event.dto.extendDto;
 
 
 import com.lolwatcher.event.dto.abstractDto.LOLEvent;
-import com.lolwatcher.event.dto.extendDto.subData.Damage;
-import com.lolwatcher.event.dto.extendDto.subData.Position;
+import com.lolwatcher.event.dto.subData.Damage;
+import com.lolwatcher.event.dto.subData.Position;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package com.lolwatcher.event.dto.extendDto;
 
 import com.lolwatcher.event.dto.abstractDto.LOLEvent;
-import com.lolwatcher.event.dto.extendDto.subData.WardType;
+import com.lolwatcher.event.dto.subData.WardType;
 
 public class WardPlacedEvent extends LOLEvent {
     int creatorId;

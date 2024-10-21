@@ -1,9 +1,9 @@
 package com.lolwatcher.event.dto.extendDto;
 
 import com.lolwatcher.event.dto.abstractDto.LOLEvent;
-import com.lolwatcher.event.dto.extendDto.subData.DragonSubType;
-import com.lolwatcher.event.dto.extendDto.subData.MonsterType;
-import com.lolwatcher.event.dto.extendDto.subData.Position;
+import com.lolwatcher.event.dto.subData.DragonSubType;
+import com.lolwatcher.event.dto.subData.MonsterType;
+import com.lolwatcher.event.dto.subData.Position;
 
 import java.util.List;
 

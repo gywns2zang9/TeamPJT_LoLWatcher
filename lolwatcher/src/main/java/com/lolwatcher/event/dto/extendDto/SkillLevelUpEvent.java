@@ -1,7 +1,7 @@
 package com.lolwatcher.event.dto.extendDto;
 
 import com.lolwatcher.event.dto.abstractDto.LOLEvent;
-import com.lolwatcher.event.dto.extendDto.subData.SkillLevelUpType;
+import com.lolwatcher.event.dto.subData.SkillLevelUpType;
 
 public class SkillLevelUpEvent extends LOLEvent {
 

@@ -1,4 +1,4 @@
-package com.lolwatcher.event.dto.extendDto.subData;
+package com.lolwatcher.event.dto.subData;
 
 public enum DragonSubType {
     HEXTECH_DRAGON,
