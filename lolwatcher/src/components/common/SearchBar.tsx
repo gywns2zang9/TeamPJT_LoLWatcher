@@ -1,15 +1,21 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./SearchBar.css";
 
 export default function SearchBar() {
   const [nickName, setNickName] = useState<string>("");
+  const navigate = useNavigate();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNickName(e.target.value);
   };
 
   const handleSearch = () => {
+    if (!nickName) {
+      return;
+    }
     console.log(nickName);
+    navigate("/records");
   };
 
   return (

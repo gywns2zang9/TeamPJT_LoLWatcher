@@ -1,0 +1,4 @@
+header {
+  display: flex;
+  flex-direction: column; /* 요소들을 세로로 배치 */
+}
