@@ -1,6 +1,20 @@
+div {
+  display: flex;
+  gap: 8px;
+}
+
+input,
+button {
+  height: 40px;
+  font-size: 16px;
+  padding: 8px;
+  box-sizing: border-box;
+}
+
 input {
   width: 300px;
-  height: 40px;
-  font-size: 16px; /* 텍스트 크기 조정 */
-  padding: 8px; /* 내부 여백 조정 */
+}
+
+button {
+  cursor: pointer;
 }
