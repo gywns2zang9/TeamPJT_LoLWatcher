@@ -5,5 +5,5 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class TimeLineData {
     private MetaData metadata;
-    private Info info;
+    private TimeLineInfo info;
 }

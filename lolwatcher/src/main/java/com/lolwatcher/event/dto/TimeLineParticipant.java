@@ -4,7 +4,7 @@ import com.lolwatcher.event.dto.subData.ChampionStats;
 import com.lolwatcher.event.dto.subData.DamageStats;
 import com.lolwatcher.event.dto.subData.Position;
 
-public class Participant {
+public class TimeLineParticipant {
     private ChampionStats championStats;
     private int currentGold;
     private DamageStats damageStats;

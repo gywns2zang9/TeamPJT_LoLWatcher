@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.Map;
 
 @AllArgsConstructor
-public class Info {
+public class TimeLineInfo {
     private String endOfGameResult;
     private int frameInterval;
     private long gameId;
-    private List<Frame> frames;
+    private List<TimeLineFrame> frames;
     private Map<Integer, String> participants;
 }

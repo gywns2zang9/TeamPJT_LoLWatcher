@@ -4,8 +4,8 @@ import com.lolwatcher.event.dto.abstractDto.LOLEvent;
 
 import java.util.List;
 
-public class Frame {
+public class TimeLineFrame {
     private List<LOLEvent> events;
-    private List<Participant> participantFrames;
+    private List<TimeLineParticipant> participantFrames;
     private long timestamp;
 }

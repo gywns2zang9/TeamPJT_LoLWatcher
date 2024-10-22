@@ -5,7 +5,7 @@ import com.lolwatcher.event.dto.extendDto.*;
 
 import java.util.Map;
 
-public enum EventType {
+public enum TimeLineEventType {
     LEVEL_UP(LevelUpEvent.class),
     ITEM_PURCHASED(ItemPurchasedEvent.class),
     ITEM_DESTROYED(ItemDestroyedEvent.class),
@@ -24,16 +24,16 @@ public enum EventType {
 
     private final Class<? extends LOLEvent> eventClass;
 
-    EventType(Class<? extends LOLEvent> eventClass) {
+    TimeLineEventType(Class<? extends LOLEvent> eventClass) {
         this.eventClass = eventClass;
     }
 
-    public static EventType getEventTypeFromStr(String eventStr) {
+    public static TimeLineEventType getEventTypeFromStr(String eventStr) {
         try {
-            return EventType.valueOf(eventStr);
+            return TimeLineEventType.valueOf(eventStr);
         } catch (IllegalArgumentException e) {
             //TODO: WARNING LOGGING
-            return EventType.UNKNOWN;
+            return TimeLineEventType.UNKNOWN;
         }
     }
 
