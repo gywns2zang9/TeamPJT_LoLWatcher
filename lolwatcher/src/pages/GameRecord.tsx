@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 // import { getGameRecords } from "../api/gameApi";
-import "./Records.css";
 
 interface GameRecord {
   id: number;
