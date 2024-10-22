@@ -1,0 +1,6 @@
+.main-container {
+  display: flex;
+  flex-direction: column; /* 요소를 세로로 배치 */
+  justify-content: center; /* 수평 중앙 정렬 */
+  align-items: center; /* 수직 중앙 정렬 */
+}
