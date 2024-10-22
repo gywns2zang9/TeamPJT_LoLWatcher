@@ -1,17 +1,22 @@
 import React from "react";
+import "./RecordList.css";
 
 export default function RecordList() {
   const records = [
     { id: 1, name: "게임 1" },
     { id: 2, name: "게임 2" },
     { id: 3, name: "게임 3" },
+    { id: 4, name: "게임 4" },
+    { id: 5, name: "게임 5" },
   ];
 
   return (
-    <ul>
+    <div className="list-container">
       {records.map((record) => (
-        <li key={record.id}>{record.name}</li>
+        <div key={record.id} className="record-item">
+          {record.name}
+        </div>
       ))}
-    </ul>
+    </div>
   );
 }
