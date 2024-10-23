@@ -1,6 +1,6 @@
 import "./App.css";
 import Main from "./pages/Main";
-import Login from "./components/user/Login";
+import Login from "./pages/Login";
 import GameRecord from "./pages/GameRecord";
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
