@@ -29,7 +29,7 @@ public class SecurityConfig {
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout")  // 로그아웃 성공 시 리디렉션
+                         .logoutSuccessUrl("/login?logout")  // 로그아웃 성공 시 리디렉션
                         .permitAll()
                 );
         return http.build();
