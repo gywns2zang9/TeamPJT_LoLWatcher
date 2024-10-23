@@ -10,6 +10,7 @@
 .insert-container {
   width: 60%;
   height: 100%;
+  flex-direction: column;
 }
 
 .logo {
@@ -31,7 +32,7 @@
 }
 
 .login-button {
-  width: 40%;
+  width: 60%;
   padding-left: 8px;
   padding-right: 8px;
   padding-top: 14px;
