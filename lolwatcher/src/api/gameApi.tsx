@@ -9,3 +9,10 @@ import axiosInstance from "./axiosInstance";
 //   });
 //   return response.data.transactions;
 // };
+
+// 유저 정보 검색
+export const getUserProfile = async () => {
+  const response = await axiosInstance.get("/user/profile");
+
+  return response.data;
+};
