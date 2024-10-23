@@ -1,0 +1,29 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: lolwatcher
+
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+  jwt:
+    # 암호는삼성가자암호는모비스가자
+    secret: dkaghsmstkatjdrkwkdkaghsmsahqltmrkwk
+    # 유효기간은 15분
+    expiration: 9000000
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect  # 여기에 명시적으로 dialect 설정
+
+  config:
+    import: optional:file:.env[.properties]
+  profiles:
+    active: local
