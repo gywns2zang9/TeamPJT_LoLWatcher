@@ -1,4 +1,5 @@
 import React from "react";
+import { NavLink } from "react-router-dom";
 import Header from "../components/common/Header";
 import RecordList from "../components/games/RecordList";
 import Profile from "../components/user/Profile";
@@ -9,6 +10,9 @@ import "./GameRecord.css";
 export default function GameRecord() {
   return (
     <div className="container">
+      <div className="link">
+        <NavLink to="/login">로그인</NavLink>
+      </div>
       <Header />
       <div className="record-container">
         <Profile />
