@@ -20,10 +20,19 @@ export default function RecordList() {
       id: 3,
       name: "게임 3",
     },
+    {
+      id: 4,
+      name: "게임 4",
+    },
+    {
+      id: 5,
+      name: "게임 5",
+    },
   ];
 
   return (
-    <div className="list-container">
+    <div className="recordlist-container">
+      <h1>RecordList</h1>
       {records.map((record) => (
         <div key={record.id} className="record-item">
           {record.name}
