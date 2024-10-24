@@ -31,7 +31,8 @@ export default function RecordList() {
   ];
 
   return (
-    <div className="list-container">
+    <div className="recordlist-container">
+      <h1>RecordList</h1>
       {records.map((record) => (
         <div key={record.id} className="record-item">
           {record.name}
