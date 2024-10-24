@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getUserProfile } from "../../api/gameApi";
+import "./Profile.css";
 
-// UserProfile 인터페이스 정의
 interface UserProfile {
   imageUrl: string;
   nickname: string;

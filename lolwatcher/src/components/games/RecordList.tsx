@@ -20,6 +20,14 @@ export default function RecordList() {
       id: 3,
       name: "게임 3",
     },
+    {
+      id: 4,
+      name: "게임 4",
+    },
+    {
+      id: 5,
+      name: "게임 5",
+    },
   ];
 
   return (
