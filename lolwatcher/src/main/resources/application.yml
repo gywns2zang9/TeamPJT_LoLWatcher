@@ -1,0 +1,10 @@
+spring:
+  application:
+    name:lolwatcher
+
+
+
+riot:
+  lol:
+    url: https://asia.api.riotgames.com  #?? ??? ??? ???? ??.
+    api-key: {RIOT_API_KEY}
