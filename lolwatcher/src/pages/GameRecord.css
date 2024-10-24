@@ -7,5 +7,11 @@
 
 .record-container {
   display: flex;
+  width: 100%;
   flex-direction: column;
+}
+
+button {
+  width: 150px;
+  margin-left: 24px;
 }
