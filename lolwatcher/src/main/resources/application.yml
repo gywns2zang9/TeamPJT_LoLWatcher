@@ -1,10 +1,15 @@
 spring:
   application:
-    name:lolwatcher
+    name: lolwatcher
+  datasource:
+    url: jdbc:mysql://localhost:3306/lolwatcher
+    username: aechaknam
+    password: Dockrska601
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
 
 
 riot:
   lol:
     url: https://asia.api.riotgames.com  #?? ??? ??? ???? ??.
-    api-key: {RIOT_API_KEY}
+    api-key: ${RIOT_API_KEY}
