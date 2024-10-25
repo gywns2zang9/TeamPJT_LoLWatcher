@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-public record MetaDataTimeLineDto(String dataVersion, String matchId, List<String> participants) {
+public record MetaDataTimeLineDto(String dataVersion,
+                                  String matchId,
+                                  List<String> participants) {
 
 }

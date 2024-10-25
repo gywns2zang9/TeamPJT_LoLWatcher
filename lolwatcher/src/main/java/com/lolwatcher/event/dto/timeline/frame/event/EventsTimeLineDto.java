@@ -34,11 +34,13 @@ public class EventsTimeLineDto {
     private int actualStartTime;
     private int afterId, beforeId;
     private int bounty, shutdownBounty;
-    private int creatorId, goldGain, itemId;
-    private int killStreakLength, killerId, multiKillLength, victimId;
+    private Integer creatorId, killerId, victimId;
+    private int goldGain, itemId;
+    private int killStreakLength, multiKillLength;
     private int level, skillSlot;
     private int participantId;
     private long gameId;
-    private long realTimestamp, timestamp;
+    private long realTimestamp;
+    private Long timestamp;
 
 }
