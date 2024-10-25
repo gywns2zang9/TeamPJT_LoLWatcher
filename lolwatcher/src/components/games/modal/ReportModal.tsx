@@ -6,7 +6,16 @@ export default function ReportModal() {
     <div className='modal-container'>
       <h1>ReportModal</h1>
       <div className='position-point'>
-        <div>position</div>
+        <div
+          style={{
+            width: '40px',
+            height: '40px',
+            borderRadius: '50%',
+            backgroundColor: 'gray',
+            textAlign: 'center',
+          }}
+        ></div>
+        <div style={{ backgroundColor: 'blue' }}>position</div>
         <div>champion</div>
         <div>first_important</div>
         <div>second_important</div>

@@ -102,7 +102,6 @@ export default function RecordReport() {
             onClick={(e) => e.stopPropagation()}
           >
             <ReportModal />
-            <button onClick={closeModal}>닫기</button>
           </div>
         </div>
       )}

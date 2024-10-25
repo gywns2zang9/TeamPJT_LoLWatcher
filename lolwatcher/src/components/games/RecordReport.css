@@ -113,7 +113,10 @@
 
 .modal-content {
   background-color: white;
-  padding: 20px;
   border-radius: 10px;
   position: relative;
+  width: 50%;
+  height: auto;
+  padding: 20px;
+  display: flex;
 }
