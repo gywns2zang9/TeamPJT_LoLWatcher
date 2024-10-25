@@ -2,7 +2,7 @@ package com.lolwatcher.event.controller;
 
 import com.lolwatcher.event.dto.AccountDto;
 import com.lolwatcher.event.dto.MatchData;
-import com.lolwatcher.event.dto.TimeLineData;
+import com.lolwatcher.event.dto.timeline.TimelineDto;
 import com.lolwatcher.event.service.RiotApiService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,7 +35,7 @@ public class RiotApiController {
     }
 
     @GetMapping("/match/timeline")
-    public TimeLineData findTimeLineData(@RequestParam("match") String matchId) {
+    public TimelineDto findTimeLineData(@RequestParam("match") String matchId) {
         return riotApiService.findTimeLineDataByMatchId(matchId);
     }
 

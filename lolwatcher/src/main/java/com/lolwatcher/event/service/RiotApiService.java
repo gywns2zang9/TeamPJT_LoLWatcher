@@ -3,7 +3,7 @@ package com.lolwatcher.event.service;
 import com.lolwatcher.event.client.RiotApiClient;
 import com.lolwatcher.event.dto.AccountDto;
 import com.lolwatcher.event.dto.MatchData;
-import com.lolwatcher.event.dto.TimeLineData;
+import com.lolwatcher.event.dto.timeline.TimelineDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +27,7 @@ public class RiotApiService {
         return riotApiClient.getMatchData(matchId);
     }
 
-    public TimeLineData findTimeLineDataByMatchId(String matchId) {
+    public TimelineDto findTimeLineDataByMatchId(String matchId) {
         return riotApiClient.getTimeLineData(matchId);
     }
 

@@ -3,8 +3,7 @@ package com.lolwatcher.event.client;
 import com.lolwatcher.event.config.FeignConfig;
 import com.lolwatcher.event.dto.AccountDto;
 import com.lolwatcher.event.dto.MatchData;
-import com.lolwatcher.event.dto.TimeLineData;
-import org.springframework.beans.factory.annotation.Value;
+import com.lolwatcher.event.dto.timeline.TimelineDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +22,6 @@ public interface RiotApiClient {
     MatchData getMatchData(@PathVariable String matchId);
 
     @RequestMapping(method = RequestMethod.GET, value = "/lol/match/v5/matches/{matchId}/timeline")
-    TimeLineData getTimeLineData(@PathVariable String matchId);
+    TimelineDto getTimeLineData(@PathVariable String matchId);
 
 }

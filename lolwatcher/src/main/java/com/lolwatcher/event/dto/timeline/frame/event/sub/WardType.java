@@ -1,4 +1,4 @@
-package com.lolwatcher.event.dto.subData;
+package com.lolwatcher.event.dto.timeline.frame.event.sub;
 
 public enum WardType {
     SIGHT_WARD,
