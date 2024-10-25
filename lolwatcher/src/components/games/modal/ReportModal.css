@@ -1,16 +1,25 @@
 .modal-container {
   width: 100%;
   display: flex;
-  flex-direction: column;
   z-index: 10;
   text-align: center;
 }
 
 .position-point {
+  width: 100%;
   flex-direction: column;
-  background-color: pink;
 }
 
 .common-point {
+  margin-top: 20px;
   flex-direction: column;
+}
+
+.champion-profile-detail {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  text-align: center;
+  margin: auto;
+  border: 1px solid black;
 }
