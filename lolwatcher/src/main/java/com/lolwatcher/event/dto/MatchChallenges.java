@@ -1,5 +1,10 @@
 package com.lolwatcher.event.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
+@AllArgsConstructor
 public class MatchChallenges {
     private int abilityUses;
     private int acesBefore15Minutes;

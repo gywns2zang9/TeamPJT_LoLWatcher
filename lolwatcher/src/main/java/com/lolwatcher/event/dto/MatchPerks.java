@@ -1,9 +1,11 @@
 package com.lolwatcher.event.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+@NoArgsConstructor
 @AllArgsConstructor
 public class MatchPerks {
     private StatPerks statPerks;

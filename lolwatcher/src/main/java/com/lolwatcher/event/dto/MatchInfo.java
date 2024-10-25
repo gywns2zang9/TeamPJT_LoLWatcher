@@ -1,7 +1,12 @@
 package com.lolwatcher.event.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
 import java.util.List;
 
+@NoArgsConstructor
+@AllArgsConstructor
 public class MatchInfo {
     private String endOfGameResult;
     private long gameCreation;
