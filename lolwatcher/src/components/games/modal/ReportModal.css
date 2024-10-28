@@ -1,0 +1,65 @@
+.modal-container {
+  width: 100%;
+  display: flex;
+  z-index: 10;
+  text-align: center;
+  padding-block: 20px;
+  gap: 30px;
+}
+
+.position-point {
+  width: 100%;
+  flex-direction: column;
+  padding-block: 10px;
+}
+
+.common-point {
+  margin-top: 20px;
+  flex-direction: column;
+}
+
+.champion-profile-detail {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  text-align: center;
+  margin: auto;
+  border: 1px solid black;
+}
+
+.champion-name {
+  font-weight: bold;
+  font-size: 17px;
+  margin: auto;
+  margin-top: 10px;
+}
+
+.score-item {
+  justify-content: space-between;
+  padding-inline: 20px;
+}
+
+.common-score {
+  font-weight: bold;
+  font-size: 20px;
+  color: greenyellow;
+}
+
+.low-score {
+  font-weight: bold;
+  font-size: 20px;
+  color: red;
+}
+
+.great-score {
+  font-weight: bold;
+  font-size: 20px;
+  color: gold;
+}
+
+.report-graph {
+  border: 2px solid black;
+  width: 50%;
+  height: 100%;
+  border-radius: 15px;
+}
