@@ -1,17 +1,29 @@
+server:
+  port: 8080
+
 spring:
   application:
     name: lolwatcher
+
   datasource:
-    url: jdbc:mysql://localhost:3306/lolwatcher
-    username: ${lol_watcher_db_name}
-    password: ${lol_watcher_db_password}
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
 
+  jwt:
+    # 암호는삼성가자암호는모비스가자
+    secret: ${JWT_KEY}
+    # 유효기간은 15분
+    expiration: 9000000
 
-analytic:
-  url: http://localhost:5000
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect  # 여기에 명시적으로 dialect 설정
 
-riot:
-  lol:
-    url: https://asia.api.riotgames.com  #?? ??? ??? ???? ??.
-    api-key: ${RIOT_API_KEY}
+  config:
+    import: optional:file:.env[.properties]
+  profiles:
+    active: local
