@@ -1,6 +1,6 @@
 package com.lolwatcher.security.dto;
 
-import com.lolwatcher.security.entity.UserAuthorization;
+import com.lolwatcher.security.entity.User;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -12,7 +12,7 @@ import java.util.Collections;
 @AllArgsConstructor
 public class CustomUserDetails implements UserDetails {
 
-    private final UserAuthorization userAuthorization;
+    private final User user;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -22,12 +22,12 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getPassword() {
-        return userAuthorization.getPassword();
+        return user.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return userAuthorization.getUserID().toString();
+        return user.getUsername();
     }
 
     @Override
