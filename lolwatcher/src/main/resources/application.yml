@@ -3,8 +3,8 @@ spring:
     name: lolwatcher
   datasource:
     url: jdbc:mysql://localhost:3306/lolwatcher
-    username:
-    password:
+    username: ${lol_watcher_db_name}
+    password: ${lol_watcher_db_password}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
 
