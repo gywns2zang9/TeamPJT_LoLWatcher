@@ -2,7 +2,7 @@ package com.lolwatcher.event.service;
 
 import com.lolwatcher.event.client.RiotApiClient;
 import com.lolwatcher.event.dto.AccountDto;
-import com.lolwatcher.event.dto.MatchData;
+import com.lolwatcher.event.dto.match.MatchDto;
 import com.lolwatcher.event.dto.timeline.TimelineDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,7 @@ public class RiotApiService {
         return riotApiClient.getMatchIds(puuid);
     }
 
-    public MatchData findMatchDataByMatchId(String matchId) {
+    public MatchDto findMatchDataByMatchId(String matchId) {
         return riotApiClient.getMatchData(matchId);
     }
 
