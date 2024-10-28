@@ -3,7 +3,7 @@ import './Regist.css';
 
 export default function Login() {
   return (
-    <div className='login-container'>
+    <div className='regist-container'>
       <RegistForm />
     </div>
   );
