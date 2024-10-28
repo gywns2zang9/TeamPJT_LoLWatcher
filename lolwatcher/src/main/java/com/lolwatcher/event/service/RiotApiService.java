@@ -1,5 +1,6 @@
 package com.lolwatcher.event.service;
 
+import com.lolwatcher.event.client.PythonApiClient;
 import com.lolwatcher.event.client.RiotApiClient;
 import com.lolwatcher.event.dto.AccountDto;
 import com.lolwatcher.event.dto.match.MatchDto;
@@ -14,6 +15,7 @@ import java.util.List;
 public class RiotApiService {
 
     private final RiotApiClient riotApiClient;
+    private final PythonApiClient pythonApiClient;
 
     public AccountDto findSummonerByNameAndTag(String name, String tag) {
         return riotApiClient.getSummonerRequest(name, tag);
@@ -29,6 +31,11 @@ public class RiotApiService {
 
     public TimelineDto findTimeLineDataByMatchId(String matchId) {
         return riotApiClient.getTimeLineData(matchId);
+    }
+
+    public void sendMatchDataByMatchId(String matchId) {
+        MatchDto matchDto = riotApiClient.getMatchData(matchId);
+        pythonApiClient.postMatchData(matchDto);
     }
 
 }

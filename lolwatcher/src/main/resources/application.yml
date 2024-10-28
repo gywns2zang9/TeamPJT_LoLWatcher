@@ -8,6 +8,8 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
 
 
+analytic:
+  url: http://localhost:5000
 
 riot:
   lol:

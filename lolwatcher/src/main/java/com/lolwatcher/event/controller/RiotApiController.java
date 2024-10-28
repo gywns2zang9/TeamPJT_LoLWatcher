@@ -5,6 +5,7 @@ import com.lolwatcher.event.dto.match.MatchDto;
 import com.lolwatcher.event.dto.timeline.TimelineDto;
 import com.lolwatcher.event.service.RiotApiService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -37,6 +38,12 @@ public class RiotApiController {
     @GetMapping("/match/timeline")
     public TimelineDto findTimeLineData(@RequestParam("match") String matchId) {
         return riotApiService.findTimeLineDataByMatchId(matchId);
+    }
+
+    @GetMapping("/match/data-post")
+    public HttpStatus sendMatchData(@RequestParam("match") String matchId) {
+        riotApiService.sendMatchDataByMatchId(matchId);
+        return HttpStatus.OK;
     }
 
 }
