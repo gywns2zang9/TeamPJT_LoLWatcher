@@ -10,4 +10,7 @@ public class ItemSoldEvent extends LOLEvent {
     public boolean isParticipant(int participantId) {
         return this.participantId == participantId;
     }
+
+
+
 }

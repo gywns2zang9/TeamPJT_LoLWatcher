@@ -14,7 +14,8 @@ spring:
     # 암호는삼성가자암호는모비스가자
     secret: ${JWT_KEY}
     # 유효기간은 15분
-    expiration: 9000000
+    access-token-expiration: 9000000
+    refresh-token-expiration: 36000000
 
   jpa:
     hibernate:
