@@ -2,62 +2,6 @@ from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 
-timeline_data = {
-    "frames": [
-        {
-            "timestamp": 60000,
-            "participantFrames": {
-                "1": {"totalGold": 500},
-                "2": {"totalGold": 450},
-                "3": {"totalGold": 550},
-                "4": {"totalGold": 600},
-                "5": {"totalGold": 480},
-                "6": {"totalGold": 550},
-                "7": {"totalGold": 470},
-                "8": {"totalGold": 500},
-                "9": {"totalGold": 450},
-                "10": {"totalGold": 480}
-            }
-        },
-        {
-            "timestamp": 120000,
-            "participantFrames": {
-                "1": {"totalGold": 1000},
-                "2": {"totalGold": 900},
-                "3": {"totalGold": 1050},
-                "4": {"totalGold": 1100},
-                "5": {"totalGold": 980},
-                "6": {"totalGold": 1050},
-                "7": {"totalGold": 970},
-                "8": {"totalGold": 1000},
-                "9": {"totalGold": 950},
-                "10": {"totalGold": 980}
-            }
-        }
-    ]
-}
-
-def calculate_global_gold(timeline_data):
-    team_100_gold = []
-    team_200_gold = []
-
-    # Timeline 데이터의 모든 프레임을 순회
-    for frame in timeline_data['frames']:
-        team_100_total_gold = 0
-        team_200_total_gold = 0
-
-        # 각 프레임에서 각 플레이어의 골드를 추적
-        for participant_id, participant_data in frame['participantFrames'].items():
-            if int(participant_id) <= 5:  # 1~5번 플레이어는 팀 100
-                team_100_total_gold += participant_data['totalGold']
-            else:  # 6~10번 플레이어는 팀 200
-                team_200_total_gold += participant_data['totalGold']
-
-        team_100_gold.append(team_100_total_gold)
-        team_200_gold.append(team_200_total_gold)
-
-    return team_100_gold, team_200_gold
-
 @app.route('/')
 def hello_world():
     return 'Hello World!'
@@ -66,19 +10,121 @@ def hello_world():
 @app.route('/analyze/match-data',methods=['POST'])
 def analyze_match_data():
     data = request.get_json()
-    print(f"Received data: {data['info']['participants'][9]['teamPosition']}")
-    # 실제 처리 로직 추가
-    return jsonify({"status": "success"}), 200
-@app.route('/global-gold')
-def global_gold():
-    # 글로벌 골드 계산
-    team_100_gold, team_200_gold = calculate_global_gold(timeline_data)
+    for i, participant in enumerate(data['info']['participants']):
+        if i%5==0:
+            print(
+                f"Participant {i} teamPosition: {participant['teamPosition']} "
+                f"soloKills: {participant['challenges']['soloKills']} "
+                f"quickSoloKills: {participant['challenges']['quickSoloKills']} "
+                f"towerTakedowns: {participant['turretTakedowns']} "
+                f"damageTaken: {participant['totalDamageTaken']} "
+                f"killParticipation: {participant['challenges']['killParticipation']} "
+                f"deaths: {participant['deaths']} "
+                f"damageDealtToChampions: {participant['totalDamageDealtToChampions']} "
+                f"riftHeraldTakedowns: {participant['challenges']['riftHeraldTakedowns']}"
+            )
+        elif i%5==1:
+            total_objective_score = (
+                    participant['challenges']['dragonTakedowns'] +
+                    participant['challenges']['baronTakedowns'] +
+                    participant['challenges']['scuttleCrabKills'] +
+                    participant['challenges']['buffsStolen']
+            )
 
-    # 팀별 글로벌 골드를 JSON 형태로 반환
-    return jsonify({
-        "team_100_gold": team_100_gold,
-        "team_200_gold": team_200_gold
-    })
+            print(
+                f"Participant {i} teamPosition: {participant['teamPosition']} "
+                f"totalObjectiveScore: {total_objective_score} "
+                f"towerTakedowns: {participant['turretTakedowns']} "
+                f"laningImpact: {participant['challenges']['earlyLaningPhaseGoldExpAdvantage']} "
+                f"damageDealtToChampions: {participant['totalDamageDealtToChampions']} "
+                f"damageTaken: {participant['totalDamageTaken']} "
+                f"visionScore: {participant['visionScore']}"
+            )
+        elif i%5==2:
+            rift_and_dragon_contributions = (
+                    participant['challenges']['riftHeraldTakedowns'] +
+                    participant['challenges']['dragonTakedowns']
+            )
+
+            print(
+                f"Participant {i} teamPosition: {participant['teamPosition']} "
+                f"killParticipation: {participant['challenges']['killParticipation']} "
+                f"towerTakedowns: {participant['turretTakedowns']} "
+                f"damageDealtToChampions: {participant['totalDamageDealtToChampions']} "
+                f"damageTaken: {participant['totalDamageTaken']} "
+                f"laningImpact: {participant['challenges']['earlyLaningPhaseGoldExpAdvantage']} "
+                f"riftAndDragonContributions: {rift_and_dragon_contributions}"
+            )
+        elif i%5==3:
+            print(
+                f"Participant {i} teamPosition: {participant['teamPosition']} "
+                f"damageDealtToChampions: {participant['totalDamageDealtToChampions']} "
+                f"totalMinionsKilled (CS): {participant['totalMinionsKilled']} "
+                f"deaths: {participant['deaths']} "
+                f"finalGold: {participant['goldEarned']} "
+                f"towerTakedowns: {participant['turretTakedowns']} "
+                f"dragonTakedowns: {participant['challenges']['dragonTakedowns']} "
+                f"skillshotsDodged: {participant['challenges']['skillshotsDodged']}"
+            )
+        elif i%5==4:
+            print(
+                f"Participant {i} teamPosition: {participant['teamPosition']} "
+                f"visionScore: {participant['visionScore']} "
+                f"damageTaken: {participant['totalDamageTaken']} "
+                f"timeCCingOthers (CC score): {participant['timeCCingOthers']} "
+                f"totalDamageShieldedOnTeammates (Team Protection): {participant['totalDamageShieldedOnTeammates']} "
+                f"damageDealtToChampions: {participant['totalDamageDealtToChampions']} "
+                f"KDA: {participant['challenges']['kda']} "
+                f"dragonTakedowns: {participant['challenges']['dragonTakedowns']}"
+            )
+
+        print(f"Participant Influence Score: {calculate_influence_score(participant)}"
+              f"\n---------------------------------------------------------------------------------")
+    return jsonify({"status": "success"}), 200
+
+
+def calculate_influence_score(participant):
+    # 각 지표에 대한 가중치를 설정 (총합이 1이 되도록 조정)
+    weight_kill_participation = 0.2
+    weight_total_damage = 0.15
+    weight_total_damage_taken = 0.15
+    weight_cs = 0.1
+    weight_vision_score = 0.1
+    weight_objective_score = 0.15
+    weight_tower_takedowns = 0.1
+    weight_team_support = 0.1
+
+    # 각 지표의 값
+    kill_participation = participant['challenges']['killParticipation']
+    total_damage = participant['totalDamageDealtToChampions']
+    total_damage_taken = participant['totalDamageTaken']
+    cs = participant['totalMinionsKilled'] + participant['neutralMinionsKilled']
+    vision_score = participant['visionScore']
+    objective_score = (
+        participant['challenges']['dragonTakedowns'] +
+        participant['challenges']['baronTakedowns'] +
+        participant['challenges']['scuttleCrabKills'] +
+        participant['challenges']['buffsStolen']
+    )
+    tower_takedowns = participant['turretTakedowns']
+    team_support = participant['totalDamageShieldedOnTeammates'] + participant['totalHealsOnTeammates']
+
+    # 각 지표의 점수를 가중치와 함께 합산하여 최종 점수 계산
+    total_score = (
+        kill_participation * weight_kill_participation +
+        (total_damage / 50000) * weight_total_damage +  # 50,000 기준으로 정규화
+        (total_damage_taken / 50000) * weight_total_damage_taken +  # 50,000 기준으로 정규화
+        (cs / 300) * weight_cs +  # 300 CS 기준으로 정규화
+        (vision_score / 50) * weight_vision_score +  # 50 시야 점수 기준으로 정규화
+        (objective_score / 10) * weight_objective_score +  # 10개 기준으로 정규화
+        (tower_takedowns / 5) * weight_tower_takedowns +  # 5개 기준으로 정규화
+        (team_support / 5000) * weight_team_support  # 5,000 보호/힐량 기준으로 정규화
+    )
+
+    # 최종 점수 (20점 만점으로 조정)
+    final_score = min(total_score * 20, 20)  # 최대 20점
+    return round(final_score, 2)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
