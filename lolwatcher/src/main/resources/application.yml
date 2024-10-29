@@ -28,3 +28,13 @@ spring:
     import: optional:file:.env[.properties]
   profiles:
     active: local
+
+analytic:
+  url: http://localhost:5000
+
+riot:
+  lol:
+    url: https://asia.api.riotgames.com  #?? ??? ??? ???? ??.
+    api-key: ${RIOT_API_KEY}
+
+
