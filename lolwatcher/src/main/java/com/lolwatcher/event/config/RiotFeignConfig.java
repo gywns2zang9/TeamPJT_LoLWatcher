@@ -14,7 +14,7 @@ public class RiotFeignConfig {
 
 
     @Bean
-    public Client feignClient() {
+    public Client riotFeignClient() {
         return new Client.Default(null, null);
     }
 

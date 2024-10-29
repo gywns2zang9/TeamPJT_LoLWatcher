@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 public class DataAnalyticFeignConfig {
 
     @Bean
-    public Client feignClient() {
+    public Client dataFeignClient() {
         return new Client.Default(null, null);
     }
 
