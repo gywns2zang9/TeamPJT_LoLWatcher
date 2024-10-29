@@ -1,6 +1,11 @@
 from flask import Flask, jsonify, request
+import pymongo;
 
 app = Flask(__name__)
+
+client = pymongo.MongoClient("mongodb://localhost:27017/")  # 로컬 MongoDB 서버에 연결
+db = client['riot_data']  # 데이터베이스 이름 설정
+match_data_collection = db['match_data']  # 컬렉션 이름 설정
 
 @app.route('/')
 def hello_world():
@@ -10,6 +15,18 @@ def hello_world():
 @app.route('/analyze/match-data',methods=['POST'])
 def analyze_match_data():
     data = request.get_json()
+    match_id = data['metadata']['matchId']  # 전달받은 데이터에서 matchId 추출
+
+    # MongoDB에 해당 matchId가 이미 있는지 확인
+    existing_match = match_data_collection.find_one({"metadata.matchId": match_id})
+
+    if existing_match is None:
+        match_data_collection.insert_one(data)
+        print(f"Data with matchId {match_id} inserted successfully.")
+    else:
+        print(f"Data with matchId {match_id} already exists. Skipping insertion.")
+
+
     for i, participant in enumerate(data['info']['participants']):
         if i%5==0:
             print(
