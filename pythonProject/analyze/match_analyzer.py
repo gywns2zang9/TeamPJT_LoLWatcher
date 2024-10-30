@@ -1,34 +1,8 @@
-from flask import Flask, jsonify, request
-import pymongo;
+def analyze_participants(data):
 
-app = Flask(__name__)
+    for i,participant in enumerate(data['info']['participants']):
 
-client = pymongo.MongoClient("mongodb://localhost:27017/")  # 로컬 MongoDB 서버에 연결
-db = client['riot_data']  # 데이터베이스 이름 설정
-match_data_collection = db['match_data']  # 컬렉션 이름 설정
-
-@app.route('/')
-def hello_world():
-    return 'Hello World!'
-
-
-@app.route('/analyze/match-data',methods=['POST'])
-def analyze_match_data():
-    data = request.get_json()
-    match_id = data['metadata']['matchId']  # 전달받은 데이터에서 matchId 추출
-
-    # MongoDB에 해당 matchId가 이미 있는지 확인
-    existing_match = match_data_collection.find_one({"metadata.matchId": match_id})
-
-    if existing_match is None:
-        match_data_collection.insert_one(data)
-        print(f"Data with matchId {match_id} inserted successfully.")
-    else:
-        print(f"Data with matchId {match_id} already exists. Skipping insertion.")
-
-
-    for i, participant in enumerate(data['info']['participants']):
-        if i%5==0:
+        if i % 5 == 0:
             print(
                 f"Participant {i} teamPosition: {participant['teamPosition']} "
                 f"soloKills: {participant['challenges']['soloKills']} "
@@ -40,14 +14,13 @@ def analyze_match_data():
                 f"damageDealtToChampions: {participant['totalDamageDealtToChampions']} "
                 f"riftHeraldTakedowns: {participant['challenges']['riftHeraldTakedowns']}"
             )
-        elif i%5==1:
+        elif i % 5 == 1:
             total_objective_score = (
-                    participant['challenges']['dragonTakedowns'] +
-                    participant['challenges']['baronTakedowns'] +
-                    participant['challenges']['scuttleCrabKills'] +
-                    participant['challenges']['buffsStolen']
+                participant['challenges']['dragonTakedowns'] +
+                participant['challenges']['baronTakedowns'] +
+                participant['challenges']['scuttleCrabKills'] +
+                participant['challenges']['buffsStolen']
             )
-
             print(
                 f"Participant {i} teamPosition: {participant['teamPosition']} "
                 f"totalObjectiveScore: {total_objective_score} "
@@ -57,12 +30,11 @@ def analyze_match_data():
                 f"damageTaken: {participant['totalDamageTaken']} "
                 f"visionScore: {participant['visionScore']}"
             )
-        elif i%5==2:
+        elif i % 5 == 2:
             rift_and_dragon_contributions = (
-                    participant['challenges']['riftHeraldTakedowns'] +
-                    participant['challenges']['dragonTakedowns']
+                participant['challenges']['riftHeraldTakedowns'] +
+                participant['challenges']['dragonTakedowns']
             )
-
             print(
                 f"Participant {i} teamPosition: {participant['teamPosition']} "
                 f"killParticipation: {participant['challenges']['killParticipation']} "
@@ -72,7 +44,7 @@ def analyze_match_data():
                 f"laningImpact: {participant['challenges']['earlyLaningPhaseGoldExpAdvantage']} "
                 f"riftAndDragonContributions: {rift_and_dragon_contributions}"
             )
-        elif i%5==3:
+        elif i % 5 == 3:
             print(
                 f"Participant {i} teamPosition: {participant['teamPosition']} "
                 f"damageDealtToChampions: {participant['totalDamageDealtToChampions']} "
@@ -83,7 +55,7 @@ def analyze_match_data():
                 f"dragonTakedowns: {participant['challenges']['dragonTakedowns']} "
                 f"skillshotsDodged: {participant['challenges']['skillshotsDodged']}"
             )
-        elif i%5==4:
+        elif i % 5 == 4:
             print(
                 f"Participant {i} teamPosition: {participant['teamPosition']} "
                 f"visionScore: {participant['visionScore']} "
@@ -96,8 +68,7 @@ def analyze_match_data():
             )
 
         print(f"Participant Influence Score: {calculate_influence_score(participant)}"
-              f"\n---------------------------------------------------------------------------------")
-    return jsonify({"status": "success"}), 200
+            f"\n---------------------------------------------------------------------------------")
 
 
 def calculate_influence_score(participant):
@@ -141,7 +112,3 @@ def calculate_influence_score(participant):
     # 최종 점수 (20점 만점으로 조정)
     final_score = min(total_score * 20, 20)  # 최대 20점
     return round(final_score, 2)
-
-
-if __name__ == '__main__':
-    app.run(debug=True)
