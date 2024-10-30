@@ -23,6 +23,11 @@
   margin-top: 10px;
 }
 
+.link {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .player-position {
   text-align: center;
   flex-direction: column;

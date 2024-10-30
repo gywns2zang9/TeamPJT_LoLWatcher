@@ -1,11 +1,41 @@
 .main-container {
+  background-image: url("../assets/background.jpg");
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  width: 100vw;
   display: flex;
-  width: 100%;
   flex-direction: column;
   align-items: center;
+  opacity: 0.95;
 }
-.link {
+
+.main-content {
+  margin-top: 15%;
+  margin-bottom: 1%;
   display: flex;
-  justify-content: flex-end;
-  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.main-intro {
+  font-size: 4rem;
+  color: #ffffff;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  margin: 20px auto;
+  font-weight: bold;
+}
+
+.main-btn {
+  margin: 5% 0px;
+  display: flex;
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  color: #ffffff;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0px;
+  cursor: url("../assets/cursor/hover-cursor.png"), pointer;
 }

@@ -1,16 +1,24 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
-import Header from "../components/common/Header";
+import { useNavigate } from "react-router-dom";
+import SearchBar from "../components/common/SearchBar";
 import "./Main.css";
 
 export default function Main() {
+  const navigate = useNavigate();
+
+  const handleLogin = () => {
+    navigate("/login");
+  };
+
   return (
     <div className="main-container">
-      <div className="link">
-        <NavLink to="/login">로그인</NavLink>
+      <div className="main-content">
+        <h1 className="main-intro">LoL Watcher</h1>
       </div>
-      <Header />
-      <h1>메인</h1>
+      <SearchBar />
+      <button className="main-btn" onClick={handleLogin}>
+        서비스 이용하기
+      </button>
     </div>
   );
 }
