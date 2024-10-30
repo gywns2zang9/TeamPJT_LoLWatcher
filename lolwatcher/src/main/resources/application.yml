@@ -11,7 +11,7 @@ spring:
     password: ${DB_PASSWORD}
 
   jwt:
-    # 암호는삼성가자암호는모비스가자
+
     secret: ${JWT_KEY}
     # 유효기간은 15분
     access-token-expiration: 9000000

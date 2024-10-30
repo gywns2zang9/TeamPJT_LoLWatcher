@@ -52,6 +52,12 @@ public class JwtTokenProvider {
                 .getSubject());
     }
 
+    public String getUserName(String token) {
+        Claims claims = parseClaims(token);  // 토큰을 파싱하여 Claims 객체를 얻음
+        return claims.getSubject();  // Claims에서 subject(사용자 이름) 정보를 추출
+    }
+
+
     // userId를 기준으로 액세스 토큰 생성
     public String createAccessToken(String username) {
         return createToken(username, accessTokenValidity);
