@@ -35,4 +35,5 @@
   cursor: pointer;
   text-decoration: underline;
   padding: 0;
+  cursor: url("../assets/cursor/hover-cursor.png"), pointer;
 }
