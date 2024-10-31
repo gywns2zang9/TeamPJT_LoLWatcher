@@ -1,32 +1,20 @@
-# 1단계: Build Stage
-FROM node:18 AS build
+# 1. Base image
+FROM node:21 AS builder
 
-# 작업 디렉토리 설정
+# 2. Set working directory
 WORKDIR /app
 
-# package.json과 package-lock.json 복사
+# 3. Copy package.json and install dependencies
 COPY package*.json ./
-
-# npm을 사용하여 종속성 설치
 RUN npm install
 
-# 소스 코드 복사
+# 4. Copy source code and build
 COPY . .
-
-# TypeScript로 빌드 (React 앱 빌드)
 RUN npm run build
 
-# 2단계: Serve Stage (정적 파일 서버 사용)
-FROM node:18-alpine
+# 5. Deploying with a lightweight web server
+FROM nginx:alpine
+COPY --from=builder /app/build /usr/share/nginx/html
 
-# 빌드된 파일 복사
-COPY --from=build /app/build /app/build
-
-# 정적 파일 서버 설치 (http-server)
-RUN npm install -g http-server
-
-# 포트 설정
-EXPOSE 3000
-
-# 정적 파일 서버 시작
-CMD ["http-server", "/app/build", "-p", "3000"]
+# 6. Expose port 80
+EXPOSE 80
