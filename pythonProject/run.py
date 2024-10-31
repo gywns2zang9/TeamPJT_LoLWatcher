@@ -6,6 +6,9 @@ app.register_blueprint(routes)
 def hello_world():
     return 'Hello World!'
 
+@app.route('/docker-test')
+def docker_test():
+    return '도커 테스트 완료'
 
 if __name__ == '__main__':
     app.run(debug=True)
