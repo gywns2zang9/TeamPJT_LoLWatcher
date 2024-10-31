@@ -5,7 +5,7 @@ FROM gradle:7.6.0-jdk17 AS build
 WORKDIR /app
 
 # Gradle 캐시 활용을 위해 Gradle 설정 파일 복사
-COPY build.gradle.kts settings.gradle.kts ./
+COPY build.gradle settings.gradle ./
 COPY gradle ./gradle
 
 # 종속성 다운로드 (소스 없이 종속성만 다운로드하여 캐시 활용)
