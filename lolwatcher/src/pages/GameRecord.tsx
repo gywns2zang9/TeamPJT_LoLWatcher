@@ -15,7 +15,9 @@ export default function GameRecord() {
       </div>
       <Header />
       <div className="record-container">
-        <Profile />
+        <div className="record-profile">
+          <Profile />
+        </div>
         <button>새로고침</button>
         <div className="gamerecord-content">
           <Overview />

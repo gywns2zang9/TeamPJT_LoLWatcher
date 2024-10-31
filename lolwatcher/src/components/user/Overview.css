@@ -3,4 +3,9 @@
   margin: 4px;
   padding: 4px;
   width: 240px;
+  /* background-image: url("../../assets/profile-background.jpg");
+  background-size: cover;
+  background-position: top;
+  object-fit: cover;
+  opacity: 0.8; */
 }

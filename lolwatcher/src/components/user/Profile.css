@@ -1,5 +1,33 @@
 .profile-container {
+  width: 100%;
   border: 1px solid black;
   margin: 4px;
   padding: 4px;
+  display: flex;
+  align-items: center;
+}
+
+.profile-image {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.profile-most3 {
+  display: flex;
+  gap: 8px;
+}
+
+.profile-most3 img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
 }
