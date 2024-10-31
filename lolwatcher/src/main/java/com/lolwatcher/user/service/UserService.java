@@ -1,7 +1,7 @@
 package com.lolwatcher.user.service;
 
 
-import com.lolwatcher.security.util.JwtUtil;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.stereotype.Service;
