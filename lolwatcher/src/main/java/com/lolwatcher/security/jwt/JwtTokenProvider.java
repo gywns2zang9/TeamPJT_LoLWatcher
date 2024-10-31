@@ -14,11 +14,16 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.springframework.data.redis.core.RedisTemplate;
+import java.time.Duration;
 
+
+// JwtTokenProvider 클래스에 필드 추가
 
 // JWT 토큰을 생성하고, 검증하는 유틸리티 클래스
 @Component//Spring의 애플리케이션 컨텍스트에 빈
 public class JwtTokenProvider {
+
 
 //    private final SecretKey secretKey;  // 토큰을 서명할 키 (비밀키)
 //    private final long accessTokenValidity; // 1시간 유효 기간 (3600000 밀리초 = 1시간)
@@ -34,13 +39,17 @@ public class JwtTokenProvider {
     private final SecretKey secretKey;
     private final long accessTokenValidity;   // 액세스 토큰 유효 기간
     private final long refreshTokenValidity;  // 리프레시 토큰 유효 기간
+    private final RedisTemplate<String, String> redisTemplate;
+
 
     public JwtTokenProvider(@Value("${jwt.secret}") String secretKey,
                             @Value("${jwt.access-token-expiration}") long accessTokenValidity,
-                            @Value("${jwt.refresh-token-expiration}") long refreshTokenValidity) {
+                            @Value("${jwt.refresh-token-expiration}") long refreshTokenValidity,
+                            RedisTemplate<String, String> redisTemplate) {
         this.secretKey = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
         this.accessTokenValidity = accessTokenValidity;
         this.refreshTokenValidity = refreshTokenValidity;
+        this.redisTemplate = redisTemplate;
     }
 
     // token에서 userId 추출
@@ -56,7 +65,11 @@ public class JwtTokenProvider {
         Claims claims = parseClaims(token);  // 토큰을 파싱하여 Claims 객체를 얻음
         return claims.getSubject();  // Claims에서 subject(사용자 이름) 정보를 추출
     }
-
+    // 리프레시 토큰 유효기간을 반환하는 메서드 
+    @SuppressWarnings("unused")//@Getter 쓰라고 노란줄 뜨는데, 다른 것들도 가져오게 되는게 싫어서 추가. 노란줄 없에는 어노테이션
+    public long getRefreshTokenValidity() {
+        return refreshTokenValidity;
+    }
 
     // userId를 기준으로 액세스 토큰 생성
     public String createAccessToken(String username) {
@@ -108,5 +121,18 @@ public class JwtTokenProvider {
                 .parseClaimsJws(token)
                 .getBody();
     }
+
+    // Refresh Token을 Redis에 저장하는 메서드
+    public void saveRefreshToken(String username, String refreshToken) {
+        redisTemplate.opsForValue().set(username, refreshToken, Duration.ofMillis(refreshTokenValidity));
+    }
+
+    //Refresh Token의 유효성을 검증하는 메서드
+    public boolean validateStoredRefreshToken(String username, String refreshToken) {
+        String storedToken = redisTemplate.opsForValue().get(username);
+        return storedToken != null && storedToken.equals(refreshToken);
+    }
+
+
 
 }
