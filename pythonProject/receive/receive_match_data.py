@@ -30,7 +30,7 @@ def analyze_match_data():
 def classify_rank_data():
     data = request.get_json()
 
-    db_rank_collection = get_mongo_rank(data['tear'],data['decord'])
+    db_rank_collection = get_mongo_rank(string.lower(data['tear']),data['division'])
 
     match_id = data['metadata']['matchId']
 

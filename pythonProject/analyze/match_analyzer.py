@@ -25,7 +25,6 @@ def analyze_participants(data):
                 f"Participant {i} teamPosition: {participant['teamPosition']} "
                 f"totalObjectiveScore: {total_objective_score} "
                 f"towerTakedowns: {participant['turretTakedowns']} "
-                f"laningImpact: {participant['challenges']['earlyLaningPhaseGoldExpAdvantage']} "
                 f"damageDealtToChampions: {participant['totalDamageDealtToChampions']} "
                 f"damageTaken: {participant['totalDamageTaken']} "
                 f"visionScore: {participant['visionScore']}"
@@ -41,7 +40,6 @@ def analyze_participants(data):
                 f"towerTakedowns: {participant['turretTakedowns']} "
                 f"damageDealtToChampions: {participant['totalDamageDealtToChampions']} "
                 f"damageTaken: {participant['totalDamageTaken']} "
-                f"laningImpact: {participant['challenges']['earlyLaningPhaseGoldExpAdvantage']} "
                 f"riftAndDragonContributions: {rift_and_dragon_contributions}"
             )
         elif i % 5 == 3:
