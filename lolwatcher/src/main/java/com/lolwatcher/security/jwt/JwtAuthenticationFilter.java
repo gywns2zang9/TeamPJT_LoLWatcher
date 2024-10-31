@@ -14,6 +14,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 
+// 모든 요청간에 JwtAuthenticationFilter가 실행되어 Authorization 헤더에서 jwt를 추출하고 유효성을 검사
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
