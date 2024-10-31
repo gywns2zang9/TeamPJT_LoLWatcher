@@ -7,27 +7,37 @@
   align-items: center;
 }
 
-.profile-image {
-  width: 80px;
-  height: 80px;
+.profile-tier {
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
   object-fit: cover;
 }
 
 .profile-info {
+  margin-left: 16px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 }
 
+.profile-nickname {
+  margin: 10px 0px;
+}
+
 .profile-most3 {
+  width: 100%;
   display: flex;
-  gap: 8px;
+  gap: 10px;
+  margin-left: 10px;
+  justify-content: start;
+  align-items: center;
 }
 
 .profile-most3 img {
   width: 36px;
   height: 36px;
   border-radius: 50%;
+  border: 3px solid gold;
   object-fit: cover;
 }
