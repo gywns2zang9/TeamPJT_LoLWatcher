@@ -40,7 +40,7 @@ public class AuthService {
 
     public void signup(SignupRequestDto signupRequestDto) {
         User user = new User();
-        user.setUsername(signupRequestDto.getUsername());
+        user.setUserId(signupRequestDto.getUserId());
         user.setPassword(passwordEncoder.encode(signupRequestDto.getPassword()));
         user.setRiotId(signupRequestDto.getRiotId());
         user.setRiotPassword(passwordEncoder.encode(signupRequestDto.getPassword()));
@@ -51,7 +51,7 @@ public class AuthService {
     //추후 RSO 연동시 연동된 데이터도 가져오도록 수정
     // 로그인 시 Access Token과 Refresh Token 생성 후 Redis에 Refresh Token 저장
     public Map<String, String> login(LoginRequestDto loginRequestDto) {
-        User user = userRepository.findByUsername(loginRequestDto.getUsername())
+        User user = userRepository.findByUserId(loginRequestDto.getUserId())
                 .orElseThrow(() -> new UsernameNotFoundException("Invalid username or password"));
 
         if (!passwordEncoder.matches(loginRequestDto.getPassword(), user.getPassword())) {
@@ -59,11 +59,11 @@ public class AuthService {
         }
 
         // 액세스 토큰과 리프레시 토큰 생성
-        String accessToken = jwtTokenProvider.createAccessToken(user.getUsername());
-        String refreshToken = jwtTokenProvider.createRefreshToken(user.getUsername());
+        String accessToken = jwtTokenProvider.createAccessToken(user.getUserId());
+        String refreshToken = jwtTokenProvider.createRefreshToken(user.getUserId());
 
         // Redis에 Refresh Token 저장 (유효기간을 설정하여 저장)
-        redisTemplate.opsForValue().set(user.getUsername(), refreshToken, Duration.ofMillis(jwtTokenProvider.getRefreshTokenValidity()));
+        redisTemplate.opsForValue().set(user.getUserId(), refreshToken, Duration.ofMillis(jwtTokenProvider.getRefreshTokenValidity()));
         //redisTemplate: Redis와 상호작용하는 데 사용되는 Spring의 도구.Redis 서버와의 데이터 조작(추가, 조회, 삭제 등)
         //opsForValue(): opsForValue()는 Redis의 간단한 키-값 구조를 다루기 위한 메서드. Redis에 **단일 값(String)**을 저장
 

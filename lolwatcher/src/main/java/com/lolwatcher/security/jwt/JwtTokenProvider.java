@@ -83,7 +83,7 @@ public class JwtTokenProvider {
 
 
     // JWT 토큰 생성 메소드
-    public String createToken(String username, long validityInMilliseconds) {
+    public String createToken(String userId, long validityInMilliseconds) {
         Map<String, Object> claims = new HashMap<>();  // HashMap으로 Claims 생성
 
         Date now = new Date();
@@ -91,7 +91,7 @@ public class JwtTokenProvider {
 
         return Jwts.builder()
                 .setClaims(claims)  // 수동으로 생성한 Claims 설정
-                .setSubject(username)  // subject 설정
+                .setSubject(userId)  // subject 설정
                 .setIssuedAt(now)  // 발급 시간
                 .setExpiration(expiration)   // 만료 시간
                 .signWith(SignatureAlgorithm.HS256, secretKey)  // 서명 알고리즘과 비밀 키

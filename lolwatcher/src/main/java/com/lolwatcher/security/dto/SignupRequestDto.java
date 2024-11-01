@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class SignupRequestDto {
-    private String username;
+    private String userId;
     private String password;
     private String riotId;
     private String riotPassword;
