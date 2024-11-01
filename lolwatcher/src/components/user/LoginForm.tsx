@@ -12,9 +12,9 @@ const LoginForm: React.FC = () => {
   const handleLogin = async () => {
     console.log('UserId:', userId);
     console.log('Password:', password);
-
+    console.log('---------------');
     try {
-      const response = await fetch('http://k11a601.p.ssafy.io:8080/auth/login', {
+      const response = await fetch('https://k11a601.p.ssafy.io:8080/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
