@@ -3,7 +3,6 @@ package com.lolwatcher.security.config;
 import com.lolwatcher.security.jwt.JwtAuthenticationFilter;
 import com.lolwatcher.security.jwt.JwtTokenProvider;
 import com.lolwatcher.security.service.CustomUserDetailsService;
-import com.lolwatcher.security.util.JwtUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -28,7 +27,7 @@ public class SecurityConfig {
     private final ConcurrentHashMap<Long, UserDetails> userCache;
 
     // 생성자 주입으로 필요한 의존성을 주입
-    public SecurityConfig(JwtTokenProvider jwtTokenProvider, CustomUserDetailsService customUserDetailsService, JwtUtil jwtUtil, ConcurrentHashMap<Long, UserDetails> userCache) {
+    public SecurityConfig(JwtTokenProvider jwtTokenProvider, CustomUserDetailsService customUserDetailsService, ConcurrentHashMap<Long, UserDetails> userCache) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.customUserDetailsService = customUserDetailsService;
         this.userCache = userCache; // userCache 초기화

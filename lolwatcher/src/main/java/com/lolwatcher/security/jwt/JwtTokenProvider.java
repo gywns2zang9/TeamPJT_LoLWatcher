@@ -42,9 +42,9 @@ public class JwtTokenProvider {
     private final RedisTemplate<String, String> redisTemplate;
 
 
-    public JwtTokenProvider(@Value("${jwt.secret}") String secretKey,
-                            @Value("${jwt.access-token-expiration}") long accessTokenValidity,
-                            @Value("${jwt.refresh-token-expiration}") long refreshTokenValidity,
+    public JwtTokenProvider(@Value("${spring.jwt.secret}") String secretKey,
+                            @Value("${spring.jwt.access-token-expiration}") long accessTokenValidity,
+                            @Value("${spring.jwt.refresh-token-expiration}") long refreshTokenValidity,
                             RedisTemplate<String, String> redisTemplate) {
         this.secretKey = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
         this.accessTokenValidity = accessTokenValidity;
