@@ -45,7 +45,7 @@ public class RedisConfig {    // RedisConfig 클래스를 Spring 설정 클래�
 
         // 비밀번호를 출력하여 확인 (로깅)
         System.out.println("Redis 비밀번호: " + redisPassword);
-        
+
         // LettuceConnectionFactory를 사용하여 RedisConnectionFactory 인스턴스를 생성하고 반환
         return new LettuceConnectionFactory(config);
 
