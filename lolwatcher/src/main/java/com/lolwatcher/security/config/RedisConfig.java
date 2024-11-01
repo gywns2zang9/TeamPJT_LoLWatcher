@@ -42,7 +42,7 @@ public class RedisConfig {    // RedisConfig 클래스를 Spring 설정 클래�
 
         // Redis 서버의 비밀번호 설정
         config.setPassword(redisPassword);
-        
+
 
         // LettuceConnectionFactory를 사용하여 RedisConnectionFactory 인스턴스를 생성하고 반환
         return new LettuceConnectionFactory(config);
