@@ -40,4 +40,9 @@ public class AuthController {
         return ResponseEntity.ok(tokens);
     }
 
+    @GetMapping
+    public String test(){
+        return "Hello LOL Watcher!";
+    }
+
 }
