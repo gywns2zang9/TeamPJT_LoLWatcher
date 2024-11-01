@@ -61,16 +61,43 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder(); // 비밀번호 암호화
     }
 
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("https://localhost:3000")); // 허용할 오리진
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE")); // 허용할 HTTP 메서드
-        configuration.setAllowedHeaders(Arrays.asList("*")); // 허용할 헤더
-        configuration.setAllowCredentials(true); // 자격 증명 허용
+//    @Bean
+//    public CorsConfigurationSource corsConfigurationSource() {
+//        CorsConfiguration configuration = new CorsConfiguration();
+//        configuration.setAllowedOrigins(Arrays.asList("https://localhost:3000")); // 허용할 오리진
+//        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE")); // 허용할 HTTP 메서드
+//        configuration.setAllowedHeaders(Arrays.asList("*")); // 허용할 헤더
+//        configuration.setAllowCredentials(true); // 자격 증명 허용
+//
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        source.registerCorsConfiguration("/**", configuration); // 모든 경로에 CORS 설정 적용
+//        return source;
+//    }
+@Bean
+public CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration configuration = new CorsConfiguration();
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration); // 모든 경로에 CORS 설정 적용
-        return source;
-    }
+    // 환경 변수에서 도메인 및 포트 가져오기
+    String domain = System.getenv("DOMAIN"); // 도메인 주소
+    String ec2Ip = System.getenv("EC2_IP"); // EC2 IP 주소
+    String frontPort = System.getenv("FRONT_PORT"); // 프론트엔드 포트
+
+    // 허용할 오리진 설정
+    configuration.setAllowedOrigins(Arrays.asList(
+            domain, // 도메인 주소
+            "http://" + ec2Ip + ":" + frontPort // EC2 IP 주소와 포트 조합
+    ));
+
+    // 허용할 HTTP 메서드 설정
+    configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
+    // 허용할 헤더 설정
+    configuration.setAllowedHeaders(Arrays.asList("*"));
+    // 자격 증명 허용 설정
+    configuration.setAllowCredentials(true);
+
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", configuration); // 모든 경로에 CORS 설정 적용
+    return source;
+}
+
 }
