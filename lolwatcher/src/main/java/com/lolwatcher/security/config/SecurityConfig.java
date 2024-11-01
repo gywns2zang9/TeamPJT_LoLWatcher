@@ -85,7 +85,8 @@ public CorsConfigurationSource corsConfigurationSource() {
     // 허용할 오리진 설정
     configuration.setAllowedOrigins(Arrays.asList(
             domain, // 도메인 주소
-            "http://" + ec2Ip + ":" + frontPort // EC2 IP 주소와 포트 조합
+            "http://" + ec2Ip + ":" + frontPort, // EC2 IP 주소와 포트 조합
+            "https://" + ec2Ip + ":" + frontPort // EC2 IP 주소와 포트 조합
     ));
 
     // 허용할 HTTP 메서드 설정
