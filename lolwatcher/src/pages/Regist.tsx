@@ -1,9 +1,9 @@
-import RegistForm from '../components/user/RegistForm';
-import './Regist.css';
+import RegistForm from "../components/user/RegistForm";
+import "./Regist.css";
 
-export default function Login() {
+export default function Regist() {
   return (
-    <div className='regist-container'>
+    <div className="regist-container">
       <RegistForm />
     </div>
   );
