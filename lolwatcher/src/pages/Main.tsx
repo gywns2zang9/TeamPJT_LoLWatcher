@@ -17,7 +17,7 @@ export default function Main() {
       </div>
       <SearchBar />
       <button className="main-btn" onClick={handleLogin}>
-        서비스 이용하기!!!
+        서비스 이용하기
       </button>
     </div>
   );
