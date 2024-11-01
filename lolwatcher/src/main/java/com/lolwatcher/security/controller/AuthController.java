@@ -6,6 +6,7 @@ import com.lolwatcher.security.service.AuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -20,10 +21,13 @@ public class AuthController {
 
     // 회원가입 엔드포인트
     @PostMapping("/signup")
-    public ResponseEntity<String> signup(@RequestBody SignupRequestDto signupRequestDto) {
+    public ResponseEntity<Map<String, String>> signup(@RequestBody SignupRequestDto signupRequestDto) {
         authService.signup(signupRequestDto);
-        return ResponseEntity.ok("Signup successful");
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Signup successful");
+        return ResponseEntity.ok(response);
     }
+
 
     // 로그인 엔드포인트
     @PostMapping("/login")
