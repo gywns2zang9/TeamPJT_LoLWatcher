@@ -8,6 +8,7 @@ import com.lolwatcher.event.dto.timeline.TimelineDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -36,6 +37,15 @@ public class RiotApiService {
     public void sendMatchDataByMatchId(String matchId) {
         MatchDto matchDto = riotApiClient.getMatchData(matchId);
         pythonApiClient.postMatchData(matchDto);
+    }
+
+    public List<MatchDto> getMatchDataBySummoner(String name, String tag) {
+        List<String> matchIds = riotApiClient.getMatchIds(riotApiClient.getSummonerRequest(name, tag).puuid());
+        List<MatchDto> lists = new ArrayList<>();
+        for(int i = 0 ; i < 5; i++) {
+            lists.add(riotApiClient.getMatchData(matchIds.get(i)));
+        }
+        return lists;
     }
 
 }

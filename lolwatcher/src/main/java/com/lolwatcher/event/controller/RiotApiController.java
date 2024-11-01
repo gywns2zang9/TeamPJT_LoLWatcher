@@ -46,4 +46,11 @@ public class RiotApiController {
         return HttpStatus.OK;
     }
 
+    @GetMapping("/info")
+    public List<MatchDto> getMatchBySummoner(@RequestParam("name") String name, @RequestParam("tag") String tag) {
+        return riotApiService.getMatchDataBySummoner(name, tag);
+    }
+
+
+
 }
