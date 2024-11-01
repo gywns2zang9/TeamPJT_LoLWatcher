@@ -3,23 +3,23 @@ import './LoginForm.css';
 import { useNavigate } from 'react-router-dom';
 
 const LoginForm: React.FC = () => {
-  const [account, setAccount] = useState('');
+  const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
-  const [riotAccount, setRiotAccount] = useState('');
+  const [riotId, setRiotId] = useState('');
   const [riotPassword, setRiotPassword] = useState('');
   const navigate = useNavigate();
 
   const clearInput = () => {
-    setAccount('');
+    setUserId('');
     setPassword('');
-    setRiotAccount('');
+    setRiotId('');
     setRiotPassword('');
   };
 
   const handleRegist = async () => {
-    console.log('Account:', account);
+    console.log('UserId:', userId);
     console.log('Password:', password);
-    console.log('RiotAccount:', riotAccount);
+    console.log('RiotAccount:', riotId);
     console.log('RiotPassword:', riotPassword);
 
     try {
@@ -29,9 +29,9 @@ const LoginForm: React.FC = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          account,
+          userId,
           password,
-          riotAccount,
+          riotId,
           riotPassword,
         }),
       });
@@ -39,7 +39,7 @@ const LoginForm: React.FC = () => {
       if (response.ok) {
         const result = await response.json();
         clearInput();
-        console.log('회원가입 성공:', result);
+        console.log('회원가입 성공 반환 값 :', result);
         navigate('/login');
       } else {
         console.error('회원가입 실패');
@@ -57,8 +57,8 @@ const LoginForm: React.FC = () => {
           <input
             className='insert'
             type='text'
-            value={account}
-            onChange={(e) => setAccount(e.target.value)}
+            value={userId}
+            onChange={(e) => setUserId(e.target.value)}
             placeholder='아이디'
           />
         </div>
@@ -76,8 +76,8 @@ const LoginForm: React.FC = () => {
             className='insert'
             type='text'
             placeholder='Riot 아이디'
-            value={riotAccount}
-            onChange={(e) => setRiotAccount(e.target.value)}
+            value={riotId}
+            onChange={(e) => setRiotId(e.target.value)}
           />
         </div>
         <div>
