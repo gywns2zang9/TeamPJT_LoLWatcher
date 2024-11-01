@@ -1,42 +1,88 @@
-import React, { useState } from "react";
-import "./LoginForm.css";
+import React, { useState } from 'react';
+import './LoginForm.css';
+import { useNavigate } from 'react-router-dom';
 
 const LoginForm: React.FC = () => {
-  const [account, setAccount] = useState("");
-  const [password, setPassword] = useState("");
+  const [userId, setUserId] = useState('');
+  const [password, setPassword] = useState('');
+  const [accessToken, setAccessToken] = useState('');
+  const [refreshToken, setRefreshToken] = useState('');
+  const navigate = useNavigate();
 
-  const handleLogin = () => {
-    console.log("Account:", account);
-    console.log("Password:", password);
+  const handleLogin = async () => {
+    console.log('UserId:', userId);
+    console.log('Password:', password);
+
+    try {
+      const response = await fetch('http://k11a601.p.ssafy.io:8080/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId,
+          password,
+        }),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        //setAccessToken(result.accessToken);
+        //setRefreshToken(result.refreshToken);
+        clearInput();
+        console.log('로그인 성공:', result);
+        navigate('/records');
+      } else {
+        console.error('로그인 실패');
+      }
+    } catch (error) {
+      console.error('오류 발생:', error);
+    }
+  };
+
+  const handleRegist = () => {
+    clearInput();
+    navigate('/regist');
+  };
+
+  const clearInput = () => {
+    setUserId('');
+    setPassword('');
   };
 
   return (
-    <div className="container">
-      <div className="insert-container">
-        <h2 className="logo">LoLWatcher</h2>
+    <div className='container'>
+      <div className='insert-container'>
+        <h2 className='logo'>LoLWatcher</h2>
         <div>
           <input
-            className="insert"
-            type="text"
-            value={account}
-            onChange={(e) => setAccount(e.target.value)}
-            placeholder="아이디"
+            className='insert'
+            type='text'
+            value={userId}
+            onChange={(e) => setUserId(e.target.value)}
+            placeholder='아이디'
           />
         </div>
         <div>
           <input
-            className="insert"
-            type="password"
+            className='insert'
+            type='password'
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="비밀번호"
+            placeholder='비밀번호'
           />
         </div>
-        <div style={{ display: "flex", justifyContent: "space-around" }}>
-          <button className="login-button" onClick={handleLogin}>
+        <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+          <button
+            className='login-button'
+            onClick={handleLogin}
+          >
             로그인
           </button>
-          <button className="login-button" onClick={handleLogin}>
+          <button
+            className='login-button'
+            onClick={handleRegist}
+          >
             회원가입
           </button>
         </div>
