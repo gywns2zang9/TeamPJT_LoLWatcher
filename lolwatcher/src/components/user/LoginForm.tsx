@@ -14,7 +14,7 @@ const LoginForm: React.FC = () => {
     console.log('Password:', password);
     console.log('---------------');
     try {
-      const response = await fetch('https://k11a601.p.ssafy.io:8080/auth/login', {
+      const response = await fetch('https://lolwatcher.com/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
