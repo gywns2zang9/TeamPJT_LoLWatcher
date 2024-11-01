@@ -13,7 +13,7 @@ export default function Main() {
   return (
     <div className="main-container">
       <div className="main-content">
-        <h1 className="main-intro">LoL Watcher</h1>
+        <h1 className="main-intro">LoL Watcher.com</h1>
       </div>
       <SearchBar />
       <button className="main-btn" onClick={handleLogin}>
