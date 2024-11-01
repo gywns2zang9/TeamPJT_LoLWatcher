@@ -1,5 +1,7 @@
+import string
+
 from flask import Blueprint, jsonify, request
-from config.mongo_config import get_mongo_client, get_mongo_tier, get_mongo_rank
+from config.mongo_config import get_mongo_client, get_mongo_rank, get_mongo_rank
 from analyze.match_analyzer import analyze_participants
 
 routes = Blueprint('routes', __name__)
