@@ -25,7 +25,7 @@ spring:
 
   data:
     redis:
-      host: localhost
+      host: 127.0.0.1
       port: 6379
       password: ${REDIS_PASSWORD}  # 비밀번호가 설정된 경우
 
