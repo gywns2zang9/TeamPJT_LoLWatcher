@@ -20,7 +20,7 @@ public class CustomUserDetailsService implements org.springframework.security.co
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         // 사용자 정보를 데이터베이스에서 조회하고 CustomUserDetails 객체 반환
         System.out.println("CustomUserDetailsService 클래스의 loadUserByUsername메서드. 사용자 정보를 데이터베이스에서 조회하고 CustomUserDetails 객체 반환");
-        User user = userRepository.findByUsername(username)
+        User user = userRepository.findByUserId(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
         return new CustomUserDetails(user);
     }
