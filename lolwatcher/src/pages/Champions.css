@@ -1,0 +1,40 @@
+.champions-container {
+  background-image: url("../assets/background.jpg");
+  background-size: cover;
+  background-position: center;
+  width: 100vw;
+  height: 100vh;
+  overflow-y: auto;
+  padding: 3% 0;
+}
+
+.champion-list {
+  width: 80%; 
+  height: 100%;
+  margin: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+}
+
+.champion-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.champion-item img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border: 1px solid gold;  
+  border-radius: 12px;
+  cursor: url("../assets/cursor/hover-cursor.png"), pointer;
+}
+
+.champion-item p {
+  margin-top: 8px;
+  font-size: 12px;
+  font-weight: bold;
+  color: white;
+}
