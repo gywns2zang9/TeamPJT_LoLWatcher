@@ -42,11 +42,6 @@ public class SecurityConfig {
                         .requestMatchers("/login", "/signup", "/auth/**").permitAll() // 로그인, 회원가입, 인증 관련 경로 허용
                         .anyRequest().authenticated() // 그 외 모든 요청은 인증 필요
                 )
-                .formLogin(form -> form
-                        .loginPage("/login") // 사용자 정의 로그인 페이지
-                        .defaultSuccessUrl("/home", true) // 로그인 성공 시 이동할 페이지
-                        .permitAll()
-                )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout") // 로그아웃 후 로그인 페이지로 리디렉션
