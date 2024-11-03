@@ -27,8 +27,8 @@ const LoginForm: React.FC = () => {
 
       if (response.ok) {
         const result = await response.json();
-        //setAccessToken(result.accessToken);
-        //setRefreshToken(result.refreshToken);
+        sessionStorage.setItem('accessToken',result.accessToken);
+        sessionStorage.setItem('refreshToken',result.refreshToken);
         clearInput();
         console.log('로그인 성공:', result);
         navigate('/records');
