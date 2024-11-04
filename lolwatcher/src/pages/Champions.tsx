@@ -36,6 +36,7 @@ export default function Champions() {
             <img
               src={`${CHAMPION_IMG_BASE_URL}${champion}.png`}
               alt={champion}
+              loading="lazy" // 지연 로딩
             />
             <p>{champion}</p>
           </div>
