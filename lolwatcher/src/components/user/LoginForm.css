@@ -29,14 +29,12 @@
   box-sizing: border-box;
   font-size: 20px;
   align-items: center;
+  margin-inline: 400px;
 }
 
 .login-button {
-  width: 60%;
-  padding-left: 8px;
-  padding-right: 8px;
-  padding-top: 14px;
-  padding-bottom: 14px;
+  width: 40%;
+  height: 100%;
   border-radius: 10px;
   margin-top: 20px;
   box-sizing: border-box;
@@ -45,6 +43,10 @@
   font-weight: bold;
   color: white;
   font-weight: bold;
+}
+
+.login-button:hover{
+  background-color: gray;
 }
 
 .regist-button {
