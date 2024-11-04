@@ -1,180 +1,44 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import InfoModal from "../components/champions/InfoModal";
 import "./Champions.css";
+
+interface Champion {
+  id: string;
+  name: string;
+}
 
 export default function Champions() {
   const CHAMPION_IMG_BASE_URL =
     "https://ddragon.leagueoflegends.com/cdn/14.21.1/img/champion/";
 
-  const champions = [
-    "Aatrox",
-    "Ahri",
-    "Akali",
-    "Alistar",
-    "Amumu",
-    "Anivia",
-    "Annie",
-    "Aphelios",
-    "Ashe",
-    "AurelionSol",
-    "Azir",
-    "Bard",
-    "Belveth",
-    "Blitzcrank",
-    "Brand",
-    "Braum",
-    "Caitlyn",
-    "Camille",
-    "Cassiopeia",
-    "Chogath",
-    "Corki",
-    "Darius",
-    "Diana",
-    "DrMundo",
-    "Draven",
-    "Ekko",
-    "Elise",
-    "Evelynn",
-    "Ezreal",
-    "Fiddlesticks",
-    "Fiora",
-    "Fizz",
-    "Galio",
-    "Gangplank",
-    "Garen",
-    "Gnar",
-    "Gragas",
-    "Graves",
-    "Gwen",
-    "Hecarim",
-    "Heimerdinger",
-    "Hwei",
-    "Illaoi",
-    "Irelia",
-    "Ivern",
-    "Janna",
-    "JarvanIV",
-    "Jax",
-    "Jayce",
-    "Jhin",
-    "Jinx",
-    "KSante",
-    "Kaisa",
-    "Kalista",
-    "Karma",
-    "Karthus",
-    "Kassadin",
-    "Katarina",
-    "Kayle",
-    "Kayn",
-    "Kennen",
-    "Khazix",
-    "Kindred",
-    "Kled",
-    "KogMaw",
-    "Leblanc",
-    "LeeSin",
-    "Leona",
-    "Lillia",
-    "Lissandra",
-    "Lucian",
-    "Lulu",
-    "Lux",
-    "Malphite",
-    "Malzahar",
-    "Maokai",
-    "MasterYi",
-    "Milio",
-    "MissFortune",
-    "MonkeyKing",
-    "Mordekaiser",
-    "Morgana",
-    "Naafiri",
-    "Nami",
-    "Nasus",
-    "Nautilus",
-    "Neeko",
-    "Nidalee",
-    "Nilah",
-    "Nocturne",
-    "Nunu",
-    "Olaf",
-    "Orianna",
-    "Ornn",
-    "Pantheon",
-    "Poppy",
-    "Pyke",
-    "Qiyana",
-    "Quinn",
-    "Rakan",
-    "Rammus",
-    "RekSai",
-    "Rell",
-    "Renata",
-    "Renekton",
-    "Rengar",
-    "Riven",
-    "Rumble",
-    "Ryze",
-    "Samira",
-    "Sejuani",
-    "Senna",
-    "Seraphine",
-    "Sett",
-    "Shaco",
-    "Shen",
-    "Shyvana",
-    "Singed",
-    "Sion",
-    "Sivir",
-    "Skarner",
-    "Smolder",
-    "Sona",
-    "Soraka",
-    "Swain",
-    "Sylas",
-    "Syndra",
-    "TahmKench",
-    "Taliyah",
-    "Talon",
-    "Taric",
-    "Teemo",
-    "Thresh",
-    "Tristana",
-    "Trundle",
-    "Tryndamere",
-    "TwistedFate",
-    "Twitch",
-    "Udyr",
-    "Urgot",
-    "Varus",
-    "Vayne",
-    "Veigar",
-    "Velkoz",
-    "Vex",
-    "Vi",
-    "Viego",
-    "Viktor",
-    "Vladimir",
-    "Volibear",
-    "Warwick",
-    "Xayah",
-    "Xerath",
-    "XinZhao",
-    "Yasuo",
-    "Yone",
-    "Yorick",
-    "Yuumi",
-    "Zac",
-    "Zed",
-    "Zeri",
-    "Ziggs",
-    "Zilean",
-    "Zoe",
-    "Zyra"
-  ];
+  const [champions, setChampions] = useState<Champion[]>([]);
 
   const [selectedChampion, setSelectedChampion] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchChampions = async () => {
+      try {
+        const response = await axios.get(
+          "https://ddragon.leagueoflegends.com/cdn/14.21.1/data/ko_KR/champion.json"
+        );
+        const data = response.data.data;
+        const championsArray = Object.keys(data).map((key) => ({
+          id: data[key].id,
+          name: data[key].name
+        }));
+
+        // 한글 이름 기준으로 정렬
+        championsArray.sort((a, b) => a.name.localeCompare(b.name, "ko"));
+
+        setChampions(championsArray);
+      } catch (error) {
+        console.error("Error fetching champion data:", error);
+      }
+    };
+
+    fetchChampions();
+  }, []);
 
   const handleChampionClick = (champion: string) => {
     setSelectedChampion(champion);
@@ -191,13 +55,13 @@ export default function Champions() {
           <div
             key={index}
             className="champion-item"
-            onClick={() => handleChampionClick(champion)}
+            onClick={() => handleChampionClick(champion.id)}
           >
             <img
-              src={`${CHAMPION_IMG_BASE_URL}${champion}.png`}
-              alt={champion}
+              src={`${CHAMPION_IMG_BASE_URL}${champion.id}.png`}
+              alt={champion.name}
             />
-            <p>{champion}</p>
+            <p>{champion.name}</p>
           </div>
         ))}
       </div>
