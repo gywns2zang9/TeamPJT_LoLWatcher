@@ -13,8 +13,9 @@ const LoginForm: React.FC = () => {
     console.log('UserId:', userId);
     console.log('Password:', password);
     console.log('---------------');
+    const authApiUrl = process.env.AUTH_API_URL!;
     try {
-      const response = await fetch('https://lolwatcher.com/api/auth/login', {
+      const response = await fetch(`${authApiUrl}/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -27,8 +28,8 @@ const LoginForm: React.FC = () => {
 
       if (response.ok) {
         const result = await response.json();
-        //setAccessToken(result.accessToken);
-        //setRefreshToken(result.refreshToken);
+        sessionStorage.setItem('accessToken', result.accessToken);
+        //sessionStorage.setItem('refreshToken',result.refreshToken);
         clearInput();
         console.log('로그인 성공:', result);
         navigate('/records');
