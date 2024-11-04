@@ -30,6 +30,11 @@
   border: 1px solid gold;  
   border-radius: 12px;
   cursor: url("../assets/cursor/hover-cursor.png"), pointer;
+  filter: grayscale(100%);
+}
+
+.champion-item img:hover {
+  filter: grayscale(0%);
 }
 
 .champion-item p {
