@@ -13,7 +13,7 @@ const LoginForm: React.FC = () => {
     console.log('UserId:', userId);
     console.log('Password:', password);
     console.log('---------------');
-    const authApiUrl = process.env.AUTH_API_URL!;
+    const authApiUrl = process.env.REACT_APP_AUTH_API_URL!;
     try {
       const response = await fetch(`${authApiUrl}/login`, {
         method: 'POST',
