@@ -42,6 +42,7 @@ public class AuthService {
     }
 
     public void signup(SignupRequestDto signupRequestDto) {
+        System.out.println("process 13 - AuthService singup");
         User user = new User();
         user.setUserId(signupRequestDto.getUserId());
         user.setPassword(passwordEncoder.encode(signupRequestDto.getPassword()));
@@ -80,6 +81,7 @@ public class AuthService {
 //    }
     // AuthService 클래스의 login 메서드
     public Map<String, String> login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
+        System.out.println("process 14 - AuthService login");
         User user = userRepository.findByUserId(loginRequestDto.getUserId())
                 .orElseThrow(() -> new UsernameNotFoundException("Invalid username or password"));
 
@@ -112,6 +114,7 @@ public class AuthService {
 
     public Map<String, String> refreshAccessToken(String refreshToken) {
         // 리프레시 토크이 유효한지 확인
+        System.out.println("process 15 - AuthService refreshAccessToken");
         if (!jwtTokenProvider.validateToken(refreshToken)) {
             throw new IllegalArgumentException("Invalid or expired refresh token");
         }

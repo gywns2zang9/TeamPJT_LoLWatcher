@@ -55,6 +55,7 @@ public class JwtTokenProvider {
 
     // token에서 userId 추출
     public Long getUserId(String token) {
+        System.out.println("process 3 - provider getUserId");
         return Long.parseLong(Jwts.parser()
                 .verifyWith(secretKey).build()
                 .parseSignedClaims(token)
@@ -63,6 +64,7 @@ public class JwtTokenProvider {
     }
 
     public String getUserName(String token) {
+        System.out.println("process 4 - provider getUserName");
         Claims claims = parseClaims(token);  // 토큰을 파싱하여 Claims 객체를 얻음
         return claims.getSubject();  // Claims에서 subject(사용자 이름) 정보를 추출
     }
@@ -74,17 +76,22 @@ public class JwtTokenProvider {
 
     // userId를 기준으로 액세스 토큰 생성
     public String createAccessToken(String username) {
+
+        System.out.println("process 5 - provider createAccessToken");
         return createToken(username, accessTokenValidity);
     }
 
     // userId를 기준으로 리프레시 토큰 생성
     public String createRefreshToken(String username) {
+
+        System.out.println("process 6 - provider createRefreshToken");
         return createToken(username, refreshTokenValidity);
     }
 
 
     // JWT 토큰 생성 메소드
     public String createToken(String userId, long validityInMilliseconds) {
+        System.out.println("process 7 - provider createToken class");
         Map<String, Object> claims = new HashMap<>();  // HashMap으로 Claims 생성
 
         Date now = new Date();
@@ -101,6 +108,7 @@ public class JwtTokenProvider {
 
     // JWT 토큰의 유효성을 검증하는 메소드
     public boolean validateToken(String token) {
+        System.out.println("process 8 - provider calidateToken");
         try {
             // 비밀 키를 사용하여 토큰을 파싱하고 유효성 검증
             Jwts.parser()
@@ -116,6 +124,7 @@ public class JwtTokenProvider {
 
     // 토큰에서 Claims를 파싱하여 가져옴
     private Claims parseClaims(String token) {
+        System.out.println("process 9 - provider parseClaims");
         return Jwts.parser()
                 .setSigningKey(secretKey)
                 .build()
@@ -125,17 +134,20 @@ public class JwtTokenProvider {
 
     // Refresh Token을 Redis에 저장하는 메서드
     public void saveRefreshToken(String username, String refreshToken) {
+        System.out.println("process 10 - provider saveRefreshToken");
         redisTemplate.opsForValue().set(username, refreshToken, Duration.ofMillis(refreshTokenValidity));
     }
 
     //Refresh Token의 유효성을 검증하는 메서드
     public boolean validateStoredRefreshToken(String username, String refreshToken) {
+        System.out.println("process 11 - provider validateStoredRefreshToken");
         String storedToken = redisTemplate.opsForValue().get(username);
         return storedToken != null && storedToken.equals(refreshToken);
     }
 
     // 클라이언트의 HTTP 요청 헤더에서 jwt를 추출하는 기능
     public String resolveToken(HttpServletRequest request) {
+        System.out.println("process 12 - provider resolveToken");
         String bearerToken = request.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7); // "Bearer " 이후의 토큰만 반환

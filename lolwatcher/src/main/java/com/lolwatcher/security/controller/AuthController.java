@@ -24,6 +24,7 @@ public class AuthController {
     // 회원가입 엔드포인트
     @PostMapping("/signup")
     public ResponseEntity<Map<String, String>> signup(@RequestBody SignupRequestDto signupRequestDto) {
+
         authService.signup(signupRequestDto);
         Map<String, String> response = new HashMap<>();
         response.put("message", "Signup successful");
@@ -40,7 +41,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
         // HttpServletResponse를 전달하여 리프레시 토큰을 쿠키로 설정
-
+        System.out.println("process 1 - loginController");
         Map<String, String> tokens = authService.login(loginRequestDto, response);
         return ResponseEntity.ok(tokens);
     }
