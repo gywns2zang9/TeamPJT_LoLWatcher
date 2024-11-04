@@ -3,6 +3,7 @@ package com.lolwatcher.security.controller;
 import com.lolwatcher.security.dto.LoginRequestDto;
 import com.lolwatcher.security.dto.SignupRequestDto;
 import com.lolwatcher.security.service.AuthService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,9 +31,15 @@ public class AuthController {
 
 
     // 로그인 엔드포인트
+//    @PostMapping("/login")
+//    public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequestDto loginRequestDto) {
+//        Map<String, String> tokens = authService.login(loginRequestDto);
+//        return ResponseEntity.ok(tokens);
+//    }
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequestDto loginRequestDto) {
-        Map<String, String> tokens = authService.login(loginRequestDto);
+    public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
+        // HttpServletResponse를 전달하여 리프레시 토큰을 쿠키로 설정
+        Map<String, String> tokens = authService.login(loginRequestDto, response);
         return ResponseEntity.ok(tokens);
     }
 

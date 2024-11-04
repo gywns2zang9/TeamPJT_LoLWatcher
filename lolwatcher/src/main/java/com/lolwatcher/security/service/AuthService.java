@@ -6,7 +6,10 @@ import com.lolwatcher.security.entity.User;
 import com.lolwatcher.security.jwt.JwtTokenProvider;
 import com.lolwatcher.security.repository.UserRepository;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -50,7 +53,33 @@ public class AuthService {
     
     //추후 RSO 연동시 연동된 데이터도 가져오도록 수정
     // 로그인 시 Access Token과 Refresh Token 생성 후 Redis에 Refresh Token 저장
-    public Map<String, String> login(LoginRequestDto loginRequestDto) {
+//    public Map<String, String> login(LoginRequestDto loginRequestDto) {
+//        User user = userRepository.findByUserId(loginRequestDto.getUserId())
+//                .orElseThrow(() -> new UsernameNotFoundException("Invalid username or password"));
+//
+//        if (!passwordEncoder.matches(loginRequestDto.getPassword(), user.getPassword())) {
+//            throw new BadCredentialsException("Invalid username or password");
+//        }
+//
+//        // 액세스 토큰과 리프레시 토큰 생성
+//        String accessToken = jwtTokenProvider.createAccessToken(user.getUserId());
+//        String refreshToken = jwtTokenProvider.createRefreshToken(user.getUserId());
+//
+//        // Redis에 Refresh Token 저장 (유효기간을 설정하여 저장)
+//        redisTemplate.opsForValue().set(user.getUserId(), refreshToken, Duration.ofMillis(jwtTokenProvider.getRefreshTokenValidity()));
+//        //redisTemplate: Redis와 상호작용하는 데 사용되는 Spring의 도구.Redis 서버와의 데이터 조작(추가, 조회, 삭제 등)
+//        //opsForValue(): opsForValue()는 Redis의 간단한 키-값 구조를 다루기 위한 메서드. Redis에 **단일 값(String)**을 저장
+//
+//
+//        // 토큰들을 맵으로 반환
+//        Map<String, String> tokens = new HashMap<>();
+//        tokens.put("accessToken", accessToken);
+//        tokens.put("refreshToken", refreshToken);
+//
+//        return tokens;
+//    }
+    // AuthService 클래스의 login 메서드
+    public Map<String, String> login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
         User user = userRepository.findByUserId(loginRequestDto.getUserId())
                 .orElseThrow(() -> new UsernameNotFoundException("Invalid username or password"));
 
@@ -62,19 +91,24 @@ public class AuthService {
         String accessToken = jwtTokenProvider.createAccessToken(user.getUserId());
         String refreshToken = jwtTokenProvider.createRefreshToken(user.getUserId());
 
-        // Redis에 Refresh Token 저장 (유효기간을 설정하여 저장)
+        // Redis에 리프레시 토큰 저장
         redisTemplate.opsForValue().set(user.getUserId(), refreshToken, Duration.ofMillis(jwtTokenProvider.getRefreshTokenValidity()));
-        //redisTemplate: Redis와 상호작용하는 데 사용되는 Spring의 도구.Redis 서버와의 데이터 조작(추가, 조회, 삭제 등)
-        //opsForValue(): opsForValue()는 Redis의 간단한 키-값 구조를 다루기 위한 메서드. Redis에 **단일 값(String)**을 저장
 
+        // 리프레시 토큰을 HttpOnly 쿠키로 설정
+        Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setSecure(true); // HTTPS에서만 전송
+        refreshTokenCookie.setPath("/");
+        refreshTokenCookie.setMaxAge((int) (jwtTokenProvider.getRefreshTokenValidity() / 1000)); // 초 단위로 설정
+        response.addCookie(refreshTokenCookie);
 
-        // 토큰들을 맵으로 반환
+        // 액세스 토큰만 맵에 담아 반환
         Map<String, String> tokens = new HashMap<>();
         tokens.put("accessToken", accessToken);
-        tokens.put("refreshToken", refreshToken);
 
         return tokens;
     }
+
 
     public Map<String, String> refreshAccessToken(String refreshToken) {
         // 리프레시 토크이 유효한지 확인
