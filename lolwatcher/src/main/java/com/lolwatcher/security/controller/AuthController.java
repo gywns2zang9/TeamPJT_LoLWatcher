@@ -4,6 +4,7 @@ import com.lolwatcher.security.dto.LoginRequestDto;
 import com.lolwatcher.security.dto.SignupRequestDto;
 import com.lolwatcher.security.service.AuthService;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.Getter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,6 +40,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
         // HttpServletResponse를 전달하여 리프레시 토큰을 쿠키로 설정
+
         Map<String, String> tokens = authService.login(loginRequestDto, response);
         return ResponseEntity.ok(tokens);
     }
@@ -51,9 +53,17 @@ public class AuthController {
         return ResponseEntity.ok(tokens);
     }
 
-    @GetMapping
-    public String test(){
-        return "Hello LOL Watcher!";
+
+    @DeleteMapping("/logout")
+    public ResponseEntity<String> logout(@RequestHeader("Authorization") String token){
+        // Authorization 헤더에서 "Bearer" 접두사를 제거하고 순수한 토큰만 추출
+        String pureToken = token.substring(7);
+
+        // 로그아웃 처리 로직
+        authService.logout(pureToken);
+
+        return ResponseEntity.ok("Logged out successfully");
     }
+
 
 }
