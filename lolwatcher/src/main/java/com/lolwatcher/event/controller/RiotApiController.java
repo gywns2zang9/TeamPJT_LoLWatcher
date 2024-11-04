@@ -2,6 +2,7 @@ package com.lolwatcher.event.controller;
 
 import com.lolwatcher.event.dto.AccountDto;
 import com.lolwatcher.event.dto.match.MatchDto;
+import com.lolwatcher.event.dto.record.RecordDto;
 import com.lolwatcher.event.dto.timeline.TimelineDto;
 import com.lolwatcher.event.service.RiotApiService;
 import lombok.RequiredArgsConstructor;
@@ -47,7 +48,7 @@ public class RiotApiController {
     }
 
     @GetMapping("/info")
-    public List<MatchDto> getMatchBySummoner(@RequestParam("name") String name, @RequestParam("tag") String tag) {
+    public List<RecordDto> getMatchBySummoner(@RequestParam("name") String name, @RequestParam("tag") String tag) {
         return riotApiService.getMatchDataBySummoner(name, tag);
     }
 

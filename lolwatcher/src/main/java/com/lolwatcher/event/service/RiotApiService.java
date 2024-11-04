@@ -43,15 +43,14 @@ public class RiotApiService {
         pythonApiClient.postMatchData(matchDto);
     }
 
-    public List<MatchDto> getMatchDataBySummoner(String name, String tag) {
+    public List<RecordDto> getMatchDataBySummoner(String name, String tag) {
         String puuid = riotApiClient.getSummonerRequest(name, tag).puuid();
         List<String> matchIds = riotApiClient.getMatchIds(puuid);
         List<MatchDto> lists = new ArrayList<>();
         for(int i = 0 ; i < 5; i++) {
             lists.add(riotApiClient.getMatchData(matchIds.get(i)));
         }
-        List<RecordDto> recordList = matchDtoToRecordDto(puuid, lists);
-        return lists;
+        return matchDtoToRecordDto(puuid, lists);
     }
 
     private List<RecordDto> matchDtoToRecordDto(String puuid, List<MatchDto> lists) {
