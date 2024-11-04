@@ -16,8 +16,11 @@ refreshTokenApi.interceptors.response.use(
       originalRequest._retry = true; // 무한 루프 방지
       try {
         // refreshToken으로 accessToken 재발급 요청
+
+        const authApiURL = process.env.AUTH_API_URL!;
+
         const refreshToken = sessionStorage.getItem('refreshToken');
-        const response = await axios.post('https://lolwatcher.com/api/auth/refresh', { refreshToken });
+        const response = await axios.post(`${authApiURL}/refresh`, { refreshToken });
 
         // 새로운 accessToken을 sessionStorage에 저장
         sessionStorage.setItem('accessToken', response.data.accessToken);
@@ -40,3 +43,4 @@ refreshTokenApi.interceptors.response.use(
 );
 
 export default refreshTokenApi;
+export {};
