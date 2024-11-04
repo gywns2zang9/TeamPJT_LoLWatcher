@@ -7,7 +7,7 @@ export default function Main() {
   const navigate = useNavigate();
 
   const handleLogin = () => {
-    const accessToken = sessionStorage.getItem('accessToken'); // sessionStorage 사용
+    const accessToken = localStorage.getItem('accessToken'); // sessionStorage 사용
     if (accessToken) {
       navigate('/record');
     } else {

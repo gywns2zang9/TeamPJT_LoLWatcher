@@ -5,13 +5,11 @@ import { useNavigate } from 'react-router-dom';
 const LoginForm: React.FC = () => {
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
-  const [accessToken, setAccessToken] = useState('');
-  const [refreshToken, setRefreshToken] = useState('');
   const navigate = useNavigate();
 
   const handleLogin = async () => {
     console.log('UserId:', userId);
-    console.log('Password:', password);
+    //console.log('Password:', password);
     console.log('---------------');
     const authApiUrl = process.env.REACT_APP_AUTH_API_URL!;
     try {
@@ -28,7 +26,7 @@ const LoginForm: React.FC = () => {
 
       if (response.ok) {
         const result = await response.json();
-        sessionStorage.setItem('accessToken', result.accessToken);
+        localStorage.setItem('accessToken', result.accessToken);
         //sessionStorage.setItem('refreshToken',result.refreshToken);
         clearInput();
         console.log('로그인 성공:', result);

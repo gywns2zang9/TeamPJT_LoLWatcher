@@ -1,37 +1,63 @@
-import "./App.css";
-import Main from "./pages/Main";
-import Login from "./pages/Login";
-import Champions from "./pages/Champions";
-import GameRecord from "./pages/GameRecord";
-import Regist from "./pages/Regist";
-import ResultReport from "./pages/ResultReport";
-import MyPage from "./pages/MyPage"
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import './App.css';
+import Main from './pages/Main';
+import Login from './pages/Login';
+import Champions from './pages/Champions';
+import GameRecord from './pages/GameRecord';
+import Regist from './pages/Regist';
+import ResultReport from './pages/ResultReport';
+import MyPage from './pages/MyPage';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 
-function PrivateRoute({children} : {children: JSX.Element}){
+function PrivateRoute({ children }: { children: JSX.Element }) {
   const location = useLocation();
-  const accessToken = sessionStorage.getItem("accessToken");
+  const accessToken = localStorage.getItem('accessToken');
 
-  if(!accessToken){
-    return <Navigate to="/login" state={{from:location}} replace/>;
+  if (!accessToken) {
+    return (
+      <Navigate
+        to='/login'
+        state={{ from: location }}
+        replace
+      />
+    );
   }
 
   return children;
 }
 
 function App() {
-
-  const accessToken = sessionStorage.getItem("accessToken");
+  const accessToken = localStorage.getItem('accessToken');
 
   return (
     <Router>
       <Routes>
-        <Route path="/" element={accessToken ? <Navigate to="/records" replace /> : <Main />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/champions" element={<Champions />} />
-        <Route path="/regist" element={<Regist />} />
         <Route
-          path="/records"
+          path='/'
+          element={
+            accessToken ? (
+              <Navigate
+                to='/records'
+                replace
+              />
+            ) : (
+              <Main />
+            )
+          }
+        />
+        <Route
+          path='/login'
+          element={<Login />}
+        />
+        <Route
+          path='/champions'
+          element={<Champions />}
+        />
+        <Route
+          path='/regist'
+          element={<Regist />}
+        />
+        <Route
+          path='/records'
           element={
             <PrivateRoute>
               <GameRecord />
@@ -39,7 +65,7 @@ function App() {
           }
         />
         <Route
-          path="/mypage"
+          path='/mypage'
           element={
             <PrivateRoute>
               <MyPage />
@@ -47,7 +73,7 @@ function App() {
           }
         />
         <Route
-          path="/result"
+          path='/result'
           element={
             <PrivateRoute>
               <ResultReport />
