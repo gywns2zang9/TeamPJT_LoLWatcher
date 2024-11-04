@@ -5,6 +5,7 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -133,6 +134,13 @@ public class JwtTokenProvider {
         return storedToken != null && storedToken.equals(refreshToken);
     }
 
-
+    // 클라이언트의 HTTP 요청 헤더에서 jwt를 추출하는 기능
+    public String resolveToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7); // "Bearer " 이후의 토큰만 반환
+        }
+        return null;
+    }
 
 }

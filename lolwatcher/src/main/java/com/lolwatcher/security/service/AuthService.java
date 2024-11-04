@@ -133,5 +133,13 @@ public class AuthService {
         tokens.put("refreshToken", refreshToken);  // 기존 리프레시 토큰 유지
         return tokens;
     }
+    // 로그아웃 처리 로직
+    public void logout(String token) {
+        // 토큰에서 사용자 이름(또는 사용자 ID) 추출
+        String username = jwtTokenProvider.getUserName(token);
+
+        // Redis에서 리프레시 토큰 삭제
+        redisTemplate.delete(username);
+    }
 
 }
