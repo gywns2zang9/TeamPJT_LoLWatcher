@@ -39,6 +39,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        System.out.println("process 18 - SecurityConfig securityFilterChain");
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable) // CSRF 보호 비활성화 (JWT 사용 시 필요)
@@ -58,6 +59,8 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
+
+        System.out.println("process 19 - SecurityConfig passwordEncoder");
         return new BCryptPasswordEncoder(); // 비밀번호 암호화
     }
 
@@ -75,6 +78,7 @@ public class SecurityConfig {
 //    }
 @Bean
 public CorsConfigurationSource corsConfigurationSource() {
+    System.out.println("process 20 - SecurityConfig corsConfigurationSource");
     CorsConfiguration configuration = new CorsConfiguration();
 
     // 환경 변수에서 도메인 및 포트 가져오기
