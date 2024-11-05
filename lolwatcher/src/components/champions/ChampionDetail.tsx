@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import "./InfoModal.css";
+import "./ChampionDetail.css";
+import XmarkIcon from "../common/XmarkIcon";
 
-interface InfoModalProps {
+interface ChampionDetaillProps {
   championId: string;
   championKey: string;
   championName: string;
@@ -17,14 +18,14 @@ interface Spell {
   description: string;
 }
 
-export default function InfoModal({
+export default function ChampionDetail({
   championId,
   championKey,
   championName,
   championTitle,
   championBlurb,
   onClose
-}: InfoModalProps) {
+}: ChampionDetaillProps) {
   const CHAMPION_BACKGROUND_IMG_BASE_URL =
     "https://ddragon.leagueoflegends.com/cdn/img/champion/loading/"; // centered or splash or loading
   const PASSIVE_IMG_BASE_URL =
@@ -35,7 +36,19 @@ export default function InfoModal({
   const [spells, setSpells] = useState<Spell[]>([]);
   const [passiveImageUrl, setPassiveImageUrl] = useState<string | null>(null);
   const [selectedVideoUrl, setSelectedVideoUrl] = useState<string | null>(null);
+  const [selectedSpellType, setSelectedSpellType] = useState<string>("P");
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    setLoading(true);
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [championId, championKey]);
+
+  // 챔피언 데이터 가져오기
   useEffect(() => {
     const fetchChampionData = async () => {
       try {
@@ -55,6 +68,7 @@ export default function InfoModal({
         const paddedChampionKey = championKey.padStart(4, "0");
         const initialVideoUrl = `https://d28xe8vt774jo5.cloudfront.net/champion-abilities/${paddedChampionKey}/ability_${paddedChampionKey}_P1.webm`;
         setSelectedVideoUrl(initialVideoUrl);
+        setSelectedSpellType("P");
       } catch (error) {
         console.error(error);
       }
@@ -67,11 +81,21 @@ export default function InfoModal({
   const handleImageClick = (spellType: string) => {
     // championKey를 4자리로 패딩
     const paddedChampionKey = championKey.padStart(4, "0");
-
     const videoUrl = `https://d28xe8vt774jo5.cloudfront.net/champion-abilities/${paddedChampionKey}/ability_${paddedChampionKey}_${spellType}1.webm`;
     console.log(videoUrl);
     setSelectedVideoUrl(videoUrl);
+    setSelectedSpellType(spellType); // 선택된 스킬 타입 설정
   };
+
+  if (loading) {
+    return (
+      <div className="info-container">
+        <div className="loading-spinner">
+          <div className="spinner"></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -83,12 +107,17 @@ export default function InfoModal({
       <div className="info-content">
         <h2>{championName}</h2>
         <h3>{championTitle}</h3>
-        <p>{championBlurb}</p>
+        <h4>{championBlurb}</h4>
 
         <div className="spells-container">
           {/* Passive 스킬 */}
           {passiveImageUrl && (
-            <div className="spell-item" onClick={() => handleImageClick("P")}>
+            <div
+              className={`spell-item ${
+                selectedSpellType === "P" ? "selected-spell" : ""
+              }`}
+              onClick={() => handleImageClick("P")}
+            >
               <img src={passiveImageUrl} alt="Passive" />
             </div>
           )}
@@ -98,7 +127,9 @@ export default function InfoModal({
             return (
               <div
                 key={spell.id}
-                className="spell-item"
+                className={`spell-item ${
+                  selectedSpellType === spellType ? "selected-spell" : ""
+                }`}
                 onClick={() => handleImageClick(spellType)}
               >
                 <img
@@ -125,8 +156,10 @@ export default function InfoModal({
             </div>
           </div>
         )}
-        <button onClick={onClose}>닫기</button>
       </div>
+      <button className="close-btn" onClick={onClose}>
+        <XmarkIcon />
+      </button>
     </div>
   );
 }
