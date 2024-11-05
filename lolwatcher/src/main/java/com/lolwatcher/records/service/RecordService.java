@@ -21,7 +21,7 @@ public class RecordService {
     // Redis에서 사용할 사용자 갱신 토큰의 키 접두사
     private static final String TOKEN_KEY_PREFIX = "user:update:";
     // 갱신 제한 시간 (분 단위)
-    private static final int COOLDOWN_MINUTES = 20;
+    private static final int COOLDOWN_MINUTES = 2;
 
     /**
      * 유저의 전적을 갱신하는 메소드
@@ -43,7 +43,7 @@ public class RecordService {
         // 이미 토큰이 있다면 (아직 제한 시간이 지나지 않은 경우)
         if (Boolean.FALSE.equals(wasSet)) {
             // 남은 제한 시간 확인
-            Long remainingTime = stringRedisTemplate.getExpire(tokenKey, TimeUnit.MINUTES);
+            int remainingTime = stringRedisTemplate.getExpire(tokenKey, TimeUnit.MINUTES).intValue();
             throw new TooManyReqeustsException("전적은 20분에 한 번만 갱신할 수 있습니다.");
         }
 
@@ -51,7 +51,7 @@ public class RecordService {
             // 실제 전적 갱신 수행
             performRecordUpdate(userId);
             // 갱신 성공시 메시지와 다음 갱신까지 대기 시간 반환
-            return new RecordRes("전적이 성공적으로 갱신되었습니다.", (long) COOLDOWN_MINUTES);
+            return new RecordRes(COOLDOWN_MINUTES);
         } catch (Exception e) {
             // 갱신 실패시 제한 토큰 삭제 (재시도 가능하도록)
             stringRedisTemplate.delete(tokenKey);
@@ -66,6 +66,6 @@ public class RecordService {
      * @param userId 전적을 갱신할 유저의 ID
      */
     private void performRecordUpdate(Long userId) {
-        // 여기에 실제 전적 갱신 로직 구현
+        // Todo: 여기에 전적 갱신 로직 구현
     }
 }
