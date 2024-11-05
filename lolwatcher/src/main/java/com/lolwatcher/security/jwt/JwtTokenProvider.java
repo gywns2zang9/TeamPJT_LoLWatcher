@@ -1,10 +1,10 @@
 package com.lolwatcher.security.jwt;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import com.lolwatcher.security.exception.InvalidTokenException;
+import com.lolwatcher.security.exception.TokenExpiredException;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -108,17 +108,20 @@ public class JwtTokenProvider {
 
     // JWT 토큰의 유효성을 검증하는 메소드
     public boolean validateToken(String token) {
-        System.out.println("process 8 - provider calidateToken");
+        System.out.println("process 8 - provider validateToken");
         try {
             // 비밀 키를 사용하여 토큰을 파싱하고 유효성 검증
             Jwts.parser()
-                .setSigningKey(secretKey)
-                .build()
-                .parseClaimsJws(token);
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(token);
             return true;  // 토큰이 유효하면 true 반환
-        }catch (JwtException | IllegalArgumentException e) {
-            // 토큰이 유효하지 않거나 만료된 경우 예외 처리
-            throw new IllegalArgumentException("Expired or invalid JWT token");  // 커스텀 예외 처리 가능
+        } catch (ExpiredJwtException e) {
+            // 토큰이 만료된 경우 커스텀 예외 처리
+            throw new TokenExpiredException("JWT token has expired", e);
+        } catch (JwtException | IllegalArgumentException e) {
+            // 토큰이 유효하지 않은 경우 커스텀 예외 처리
+            throw new InvalidTokenException("JWT token is invalid", e);
         }
     }
 
@@ -154,5 +157,18 @@ public class JwtTokenProvider {
         }
         return null;
     }
+    public String resolveRefreshToken(HttpServletRequest request) {
+        // 예시: Refresh Token이 HttpOnly 쿠키에 저장된 경우
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("refreshToken".equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
+            }
+        }
+        return null;
+    }
+
 
 }
