@@ -90,7 +90,10 @@ public CorsConfigurationSource corsConfigurationSource() {
     configuration.setAllowedOrigins(Arrays.asList(
             domain, // 도메인 주소
             "http://" + ec2Ip + ":" + frontPort, // EC2 IP 주소와 포트 조합
-            "https://" + ec2Ip + ":" + frontPort // EC2 IP 주소와 포트 조합
+            "https://" + ec2Ip + ":" + frontPort, // EC2 IP 주소와 포트 조합
+            "http://localhost:3000", // 로컬 개발 환경의 주소 (React 테스트)
+            "http://127.0.0.1:3000"  // 로컬 개발 환경의 주소 (React 테스트)
+
     ));
 
     // 허용할 HTTP 메서드 설정
