@@ -49,8 +49,8 @@
 }
 
 .spell-item img {
-  width: 30px;
-  height: 30px;
+  width: 42px;
+  height: 42px;
 }
 
 .spell-item h4 {
@@ -61,4 +61,10 @@
 .spell-item p {
   font-size: 12px;
   text-align: center;
+}
+
+.spell-video {
+  width: 300px; /* 원하는 너비 */
+  height: 200px; /* 원하는 높이 */
+  object-fit: cover; /* 비디오가 영역에 맞도록 자르기 */
 }
