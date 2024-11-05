@@ -3,7 +3,11 @@ import axios from "axios";
 import "./InfoModal.css";
 
 interface InfoModalProps {
+  championId: string;
+  championKey: string;
   championName: string;
+  championTitle: string;
+  championBlurb: string;
   onClose: () => void;
 }
 
@@ -13,10 +17,16 @@ interface Spell {
   description: string;
 }
 
-export default function InfoModal({ championName, onClose }: InfoModalProps) {
+export default function InfoModal({
+  championId,
+  championKey,
+  championName,
+  championTitle,
+  championBlurb,
+  onClose
+}: InfoModalProps) {
   const CHAMPION_BACKGROUND_IMG_BASE_URL =
     "https://ddragon.leagueoflegends.com/cdn/img/champion/loading/"; // centered or splash or loading
-  const CHAMPION_DATA_URL = `https://ddragon.leagueoflegends.com/cdn/14.21.1/data/en_US/champion/${championName}.json`;
   const PASSIVE_IMG_BASE_URL =
     "https://ddragon.leagueoflegends.com/cdn/14.21.1/img/passive/"; //Passive
   const SPELL_IMG_BASE_URL =
@@ -28,8 +38,9 @@ export default function InfoModal({ championName, onClose }: InfoModalProps) {
   useEffect(() => {
     const fetchChampionData = async () => {
       try {
-        const response = await axios.get(CHAMPION_DATA_URL);
-        const championData = response.data.data[championName];
+        const url = `https://ddragon.leagueoflegends.com/cdn/14.21.1/data/ko_KR/champion/${championId}.json`;
+        const response = await axios.get(url);
+        const championData = response.data.data[championId];
         const spellsData = championData.spells.map((spell: any) => ({
           id: spell.id,
           name: spell.name,
@@ -41,23 +52,24 @@ export default function InfoModal({ championName, onClose }: InfoModalProps) {
           `${PASSIVE_IMG_BASE_URL}${championData.passive.image.full}`
         );
       } catch (error) {
-        console.error("Error fetching champion data:", error);
+        console.error(error);
       }
     };
 
     fetchChampionData();
-  }, [championName]);
+  }, [championId]);
 
   return (
     <div
       className="info-container"
       style={{
-        backgroundImage: `url(${CHAMPION_BACKGROUND_IMG_BASE_URL}${championName}_0.jpg)`
+        backgroundImage: `url(${CHAMPION_BACKGROUND_IMG_BASE_URL}${championId}_0.jpg)`
       }}
     >
       <div className="info-content">
         <h2>{championName}</h2>
-        <p>챔피언에 대한 추가 정보를 여기에 표시합니다.</p>
+        <h3>{championTitle}</h3>
+        <p>{championBlurb}</p>
 
         <div className="spells-container">
           {passiveImageUrl && (
