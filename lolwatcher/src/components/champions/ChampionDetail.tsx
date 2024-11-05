@@ -39,7 +39,18 @@ export default function ChampionDetail({
   const [selectedSpellType, setSelectedSpellType] = useState<string | null>(
     null
   );
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    setLoading(true);
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 200);
+
+    return () => clearTimeout(timer);
+  }, [championId, championKey]);
+
+  // 챔피언 데이터 가져오기
   useEffect(() => {
     const fetchChampionData = async () => {
       try {
@@ -76,6 +87,16 @@ export default function ChampionDetail({
     setSelectedVideoUrl(videoUrl);
     setSelectedSpellType(spellType); // 선택된 스킬 타입 설정
   };
+
+  if (loading) {
+    return (
+      <div className="info-container">
+        <div className="loading-spinner">
+          <div className="spinner"></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
