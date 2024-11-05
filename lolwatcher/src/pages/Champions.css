@@ -6,6 +6,7 @@
   width: 100vw;
   height: 100vh;
   overflow: hidden;
+  background-color: rgba(255, 255, 255, 0.4); /* 반투명 오버레이 */
 }
 
 .champion-list {
@@ -32,8 +33,8 @@
 }
 
 .champion-item img {
-  width: 60px;
-  height: 60px;
+  width: 72px;
+  height: 72px;
   object-fit: cover;
   border: 1px solid gold;
   border-radius: 12px;
@@ -41,7 +42,7 @@
   filter: grayscale(100%);
 }
 
-.champion-item img:hover {
+.champion-item:hover img {
   filter: grayscale(0%);
 }
 
@@ -51,9 +52,13 @@
 
 .champion-item p {
   margin-top: 8px;
-  font-size: 12px;
+  font-size: 16px;
   font-weight: bold;
   color: white;
+}
+
+.champion-item:hover p {
+  color: gold;
 }
 
 .champion-item.selected p {
