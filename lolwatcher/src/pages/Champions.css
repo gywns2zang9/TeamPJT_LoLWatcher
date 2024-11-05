@@ -55,3 +55,7 @@
   font-weight: bold;
   color: white;
 }
+
+.champion-item.selected p {
+  color: gold;
+}

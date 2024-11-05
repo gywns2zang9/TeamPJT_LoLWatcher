@@ -25,7 +25,7 @@
   border: 5px solid rgba(255, 255, 255, 0.3);
   border-top: 5px solid #fff;
   border-radius: 50%;
-  animation: spin 1s linear infinite;
+  animation: spin 0.5s linear infinite;
 }
 
 @keyframes spin {
@@ -95,7 +95,8 @@
 }
 
 .spell-video {
-  width: 100%;
+  width: 90%;
+  margin: auto;
   object-fit: cover;
 }
 

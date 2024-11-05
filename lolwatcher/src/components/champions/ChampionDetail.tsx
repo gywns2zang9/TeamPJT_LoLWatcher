@@ -36,16 +36,14 @@ export default function ChampionDetail({
   const [spells, setSpells] = useState<Spell[]>([]);
   const [passiveImageUrl, setPassiveImageUrl] = useState<string | null>(null);
   const [selectedVideoUrl, setSelectedVideoUrl] = useState<string | null>(null);
-  const [selectedSpellType, setSelectedSpellType] = useState<string | null>(
-    null
-  );
+  const [selectedSpellType, setSelectedSpellType] = useState<string>("P");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setLoading(true);
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 200);
+    }, 300);
 
     return () => clearTimeout(timer);
   }, [championId, championKey]);
@@ -70,6 +68,7 @@ export default function ChampionDetail({
         const paddedChampionKey = championKey.padStart(4, "0");
         const initialVideoUrl = `https://d28xe8vt774jo5.cloudfront.net/champion-abilities/${paddedChampionKey}/ability_${paddedChampionKey}_P1.webm`;
         setSelectedVideoUrl(initialVideoUrl);
+        setSelectedSpellType("P");
       } catch (error) {
         console.error(error);
       }
