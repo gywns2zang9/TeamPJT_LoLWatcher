@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import InfoModal from "../components/champions/InfoModal";
+import ChampionDetail from "../components/champions/ChampionDetail";
 import "./Champions.css";
 
 interface Champion {
@@ -46,10 +46,14 @@ export default function Champions() {
   }, []);
 
   const handleChampionClick = (champion: Champion) => {
-    setSelectedChampion(champion);
+    if (selectedChampion?.id === champion.id) {
+      setSelectedChampion(null);
+    } else {
+      setSelectedChampion(champion);
+    }
   };
 
-  const closeModal = () => {
+  const handleClose = () => {
     setSelectedChampion(null);
   };
 
@@ -59,7 +63,9 @@ export default function Champions() {
         {champions.map((champion, index) => (
           <div
             key={index}
-            className="champion-item"
+            className={`champion-item ${
+              selectedChampion?.id === champion.id ? "selected" : ""
+            }`}
             onClick={() => handleChampionClick(champion)}
           >
             <img
@@ -71,14 +77,16 @@ export default function Champions() {
         ))}
       </div>
       {selectedChampion && (
-        <InfoModal
-          championId={selectedChampion.id}
-          championName={selectedChampion.name}
-          championKey={selectedChampion.key}
-          championTitle={selectedChampion.title}
-          championBlurb={selectedChampion.blurb}
-          onClose={closeModal}
-        />
+        <div className="champion-details">
+          <ChampionDetail
+            championId={selectedChampion.id}
+            championName={selectedChampion.name}
+            championKey={selectedChampion.key}
+            championTitle={selectedChampion.title}
+            championBlurb={selectedChampion.blurb}
+            onClose={handleClose}
+          />
+        </div>
       )}
     </div>
   );
