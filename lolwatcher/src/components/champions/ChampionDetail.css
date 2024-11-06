@@ -7,7 +7,7 @@
   flex-direction: column;
   justify-content: space-between;
   overflow: hidden;
-  padding: 5% 0;
+  padding: 5%;
   width: 100%;
 }
 
@@ -19,7 +19,7 @@
 }
 
 .spinner {
-  margin-top: 50%; /* 스피너 아래로 내리기 */
+  margin-top: 50%;
   width: 50px;
   height: 50px;
   border: 5px solid rgba(255, 255, 255, 0.3);
@@ -37,34 +37,42 @@
   }
 }
 
+.close-btn {
+  width: 50px;
+  position: absolute;
+  top: 5%;
+  right: 5%;
+  background: none;
+  border: none;
+}
+
 .info-content {
-  background: rgba(0, 0, 0, 0.4); /* 어두운 반투명 배경 */
+  margin: 5% 0;
+  height: 90%;
+  background: rgba(0, 0, 0, 0.4);
+  color: wheat;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  text-align: center;
 }
 
-.info-content h2 {
+.info-name {
   margin: 2% 0;
   padding: 0;
+  font-size: 30px;
+  cursor: zoom-in;
+  text-decoration: underline;
 }
 
-.info-content h3 {
+.info-title {
   margin: 2% 0;
   padding: 0;
-}
-
-.info-content h4 {
-  margin: 0;
-  padding: 0 5%;
+  font-size: 20px;
 }
 
 .spells-container {
-  width: 100%;
-  margin: 5% 0;
-  padding: 0 5%;
+  width: 90%;
+  margin: 2% 0;
   display: flex;
   justify-content: center;
 }
@@ -74,7 +82,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 50px;
 }
 
 .spell-item img {
@@ -82,7 +89,8 @@
   height: 40px;
   border-radius: 50%;
   border: 1px solid #ddd;
-  transition: transform 0.3s ease;
+  transition: transform 0.2s ease;
+  cursor: url("../../assets/cursor/hover-cursor.png"), pointer;
 }
 
 .spell-item img:hover {
@@ -96,15 +104,15 @@
 
 .spell-video {
   width: 90%;
-  margin: auto;
+  margin: 2% auto;
   object-fit: cover;
+  cursor: url("../../assets/cursor/hover-cursor.png"), pointer;
 }
 
-.close-btn {
-  width: 40px;
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  background: none;
-  border: none;
+.item-description {
+  margin: 2%;
+  padding: 0 5%;
+  overflow-y: auto;
+  scrollbar-width: none;
+  cursor: grab;
 }
