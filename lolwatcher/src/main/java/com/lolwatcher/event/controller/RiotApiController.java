@@ -6,6 +6,7 @@ import com.lolwatcher.event.dto.record.RecordDto;
 import com.lolwatcher.event.dto.timeline.TimelineDto;
 import com.lolwatcher.event.service.RiotApiService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/riot")
 @RequiredArgsConstructor
+@Slf4j
 public class RiotApiController {
 
     private final RiotApiService riotApiService;
@@ -49,9 +51,8 @@ public class RiotApiController {
 
     @GetMapping("/info")
     public List<RecordDto> getMatchBySummoner(@RequestParam("name") String name, @RequestParam("tag") String tag) {
+        log.info("info : 전적 조회 \n name:{} tag:{}", name, tag);
         return riotApiService.getMatchDataBySummoner(name, tag);
     }
-
-
 
 }

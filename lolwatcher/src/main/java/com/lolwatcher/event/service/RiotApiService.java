@@ -10,6 +10,7 @@ import com.lolwatcher.event.dto.record.RecordGameInfoDto;
 import com.lolwatcher.event.dto.record.RecordUserDto;
 import com.lolwatcher.event.dto.timeline.TimelineDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class RiotApiService {
 
     private final RiotApiClient riotApiClient;
@@ -45,7 +47,10 @@ public class RiotApiService {
 
     public List<RecordDto> getMatchDataBySummoner(String name, String tag) {
         String puuid = riotApiClient.getSummonerRequest(name, tag).puuid();
+        log.info("puuid: {}", puuid);
         List<String> matchIds = riotApiClient.getMatchIds(puuid);
+        // TODO: LIST id를 기반으로 데이터 베이스 확인 후 없는 데이터들만
+
         List<MatchDto> lists = new ArrayList<>();
         for(int i = 0 ; i < 5; i++) {
             lists.add(riotApiClient.getMatchData(matchIds.get(i)));
