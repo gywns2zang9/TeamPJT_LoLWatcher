@@ -37,16 +37,8 @@
   }
 }
 
-.close-btn {
-  width: 50px;
-  position: absolute;
-  top: 5%;
-  right: 5%;
-  background: none;
-  border: none;
-}
-
 .info-content {
+  position: relative;
   margin: 5% 0;
   height: 90%;
   background: rgba(0, 0, 0, 0.4);
@@ -54,6 +46,34 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.eye-btn {
+  margin: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 40px;
+  height: 40px;
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-btn {
+  margin: 0;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 40px;
+  height: 40px;
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .info-name {
@@ -123,12 +143,12 @@
   width: 90%;
   display: flex;
   justify-content: center;
-  gap: 12px;
+  gap: 5px;
 }
 
 .skin-dot {
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
   background-color: white;
   border-radius: 50%;
   cursor: url("../../assets/cursor/hover-cursor.png"), pointer;

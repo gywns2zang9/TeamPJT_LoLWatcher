@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./ChampionDetail.css";
 import XmarkIcon from "../common/XmarkIcon";
+import EyeSlashIcon from "../common/EyeSlashIcon";
 
 interface ChampionDetaillProps {
   championId: string; //"Garen"
@@ -41,6 +42,7 @@ export default function ChampionDetail({
     "https://ddragon.leagueoflegends.com/cdn/14.21.1/img/spell/"; //Skills
 
   const [loading, setLoading] = useState(true);
+  const [showContent, setShowContent] = useState(true);
   const [champion, setChampion] = useState<ChampionData | null>(null);
   const [selectedTitle, setSelectedTitle] = useState<string>("");
   const [selectedDescription, setSelectedDescription] = useState<string>("");
@@ -113,6 +115,10 @@ export default function ChampionDetail({
     fetchSkinData();
   }, [championId]);
 
+  const toggleShow = () => {
+    setShowContent((prev) => !prev);
+  };
+
   const handleNameClick = () => {
     if (champion) {
       setSelectedTitle(champion.title);
@@ -135,7 +141,8 @@ export default function ChampionDetail({
     setSelectedDescription(spellDescription);
   };
 
-  const handleSkinChange = (index: number) => {
+  const handleSkinChange = (event: React.MouseEvent, index: number) => {
+    event.stopPropagation();
     setSelectedSkinIndex(index);
   };
 
@@ -154,81 +161,87 @@ export default function ChampionDetail({
   return (
     <div
       className="info-container"
+      onClick={() => !showContent && toggleShow()}
       style={{
         backgroundImage: `url(${CHAMPION_BACKGROUND_IMG_BASE_URL}${championId}_${selectedSkin?.num}.jpg)`
       }}
     >
-      <button className="close-btn" onClick={onClose}>
-        <XmarkIcon />
-      </button>
-      <div className="info-content">
-        <h2 className="info-name" onClick={handleNameClick}>
-          {selectedSkin?.name || championName}
-          {/* {championName} */}
-        </h2>
-        <h3 className="info-title">{selectedTitle}</h3>
-        <div className="spells-container">
-          {/* Passive 스킬 */}
-          {passiveImageUrl && (
-            <div
-              className={`spell-item ${
-                selectedSpellType === "P" ? "selected-spell" : ""
-              }`}
-              onClick={() =>
-                handleImageClick("P", spells[0].name, spells[0].description)
-              }
-            >
-              <img src={passiveImageUrl} alt="Passive" />
-            </div>
-          )}
-          {/* Q, W, E, R 스킬 */}
-          {spells.slice(1).map((spell, index) => {
-            const spellType = ["Q", "W", "E", "R"][index];
-            return (
+      {showContent && (
+        <div className="info-content">
+          <button className="eye-btn" onClick={toggleShow}>
+            <EyeSlashIcon />
+          </button>
+          <button className="close-btn" onClick={onClose}>
+            <XmarkIcon />
+          </button>
+          <h2 className="info-name" onClick={handleNameClick}>
+            {/* {championName} */}
+            {selectedSkin?.name || championName}
+          </h2>
+          <h3 className="info-title">{selectedTitle}</h3>
+          <div className="spells-container">
+            {/* Passive 스킬 */}
+            {passiveImageUrl && (
               <div
-                key={spell.id}
                 className={`spell-item ${
-                  selectedSpellType === spellType ? "selected-spell" : ""
+                  selectedSpellType === "P" ? "selected-spell" : ""
                 }`}
                 onClick={() =>
-                  handleImageClick(spellType, spell.name, spell.description)
+                  handleImageClick("P", spells[0].name, spells[0].description)
                 }
               >
-                <img
-                  src={`${SPELL_IMG_BASE_URL}${spell.id}.png`}
-                  alt={spell.name}
+                <img src={passiveImageUrl} alt="Passive" />
+              </div>
+            )}
+            {/* Q, W, E, R 스킬 */}
+            {spells.slice(1).map((spell, index) => {
+              const spellType = ["Q", "W", "E", "R"][index];
+              return (
+                <div
+                  key={spell.id}
+                  className={`spell-item ${
+                    selectedSpellType === spellType ? "selected-spell" : ""
+                  }`}
+                  onClick={() =>
+                    handleImageClick(spellType, spell.name, spell.description)
+                  }
+                >
+                  <img
+                    src={`${SPELL_IMG_BASE_URL}${spell.id}.png`}
+                    alt={spell.name}
+                  />
+                </div>
+              );
+            })}
+          </div>
+          {selectedVideoUrl && (
+            <div className="video-modal">
+              <div className="video-content">
+                <video
+                  src={selectedVideoUrl}
+                  autoPlay
+                  controls
+                  className="spell-video"
                 />
               </div>
-            );
-          })}
-        </div>
-        {selectedVideoUrl && (
-          <div className="video-modal">
-            <div className="video-content">
-              <video
-                src={selectedVideoUrl}
-                autoPlay
-                controls
-                className="spell-video"
-              />
             </div>
-          </div>
-        )}
-        <p
-          className="item-description"
-          dangerouslySetInnerHTML={{ __html: selectedDescription }}
-        ></p>
-      </div>
+          )}
+          <p
+            className="item-description"
+            dangerouslySetInnerHTML={{ __html: selectedDescription }}
+          ></p>
+        </div>
+      )}
 
       {/* Skin Selector Dots */}
       <div className="skin-selector">
-        {skins.map((_, index) => (
+        {skins.map((skin, index) => (
           <span
             key={index}
             className={`skin-dot ${
               selectedSkinIndex === index ? "active" : ""
             }`}
-            onClick={() => handleSkinChange(index)}
+            onClick={(event) => handleSkinChange(event, index)}
           ></span>
         ))}
       </div>
