@@ -11,8 +11,8 @@ export default function GameRecord() {
   return (
     <div className="container">
       <div className="link">
-      <NavLink to="/champions">챔피언 정보</NavLink>
-      <NavLink to="/login">로그인</NavLink>
+        <NavLink to="/champions">챔피언 정보</NavLink>
+        <NavLink to="/logout">로그아웃</NavLink>
       </div>
       <Header />
       <div className="record-container">
