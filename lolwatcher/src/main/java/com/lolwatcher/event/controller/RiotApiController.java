@@ -2,6 +2,7 @@ package com.lolwatcher.event.controller;
 
 import com.lolwatcher.event.dto.AccountDto;
 import com.lolwatcher.event.dto.match.MatchDto;
+import com.lolwatcher.event.dto.match.info.InfoDto;
 import com.lolwatcher.event.dto.timeline.TimelineDto;
 import com.lolwatcher.event.service.RiotApiService;
 import lombok.RequiredArgsConstructor;
@@ -51,6 +52,10 @@ public class RiotApiController {
         return riotApiService.getMatchDataBySummoner(name, tag);
     }
 
-
+    // Todo : 제대로 동작하는지 확인
+    @GetMapping("/match/players")
+    public InfoDto getMatchPlayersInfo(@RequestParam("match") String matchId) {
+        return riotApiService.getMatchPlayersInfo(matchId);
+    }
 
 }
