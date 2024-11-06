@@ -17,7 +17,7 @@ public class RecordController {
     private final RecordService recordService;
 
     @GetMapping
-    public ResponseEntity<RecordRes> getRecords(@RequestParam Long userId) {
-        return ResponseEntity.ok(recordService.updateRecords(userId));
+    public ResponseEntity<RecordRes> updateRecords(@RequestParam("name") String name, @RequestParam("tag") String tag) {
+        return ResponseEntity.ok(recordService.updateRecords(name, tag));
     }
 }
