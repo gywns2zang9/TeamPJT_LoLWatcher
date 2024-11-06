@@ -48,6 +48,7 @@ public class RiotApiService {
     public List<RecordDto> getMatchDataBySummoner(String name, String tag) {
         String puuid = riotApiClient.getSummonerRequest(name, tag).puuid();
         log.info("puuid: {}", puuid);
+        System.out.println("puuid: " + puuid);
         List<String> matchIds = riotApiClient.getMatchIds(puuid);
         // TODO: LIST id를 기반으로 데이터 베이스 확인 후 없는 데이터들만
 
