@@ -116,3 +116,24 @@
   overflow-y: auto;
   scrollbar-width: none;
 }
+
+.skin-selector {
+  position: absolute;
+  bottom: 5%;
+  width: 90%;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.skin-dot {
+  width: 12px;
+  height: 12px;
+  background-color: white;
+  border-radius: 50%;
+  cursor: url("../../assets/cursor/hover-cursor.png"), pointer;
+}
+
+.skin-dot.active {
+  background-color: red;
+}

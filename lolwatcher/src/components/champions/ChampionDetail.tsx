@@ -21,6 +21,12 @@ interface Spell {
   description: string; //"가렌의 이동 속도가 큰 폭으로 증가하고..."
 }
 
+interface Skin {
+  id: string;
+  num: number;
+  name: string;
+}
+
 export default function ChampionDetail({
   championId,
   championKey,
@@ -44,29 +50,19 @@ export default function ChampionDetail({
     null
   );
   const [selectedVideoUrl, setSelectedVideoUrl] = useState<string | null>(null);
+  const [skins, setSkins] = useState<Skin[]>([]);
+  const [selectedSkinIndex, setSelectedSkinIndex] = useState<number>(0);
 
   useEffect(() => {
     setLoading(true);
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 300);
-    return () => clearTimeout(timer);
-  }, [championId, championKey]);
-
-  useEffect(() => {
     const fetchChampionData = async () => {
       try {
-        // 챔피언 정보 가져오기
         const url = `https://ddragon.leagueoflegends.com/cdn/14.21.1/data/ko_KR/champion/${championId}.json`;
         const response = await axios.get(url);
         const championData = response.data.data[championId];
-        const championInfo = {
-          title: championData.title,
-          lore: championData.lore
-        };
-        setChampion(championInfo);
-        setSelectedTitle(championInfo.title);
-        setSelectedDescription(championInfo.lore);
+        setChampion({ title: championData.title, lore: championData.lore });
+        setSelectedTitle(championData.title);
+        setSelectedDescription(championData.lore);
 
         const passiveData = {
           id: "passive",
@@ -87,11 +83,35 @@ export default function ChampionDetail({
         setSelectedVideoUrl(null);
       } catch (error) {
         console.error(error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchChampionData();
-  }, [championId, championKey]);
+  }, [championId]);
+
+  useEffect(() => {
+    const fetchSkinData = async () => {
+      try {
+        const url = `https://ddragon.leagueoflegends.com/cdn/14.21.1/data/ko_KR/champion/${championId}.json`;
+        const response = await axios.get(url);
+        const championData = response.data.data[championId];
+
+        const skinsData = championData.skins.map((skin: any) => ({
+          id: skin.id,
+          num: skin.num,
+          name: skin.name === "default" ? championName : skin.name
+        }));
+        setSkins(skinsData);
+        setSelectedSkinIndex(0);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchSkinData();
+  }, [championId]);
 
   const handleNameClick = () => {
     if (champion) {
@@ -115,6 +135,12 @@ export default function ChampionDetail({
     setSelectedDescription(spellDescription);
   };
 
+  const handleSkinChange = (index: number) => {
+    setSelectedSkinIndex(index);
+  };
+
+  const selectedSkin = skins[selectedSkinIndex];
+
   if (loading) {
     return (
       <div className="info-container">
@@ -129,7 +155,7 @@ export default function ChampionDetail({
     <div
       className="info-container"
       style={{
-        backgroundImage: `url(${CHAMPION_BACKGROUND_IMG_BASE_URL}${championId}_0.jpg)`
+        backgroundImage: `url(${CHAMPION_BACKGROUND_IMG_BASE_URL}${championId}_${selectedSkin?.num}.jpg)`
       }}
     >
       <button className="close-btn" onClick={onClose}>
@@ -137,7 +163,8 @@ export default function ChampionDetail({
       </button>
       <div className="info-content">
         <h2 className="info-name" onClick={handleNameClick}>
-          {championName}
+          {selectedSkin?.name || championName}
+          {/* {championName} */}
         </h2>
         <h3 className="info-title">{selectedTitle}</h3>
         <div className="spells-container">
@@ -191,6 +218,19 @@ export default function ChampionDetail({
           className="item-description"
           dangerouslySetInnerHTML={{ __html: selectedDescription }}
         ></p>
+      </div>
+
+      {/* Skin Selector Dots */}
+      <div className="skin-selector">
+        {skins.map((_, index) => (
+          <span
+            key={index}
+            className={`skin-dot ${
+              selectedSkinIndex === index ? "active" : ""
+            }`}
+            onClick={() => handleSkinChange(index)}
+          ></span>
+        ))}
       </div>
     </div>
   );

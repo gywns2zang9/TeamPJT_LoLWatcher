@@ -1,14 +1,14 @@
 .container {
   text-align: center;
   width: 100%;
-  height:80%;
+  height: 80%;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
 .insert-container {
-  width: 60%;
+  width: 100%;
   height: 100%;
   flex-direction: column;
 }
@@ -45,7 +45,7 @@
   font-weight: bold;
 }
 
-.login-button:hover{
+.login-button:hover {
   background-color: gray;
 }
 
