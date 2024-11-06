@@ -124,11 +124,14 @@ export default function ChampionDetail({
         backgroundImage: `url(${CHAMPION_BACKGROUND_IMG_BASE_URL}${championId}_0.jpg)`
       }}
     >
+      <button className="close-btn" onClick={onClose}>
+        <XmarkIcon />
+      </button>
       <div className="info-content">
-        <h2 onClick={handleNameClick}>{championName}</h2>
-        <h3>{selectedTitle}</h3>
-        <h4>{selectedDescription}</h4>
-
+        <h2 className="info-name" onClick={handleNameClick}>
+          {championName}
+        </h2>
+        <h3 className="info-title">{selectedTitle}</h3>
         <div className="spells-container">
           {/* Passive 스킬 */}
           {passiveImageUrl && (
@@ -164,7 +167,6 @@ export default function ChampionDetail({
             );
           })}
         </div>
-
         {selectedVideoUrl && (
           <div className="video-modal">
             <div className="video-content">
@@ -177,10 +179,11 @@ export default function ChampionDetail({
             </div>
           </div>
         )}
+        <p
+          className="item-description"
+          dangerouslySetInnerHTML={{ __html: selectedDescription }}
+        ></p>
       </div>
-      <button className="close-btn" onClick={onClose}>
-        <XmarkIcon />
-      </button>
     </div>
   );
 }
