@@ -26,11 +26,12 @@ public class CustomUserDetailsService implements org.springframework.security.co
         return new CustomUserDetails(user);
     }
 
-    public UserDetails loadUserById(Long userId) {
+    public UserDetails loadUserById(Long id) {
         System.out.println("CustomUserDetailsService 클래스의 loadUserById 메서드. 유효한 jwt라면 유저 정보를 ㅡ로드");
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with id: " + userId));
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with id: " + id));
         return new CustomUserDetails(user);
     }
+
 }

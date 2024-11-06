@@ -51,7 +51,7 @@ public class AuthService {
         userRepository.save(user);
     }
 
-    
+
     //추후 RSO 연동시 연동된 데이터도 가져오도록 수정
     // 로그인 시 Access Token과 Refresh Token 생성 후 Redis에 Refresh Token 저장
 //    public Map<String, String> login(LoginRequestDto loginRequestDto) {
@@ -90,8 +90,8 @@ public class AuthService {
         }
 
         // 액세스 토큰과 리프레시 토큰 생성
-        String accessToken = jwtTokenProvider.createAccessToken(user.getUserId());
-        String refreshToken = jwtTokenProvider.createRefreshToken(user.getUserId());
+        String accessToken = jwtTokenProvider.createAccessToken(user.getId());
+        String refreshToken = jwtTokenProvider.createRefreshToken(user.getId());
 
         // Redis에 리프레시 토큰 저장
         redisTemplate.opsForValue().set(user.getUserId(), refreshToken, Duration.ofMillis(jwtTokenProvider.getRefreshTokenValidity()));
@@ -102,6 +102,8 @@ public class AuthService {
         refreshTokenCookie.setSecure(true); // HTTPS에서만 전송
         refreshTokenCookie.setPath("/");
         refreshTokenCookie.setMaxAge((int) (jwtTokenProvider.getRefreshTokenValidity() / 1000)); // 초 단위로 설정
+
+
         response.addCookie(refreshTokenCookie);
 
         // 액세스 토큰만 맵에 담아 반환
@@ -120,16 +122,16 @@ public class AuthService {
         }
 
         // 리프레시 토큰에서 사용자 이름을 추출 - 질문: jwtTokenProvider에 getUserName이 없는데
-        String username = jwtTokenProvider.getUserName(refreshToken);
+        Long id = jwtTokenProvider.getId(refreshToken);
 
         // Redis에 저장된 Refresh Token과 비교
-        String storedRefreshToken = redisTemplate.opsForValue().get(username);
+        String storedRefreshToken = redisTemplate.opsForValue().get(id);
         if (storedRefreshToken == null || !storedRefreshToken.equals(refreshToken)) {
             throw new IllegalArgumentException("Refresh token does not match stored token");
         }
 
         // 새로운 액세스 토큰 생성
-        String newAccessToken = jwtTokenProvider.createAccessToken(username);
+        String newAccessToken = jwtTokenProvider.createAccessToken(id);
 
         Map<String, String> tokens = new HashMap<>();
         tokens.put("accessToken", newAccessToken);
