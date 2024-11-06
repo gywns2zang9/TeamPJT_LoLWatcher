@@ -57,6 +57,14 @@ export default function ChampionDetail({
 
   useEffect(() => {
     setLoading(true);
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 200);
+
+    return () => clearTimeout(timer);
+  }, [championId, championKey]);
+
+  useEffect(() => {
     const fetchChampionData = async () => {
       try {
         const url = `https://ddragon.leagueoflegends.com/cdn/14.21.1/data/ko_KR/champion/${championId}.json`;
@@ -85,8 +93,6 @@ export default function ChampionDetail({
         setSelectedVideoUrl(null);
       } catch (error) {
         console.error(error);
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -113,6 +119,10 @@ export default function ChampionDetail({
     };
 
     fetchSkinData();
+  }, [championId, championName]);
+
+  useEffect(() => {
+    setShowContent(true);
   }, [championId]);
 
   const toggleShow = () => {
@@ -143,7 +153,11 @@ export default function ChampionDetail({
 
   const handleSkinChange = (event: React.MouseEvent, index: number) => {
     event.stopPropagation();
-    setSelectedSkinIndex(index);
+    setLoading(true);
+    setTimeout(() => {
+      setSelectedSkinIndex(index);
+      setLoading(false);
+    }, 200);
   };
 
   const selectedSkin = skins[selectedSkinIndex];
@@ -167,13 +181,15 @@ export default function ChampionDetail({
       }}
     >
       {showContent && (
+        <button className="eye-btn" onClick={toggleShow}>
+          <EyeSlashIcon />
+        </button>
+      )}
+      <button className="close-btn" onClick={onClose}>
+        <XmarkIcon />
+      </button>
+      {showContent && (
         <div className="info-content">
-          <button className="eye-btn" onClick={toggleShow}>
-            <EyeSlashIcon />
-          </button>
-          <button className="close-btn" onClick={onClose}>
-            <XmarkIcon />
-          </button>
           <h2 className="info-name" onClick={handleNameClick}>
             {/* {championName} */}
             {selectedSkin?.name || championName}
@@ -232,7 +248,6 @@ export default function ChampionDetail({
           ></p>
         </div>
       )}
-
       {/* Skin Selector Dots */}
       <div className="skin-selector">
         {skins.map((skin, index) => (
