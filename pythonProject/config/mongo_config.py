@@ -1,12 +1,12 @@
 import pymongo
+import os
+from dotenv import load_dotenv
 
-def get_mongo_client():
-    client = pymongo.MongoClient("mongodb://localhost:27017/")
-    db = client['riot_data']
-    return db['match_data']  # match_data 컬렉션 반환
+load_dotenv()
 
 def get_mongo_rank(tear,division):
-    client = pymongo.MongoClient("mongodb://localhost:27017/")
-    db = client['riot_data']
+    mongo_uri = os.getenv("MONGO_URI")
+    client = pymongo.MongoClient(mongo_uri)
+    db = client[os.getenv("MONGO_DB")]
     collection_name = f"{tear}_{division}"  # 컬렉션 이름을 조합하여 생성
     return db[collection_name]
