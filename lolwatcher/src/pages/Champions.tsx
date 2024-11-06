@@ -57,6 +57,10 @@ export default function Champions() {
     setSelectedChampion(null);
   };
 
+  const openSurvey = () => {
+    window.open("https://forms.gle/vffXABi4fY7SFKbZ6", "_blank");
+  };
+
   return (
     <div className="champions-container">
       <div className="champion-list">
