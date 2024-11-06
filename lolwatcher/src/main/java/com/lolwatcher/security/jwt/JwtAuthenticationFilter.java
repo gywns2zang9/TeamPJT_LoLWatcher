@@ -66,15 +66,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     // 사용자 인증 처리 메서드
     private void handleTokenAuthentication(String token, HttpServletRequest request) {
-        Long userId = jwtTokenProvider.getUserId(token);
-        UserDetails userDetails = userCache.get(userId);
+        Long id = jwtTokenProvider.getId(token);
+        UserDetails userDetails = userCache.get(id);
 
         if (userDetails == null) {
             // 캐시에 없으면 데이터베이스에서 사용자 정보 로드
             System.out.println("사용자 캐시에 없음");
-            String username = jwtTokenProvider.getUserName(token);
-            userDetails = customUserDetailsService.loadUserByUsername(username);
-            userCache.put(userId, userDetails);
+            id = jwtTokenProvider.getId(token);
+            userDetails = customUserDetailsService.loadUserById(id);
+            userCache.put(id, userDetails);
         }
 
         // 사용자 정보를 기반으로 인증 객체 생성 및 설정
