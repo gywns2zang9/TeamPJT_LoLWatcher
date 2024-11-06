@@ -25,7 +25,7 @@
   border: 5px solid rgba(255, 255, 255, 0.3);
   border-top: 5px solid #fff;
   border-radius: 50%;
-  animation: spin 0.5s linear infinite;
+  animation: spin 0.3s linear infinite;
 }
 
 @keyframes spin {
@@ -60,7 +60,7 @@
   margin: 2% 0;
   padding: 0;
   font-size: 30px;
-  cursor: zoom-in;
+  cursor: url("../../assets/cursor/hover-cursor.png"), pointer;
   text-decoration: underline;
 }
 
@@ -112,7 +112,7 @@
 .item-description {
   margin: 2%;
   padding: 0 5%;
+  font-size: 18px;
   overflow-y: auto;
   scrollbar-width: none;
-  cursor: grab;
 }

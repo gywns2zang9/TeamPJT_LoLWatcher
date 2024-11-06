@@ -7,9 +7,12 @@ interface ChampionDetaillProps {
   championId: string; //"Garen"
   championKey: string; //"86"
   championName: string; //"가렌"
-  championTitle: string; //"데마시아의 힘"
-  championBlurb: string; //"가렌은 불굴의 선봉대를 이끄는..."
   onClose: () => void;
+}
+
+interface ChampionData {
+  title: string; //"데마시아의 힘"
+  lore: string; //"가렌은 불굴의 선봉대를 이끄는..."
 }
 
 interface Spell {
@@ -22,8 +25,6 @@ export default function ChampionDetail({
   championId,
   championKey,
   championName,
-  championTitle,
-  championBlurb,
   onClose
 }: ChampionDetaillProps) {
   const CHAMPION_BACKGROUND_IMG_BASE_URL =
@@ -34,9 +35,9 @@ export default function ChampionDetail({
     "https://ddragon.leagueoflegends.com/cdn/14.21.1/img/spell/"; //Skills
 
   const [loading, setLoading] = useState(true);
-  const [selectedTitle, setSelectedTitle] = useState<string>(championTitle);
-  const [selectedDescription, setSelectedDescription] =
-    useState<string>(championBlurb);
+  const [champion, setChampion] = useState<ChampionData | null>(null);
+  const [selectedTitle, setSelectedTitle] = useState<string>("");
+  const [selectedDescription, setSelectedDescription] = useState<string>("");
   const [passiveImageUrl, setPassiveImageUrl] = useState<string | null>(null);
   const [spells, setSpells] = useState<Spell[]>([]);
   const [selectedSpellType, setSelectedSpellType] = useState<string | null>(
@@ -55,10 +56,17 @@ export default function ChampionDetail({
   useEffect(() => {
     const fetchChampionData = async () => {
       try {
-        //챔피언 정보 가져오기
+        // 챔피언 정보 가져오기
         const url = `https://ddragon.leagueoflegends.com/cdn/14.21.1/data/ko_KR/champion/${championId}.json`;
         const response = await axios.get(url);
         const championData = response.data.data[championId];
+        const championInfo = {
+          title: championData.title,
+          lore: championData.lore
+        };
+        setChampion(championInfo);
+        setSelectedTitle(championInfo.title);
+        setSelectedDescription(championInfo.lore);
 
         const passiveData = {
           id: "passive",
@@ -75,8 +83,6 @@ export default function ChampionDetail({
         }));
         setSpells([passiveData, ...spellsData]);
 
-        setSelectedTitle(championTitle);
-        setSelectedDescription(championBlurb);
         setSelectedSpellType(null);
         setSelectedVideoUrl(null);
       } catch (error) {
@@ -85,13 +91,15 @@ export default function ChampionDetail({
     };
 
     fetchChampionData();
-  }, [championId, championKey, championTitle, championBlurb]);
+  }, [championId, championKey]);
 
   const handleNameClick = () => {
-    setSelectedTitle(championTitle);
-    setSelectedDescription(championBlurb);
-    setSelectedSpellType(null);
-    setSelectedVideoUrl(null);
+    if (champion) {
+      setSelectedTitle(champion.title);
+      setSelectedDescription(champion.lore);
+      setSelectedSpellType(null);
+      setSelectedVideoUrl(null);
+    }
   };
 
   const handleImageClick = (

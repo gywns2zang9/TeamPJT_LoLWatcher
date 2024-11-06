@@ -7,8 +7,6 @@ interface Champion {
   id: string;
   key: string;
   name: string;
-  title: string;
-  blurb: string;
 }
 
 export default function Champions() {
@@ -30,9 +28,7 @@ export default function Champions() {
         const championsArray = Object.keys(data).map((key) => ({
           id: data[key].id, //"Aatrox"
           key: data[key].key, //"266"
-          name: data[key].name, //"아트록스"
-          title: data[key].title, //"다르킨 검"
-          blurb: data[key].blurb //"한떄는 ..."
+          name: data[key].name //"아트록스"
         }));
         // 한글 이름 기준으로 정렬
         championsArray.sort((a, b) => a.name.localeCompare(b.name, "ko"));
@@ -86,8 +82,6 @@ export default function Champions() {
             championId={selectedChampion.id}
             championName={selectedChampion.name}
             championKey={selectedChampion.key}
-            championTitle={selectedChampion.title}
-            championBlurb={selectedChampion.blurb}
             onClose={handleClose}
           />
         </div>
