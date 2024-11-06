@@ -15,6 +15,7 @@
   overflow-y: auto;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  scrollbar-width: none;
 }
 
 .champion-details {
@@ -29,6 +30,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  cursor: url("../assets/cursor/hover-cursor.png"), pointer;
   text-align: center;
 }
 
@@ -38,7 +40,6 @@
   object-fit: cover;
   border: 1px solid gold;
   border-radius: 12px;
-  cursor: url("../assets/cursor/hover-cursor.png"), pointer;
   filter: grayscale(100%);
 }
 
