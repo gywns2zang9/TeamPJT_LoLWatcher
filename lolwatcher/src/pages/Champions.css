@@ -29,6 +29,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  cursor: url("../assets/cursor/hover-cursor.png"), pointer;
   text-align: center;
 }
 
@@ -38,7 +39,6 @@
   object-fit: cover;
   border: 1px solid gold;
   border-radius: 12px;
-  cursor: url("../assets/cursor/hover-cursor.png"), pointer;
   filter: grayscale(100%);
 }
 
