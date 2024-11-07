@@ -40,7 +40,8 @@ public class RecordService {
 
         Boolean wasSet = stringRedisTemplate.opsForValue()
                 .setIfAbsent(tokenKey, "active", Duration.ofMinutes(COOLDOWN_MINUTES));
-
+        
+        System.out.println(wasSet+" 토큰 확인: "+Boolean.FALSE.equals(wasSet));
         if (Boolean.FALSE.equals(wasSet)) {
             int remainingTime = stringRedisTemplate.getExpire(tokenKey, TimeUnit.MINUTES).intValue();
             throw new TooManyReqeustsException("전적은 20분에 한 번만 갱신할 수 있습니다.");
