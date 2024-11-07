@@ -3,7 +3,7 @@ import Main from "./pages/Main";
 import Login from "./pages/Login";
 import Logout from "./pages/Logout";
 import Champions from "./pages/Champions";
-import GameRecord from "./pages/GameRecord";
+import Users from "./pages/Users";
 import Regist from "./pages/Regist";
 import ResultReport from "./pages/ResultReport";
 import MyPage from "./pages/MyPage";
@@ -34,17 +34,17 @@ function App() {
       <Routes>
         <Route
           path="/"
-          element={accessToken ? <Navigate to="/records" replace /> : <Main />}
+          element={accessToken ? <Navigate to="/users" replace /> : <Main />}
         />
         <Route path="/login" element={<Login />} />
         <Route path="/logout" element={<Logout />} />
         <Route path="/champions" element={<Champions />} />
         <Route path="/regist" element={<Regist />} />
         <Route
-          path="/records"
+          path="/users"
           element={
             <PrivateRoute>
-              <GameRecord />
+              <Users />
             </PrivateRoute>
           }
         />

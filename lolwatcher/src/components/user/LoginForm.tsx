@@ -1,87 +1,81 @@
-import React, { useState } from 'react';
-import './LoginForm.css';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import "./LoginForm.css";
+import { useNavigate } from "react-router-dom";
 
 const LoginForm: React.FC = () => {
-  const [userId, setUserId] = useState('');
-  const [password, setPassword] = useState('');
+  const [userId, setUserId] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
   const handleLogin = async () => {
-    console.log('UserId:', userId);
+    console.log("UserId:", userId);
     //console.log('Password:', password);
-    console.log('---------------');
+    console.log("---------------");
     const authApiUrl = process.env.REACT_APP_AUTH_API_URL!;
     try {
       const response = await fetch(`${authApiUrl}/login`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
           userId,
-          password,
-        }),
+          password
+        })
       });
 
       if (response.ok) {
         const result = await response.json();
-        localStorage.setItem('accessToken', result.accessToken);
+        localStorage.setItem("accessToken", result.accessToken);
         //sessionStorage.setItem('refreshToken',result.refreshToken);
         clearInput();
-        console.log('로그인 성공:', result);
-        navigate('/records');
+        console.log("로그인 성공:", result);
+        navigate("/users");
       } else {
-        console.error('로그인 실패');
+        console.error("로그인 실패");
       }
     } catch (error) {
-      console.error('오류 발생:', error);
+      console.error("오류 발생:", error);
     }
   };
 
   const handleRegist = () => {
     clearInput();
-    navigate('/regist');
+    navigate("/regist");
   };
 
   const clearInput = () => {
-    setUserId('');
-    setPassword('');
+    setUserId("");
+    setPassword("");
   };
 
   return (
-    <div className='container'>
-      <div className='insert-container'>
-        <h2 className='logo'>LoLWatcher</h2>
+    <div className="container">
+      <div className="insert-container">
+        <h2 className="logo">LoLWatcher</h2>
         <div>
           <input
-            className='insert'
-            type='text'
+            className="insert"
+            type="text"
             value={userId}
             onChange={(e) => setUserId(e.target.value)}
-            placeholder='아이디'
+            placeholder="아이디"
           />
         </div>
         <div>
           <input
-            className='insert'
-            type='password'
+            className="insert"
+            type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder='비밀번호'
+            placeholder="비밀번호"
           />
         </div>
-        <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-          <button
-            className='login-button'
-            onClick={handleLogin}
-          >
+        <div style={{ display: "flex", justifyContent: "space-around" }}>
+          <button className="login-button" onClick={handleLogin}>
             로그인
           </button>
-          <button
-            className='login-button'
-            onClick={handleRegist}
-          >
+          <button className="login-button" onClick={handleRegist}>
             회원가입
           </button>
         </div>
