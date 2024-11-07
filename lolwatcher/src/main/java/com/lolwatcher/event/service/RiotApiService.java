@@ -76,4 +76,9 @@ public class RiotApiService {
         return list;
     }
 
+    // Todo : 제대로 동작하는지 확인
+    public InfoDto getMatchPlayersInfo(String matchId) {
+        MatchDto matchData = riotApiClient.getMatchData(matchId);
+        return matchData.info();
+    }
 }
