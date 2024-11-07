@@ -3,6 +3,8 @@ import axios from "axios";
 import "./GameList.css";
 import GameDetail from "./GameDetail";
 
+const CHAMPION_IMG_BASE_URL = process.env.REACT_APP_CHAMPION_IMG_BASE_URL;
+
 interface User {
   championName: string; //"Garen"
   summonerName: string; //"카림sk"
@@ -122,9 +124,12 @@ export default function GameList({ name, tag }: GameListProps) {
             </div>
             {info.mainUser && (
               <div className="item-user">
-                <p>메인 유저의 챔피언: {info.mainUser.championName}</p>
+                <img
+                  src={`${CHAMPION_IMG_BASE_URL}${info.mainUser.championName}.png`}
+                  alt={info.mainUser.championName}
+                  className="main-champion-img"
+                />
                 <p>소환사 이름: {info.mainUser.summonerName}</p>
-                <p>팀 ID: {info.mainUser.teamId}</p>
                 <p>
                   KDA: {info.mainUser.kills}/{info.mainUser.deaths}/
                   {info.mainUser.assists}
@@ -136,7 +141,12 @@ export default function GameList({ name, tag }: GameListProps) {
               <div className="team-group">
                 {info.users.slice(0, 5).map((user, index) => (
                   <div key={index} className="user-info">
-                    {user.championName} - {user.summonerName}
+                    <img
+                      src={`${CHAMPION_IMG_BASE_URL}${user.championName}.png`}
+                      alt={user.championName}
+                      className="users-champion-img"
+                    />
+                    <span className="users-name">{user.summonerName}</span>
                   </div>
                 ))}
               </div>
@@ -144,7 +154,12 @@ export default function GameList({ name, tag }: GameListProps) {
               <div className="team-group">
                 {info.users.slice(5, 10).map((user, index) => (
                   <div key={index + 5} className="user-info">
-                    {user.championName} - {user.summonerName}
+                    <img
+                      src={`${CHAMPION_IMG_BASE_URL}${user.championName}.png`}
+                      alt={user.championName}
+                      className="users-champion-img"
+                    />
+                    <span className="users-name">{user.summonerName}</span>
                   </div>
                 ))}
               </div>
