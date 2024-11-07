@@ -70,19 +70,19 @@
 
 .users-article {
   display: flex;
-  width: 80%;
+  width: 90%;
   margin: auto;
   padding: 2%;
-  gap: 5%;
 }
 
 .article-overview {
   position: sticky;
   top: 10%;
-  width: 30%;
+  width: 25%;
   height: 90%;
+  margin-right: 5%;
 }
 
 .article-games {
-  width: 60%;
+  width: 70%;
 }

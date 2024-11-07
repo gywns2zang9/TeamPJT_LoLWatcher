@@ -98,23 +98,57 @@ export default function GameList({ name, tag }: GameListProps) {
     });
   };
 
+  const formatDuration = (duration: number) => {
+    const minutes = Math.floor(duration / 60);
+    const seconds = duration % 60;
+    return `${minutes}분 ${seconds}초`;
+  };
+
   return (
-    <div className="gameList-container">
+    <div className="list-container">
+      <h2 className="container-title">게임 목록</h2>
       {infos.map((info) => (
         <React.Fragment key={info.id}>
-          <div className="record-item" onClick={() => handleClick(info.id)}>
-            {info.id} - 게임 시간: {formatKoreaTime(info.gameEndStamp)}
+          <div
+            className={`list-item ${
+              info.win ? "win-background" : "lose-background"
+            }`}
+            onClick={() => handleClick(info.id)}
+          >
+            <div className="item-game">
+              <p>{formatKoreaTime(info.gameEndStamp)}</p>
+              <p>{formatDuration(info.gameDuration)}</p>
+              <p>{info.win ? "승리" : "패배"}</p>
+            </div>
             {info.mainUser && (
-              <div>
+              <div className="item-user">
                 <p>메인 유저의 챔피언: {info.mainUser.championName}</p>
                 <p>소환사 이름: {info.mainUser.summonerName}</p>
                 <p>팀 ID: {info.mainUser.teamId}</p>
-                <p>킬: {info.mainUser.kills}</p>
-                <p>어시스트: {info.mainUser.assists}</p>
-                <p>데스: {info.mainUser.deaths}</p>
-                <p>총 미니언 처치 수: {info.mainUser.totalMinionsKilled}</p>
+                <p>
+                  KDA: {info.mainUser.kills}/{info.mainUser.deaths}/
+                  {info.mainUser.assists}
+                </p>
+                <p>CS: {info.mainUser.totalMinionsKilled}</p>
               </div>
             )}
+            <div className="item-team">
+              <div className="team-group">
+                {info.users.slice(0, 5).map((user, index) => (
+                  <div key={index} className="user-info">
+                    {user.championName} - {user.summonerName}
+                  </div>
+                ))}
+              </div>
+
+              <div className="team-group">
+                {info.users.slice(5, 10).map((user, index) => (
+                  <div key={index + 5} className="user-info">
+                    {user.championName} - {user.summonerName}
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
           {selectedInfoId === info.id && <GameDetail users={info.users} />}
         </React.Fragment>
