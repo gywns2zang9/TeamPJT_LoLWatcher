@@ -3,6 +3,7 @@ package com.lolwatcher.event.controller;
 import com.lolwatcher.event.dto.AccountDto;
 import com.lolwatcher.event.dto.match.MatchDto;
 import com.lolwatcher.event.dto.match.info.InfoDto;
+import com.lolwatcher.event.dto.record.RecordDto;
 import com.lolwatcher.event.dto.timeline.TimelineDto;
 import com.lolwatcher.event.service.RiotApiService;
 import lombok.RequiredArgsConstructor;
