@@ -30,10 +30,12 @@ interface GameListProps {
 }
 
 export default function GameList({ name, tag }: GameListProps) {
+  const [loading, setLoading] = useState(true);
   const [selectedInfoId, setSelectedInfoId] = useState<number | null>(null);
   const [infos, setInfos] = useState<GameInfo[]>([]);
 
   useEffect(() => {
+    setLoading(true);
     const fetchData = async () => {
       try {
         const accessToken = localStorage.getItem("accessToken");
@@ -47,6 +49,7 @@ export default function GameList({ name, tag }: GameListProps) {
           }
         );
         const data = response.data;
+        console.log(data);
 
         // 빈도 분석을 위해 모든 게임 데이터의 summonerName을 모은 후 가장 자주 나타나는 이름을 찾습니다.
         const summonerNameCount: { [key: string]: number } = {};
@@ -66,7 +69,7 @@ export default function GameList({ name, tag }: GameListProps) {
         const formattedInfos = data.map((item: any, index: number) => {
           const users = item.users.map((user: any) => ({
             championName: user.championName,
-            summonerName: user.summonerName,
+            summonerName: user.summonerName || "User Not Found", // summonerName이 없을 경우 "user not found"로 설정
             teamId: user.teamId,
             kills: user.kills,
             assists: user.assists,
@@ -74,11 +77,17 @@ export default function GameList({ name, tag }: GameListProps) {
             totalMinionsKilled: user.totalMinionsKilled
           }));
 
-          // 가장 자주 등장한 summonerName으로 mainUser 설정
+          // mainUser 설정 로직
           const mainUser: User | null =
             users.find(
+              (user: User) =>
+                user.summonerName.replace(/\s+/g, "").toLowerCase() ===
+                name.replace(/\s+/g, "").toLowerCase()
+            ) ||
+            users.find(
               (user: User) => user.summonerName === mostFrequentSummonerName
-            ) || null;
+            ) ||
+            null;
 
           return {
             id: index + 1,
@@ -89,7 +98,7 @@ export default function GameList({ name, tag }: GameListProps) {
             mainUser: mainUser // mainUser를 GameInfo에 추가
           };
         });
-
+        setLoading(false);
         setInfos(formattedInfos);
       } catch (error) {
         console.error("데이터 가져오기 실패:", error);
@@ -135,6 +144,17 @@ export default function GameList({ name, tag }: GameListProps) {
     const minutes = duration / 60;
     return (cs / minutes).toFixed(1);
   };
+
+  if (loading) {
+    return (
+      <div className="list-container">
+        <h2 className="container-title">게임 목록</h2>
+        <div className="loading-spinner">
+          <div className="spinner"></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="list-container">
