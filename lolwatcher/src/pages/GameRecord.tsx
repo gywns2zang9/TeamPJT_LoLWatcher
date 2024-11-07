@@ -1,38 +1,17 @@
-import React, { useEffect } from "react";
-import { NavLink } from "react-router-dom";
+import React from "react";
+import { NavLink, useLocation } from "react-router-dom";
 import Header from "../components/common/Header";
 import RecordList from "../components/games/RecordList";
 import Profile from "../components/user/Profile";
 import Overview from "../components/user/Overview";
-import axios from "axios";
 
 import "./GameRecord.css";
 
 export default function GameRecord() {
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const accessToken = localStorage.getItem("accessToken");
-        const response = await axios.get(
-          "https://lolwatcher.com/api/riot/info",
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`
-            },
-            params: {
-              name: "카림sk",
-              tag: "kr1"
-            }
-          }
-        );
-        console.log(response.data);
-      } catch (error) {
-        console.error("데이터 가져오기 실패:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const name = searchParams.get("name");
+  const tag = searchParams.get("tag");
 
   return (
     <div className="container">
@@ -43,12 +22,12 @@ export default function GameRecord() {
       <Header />
       <div className="record-container">
         <div className="record-profile">
-          <Profile />
+          {name && tag && <Profile name={name} tag={tag} />}
         </div>
         <button>새로고침</button>
         <div className="gamerecord-content">
           <Overview />
-          <RecordList />
+          {name && tag && <RecordList name={name} tag={tag} />}
         </div>
       </div>
     </div>

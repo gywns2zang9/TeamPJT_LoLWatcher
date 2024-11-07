@@ -13,21 +13,26 @@ interface UserProfile {
   most3: string;
 }
 
-export default function Profile() {
+interface ProfileProps {
+  name: string; //카림sk
+  tag: string; //kr1
+}
+
+export default function Profile({ name, tag }: ProfileProps) {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
 
   const defaultProfile: UserProfile = {
-    nickname: "Hide on bush #KR1",
+    nickname: `${name}#${tag}`,
     tier: "Grandmaster",
     most1: "Leblanc",
     most2: "Tristana",
-    most3: "Lucian",
+    most3: "Lucian"
   };
 
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const responseData = await getUserProfile();
+        const responseData = await getUserProfile(); // name과 tag를 함수에 전달
         setUserProfile(responseData);
       } catch (error) {
         setUserProfile(defaultProfile);
@@ -35,7 +40,7 @@ export default function Profile() {
     };
 
     fetchUserProfile();
-  }, []);
+  }, [name, tag]); // name과 tag를 종속성 배열에 추가
 
   const profile = userProfile || defaultProfile;
 

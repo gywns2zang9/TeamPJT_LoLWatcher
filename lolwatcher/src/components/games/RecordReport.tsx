@@ -3,7 +3,21 @@ import "./RecordReport.css";
 import ReportModal from "./modal/ReportModal";
 import { NavLink } from "react-router-dom";
 
-export default function RecordReport() {
+interface User {
+  championName: string;
+  summonerName: string;
+  teamId: number;
+  kills: number;
+  assists: number;
+  deaths: number;
+  totalMinionsKilled: number;
+}
+
+interface RecordReportProps {
+  users: User[];
+}
+
+export default function RecordReport({ users }: RecordReportProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // 모달 열기
