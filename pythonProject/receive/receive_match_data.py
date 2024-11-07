@@ -3,39 +3,64 @@ import string
 from http.client import responses
 
 from flask import Blueprint, jsonify, request
-from config.mongo_config import get_mongo_rank, post_mongo_rank_analytics
+from config.mongo_config import get_mongo_rank, post_mongo_rank_analytics, get_mongo_rank_analytics
 from analyze.match_analyzer import calculateStatsForTopLane,calculateStatsForJUNGLELane,calculateStatsForMIDLane,calculateStatsForBOTTOMLane,calculateStatsForUTILITYLane
 
 
 routes = Blueprint('routes', __name__)
 
 
-@routes.route('/tier/match-list', methods=['GET'])
+@routes.route('/analytic/report', methods=['POST'])
 def receive_match_data():
     data = request.get_json()
 
-    tier = data.get('tier')
-    division = data.get('division')
-    matchInfo = data.get('matchInfo')
+    tier = data["tier"] #티어
+    division = data["division"] #위치
+    match_id = data.get('id') #분석 확인 식별 용 id
+    match_dto = data.get('matchDto')  # match 정보
 
-    collection = get_mongo_rank(tier, division)
+    top_info = data["top"]
+    # jungle_info = data["jungle"]
+    # mid_info = data["mid"]
+    # bottom_info = data["bottom"]
+    # utility_info = data["utility"]
+    # participants = match_dto["info"]["participants"]
 
-    try:
-        topAnalayze = calculateStatsForTopLane(collection).next()
-        jungleAnalayze = calculateStatsForJUNGLELane(collection).next()
-        midAnalayze = calculateStatsForMIDLane(collection).next()
-        bottomAnalayze = calculateStatsForBOTTOMLane(collection).next()
-        utilityAnalayze = calculateStatsForUTILITYLane(collection).next()
-    except StopIteration:
-        return jsonify({"tier": tier, "division": division, "message": "No data found"})
+    collection = get_mongo_rank_analytics(tier, division)
 
-    # Z-score 계산 함수
-    def calculate_z_score(value, avg, std_dev):
-        return (value - avg) / std_dev if std_dev != 0 else 0
+    tier_division_field = f"{tier}_{division}"
+    #print(tier_division_field)
+    result = collection.find_one({},{tier_division_field: 1, "_id":0 })
+    #print(result)
 
-    return jsonify({"status": "success"}), 200
+    if result and tier_division_field in result:
+        tier_data = result[tier_division_field]
+        top_data = tier_data["top"]
 
+        # Z-score 계산 함수
+        def calculate_z_score(value, avg, std_dev):
+            return (value - avg) / std_dev if std_dev != 0 else 0
 
+        # Z-score 계산 결과를 저장할 딕셔너리
+        z_scores = {}
+
+        # top 필드의 각 항목에 대해 Z-score를 계산
+        for field, value in top_info.items():
+            if field in top_data:
+                avg = top_data[field]["avg"]
+                std_dev = top_data[field]["stdDev"]
+                z_scores[field] = calculate_z_score(value, avg, std_dev)
+                print(f"필드 : {field}, 평균 : {avg} , 표준편차 : {std_dev} , 전달 받은 값 : {value}, 차이 : {z_scores[field]}")
+
+        return jsonify({
+            "status": "success",
+            "data": {
+                "top": z_scores
+            }
+        }), 200
+
+    else:
+        return jsonify({"status": "error", "message": "No data found"}), 404
 
 #모든 티어별 평균, 표준 편차를 구하는 메소드
 @routes.route('/analytic/tier', methods=['POST'])

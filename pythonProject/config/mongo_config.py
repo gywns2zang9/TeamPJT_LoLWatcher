@@ -1,3 +1,5 @@
+from calendar import month
+
 import pymongo
 import os
 from dotenv import load_dotenv
@@ -16,6 +18,13 @@ def get_mongo_rank(tier,division):
     return db[collection_name]
 
 def post_mongo_rank_analytics():
+    mongo_url = os.getenv("MONGO_URL")
+    client = pymongo.MongoClient(mongo_url)
+    db = client[os.getenv("MONGO_DB")]
+    collection_name = "analytics"
+    return db[collection_name]
+
+def get_mongo_rank_analytics(tier, division):
     mongo_url = os.getenv("MONGO_URL")
     client = pymongo.MongoClient(mongo_url)
     db = client[os.getenv("MONGO_DB")]
