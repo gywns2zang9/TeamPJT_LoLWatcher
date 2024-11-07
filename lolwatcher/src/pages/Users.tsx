@@ -5,9 +5,9 @@ import RecordList from "../components/games/RecordList";
 import Profile from "../components/user/Profile";
 import Overview from "../components/user/Overview";
 
-import "./GameRecord.css";
+import "./Users.css";
 
-export default function GameRecord() {
+export default function Users() {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const name = searchParams.get("name");

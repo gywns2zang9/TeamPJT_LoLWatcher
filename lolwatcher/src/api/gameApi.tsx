@@ -2,7 +2,7 @@ import axiosInstance from "./axiosInstance";
 
 // 전적 검색
 // export const getGameRecords = async (accessToken: string) => {
-//   const response = await axiosInstance.get("/user/records", {
+//   const response = await axiosInstance.get("/user/", {
 //     headers: {
 //       Authorization: `Bearer ${accessToken}`,
 //     },

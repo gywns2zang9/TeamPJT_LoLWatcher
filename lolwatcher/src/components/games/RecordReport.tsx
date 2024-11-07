@@ -30,12 +30,15 @@ export default function RecordReport({ users }: RecordReportProps) {
     setIsModalOpen(false);
   };
 
+  const teamBlue = users.filter((user) => user.teamId === 100);
+  const teamRed = users.filter((user) => user.teamId === 200);
+
   return (
     <div className="report-container">
       <div className="score-container">
-        <div className="my-team-container">97</div>
+        <div className="my-team-container">point</div>
         <div style={{ fontWeight: "bold", fontSize: "20px" }}>:</div>
-        <div className="enemy-team-container">97</div>
+        <div className="enemy-team-container">point</div>
       </div>
       <div className="link">
         <NavLink to="/result">ResultReport</NavLink>
@@ -50,62 +53,35 @@ export default function RecordReport({ users }: RecordReportProps) {
         </div>
         <div className="rotated-line"></div>
 
+        {/* Team 100 */}
         <div className="player-team">
-          <div className="team-item" onClick={openModal}>
-            <div className="champion-profile"></div>
-            <div>로댕맨</div>
-            <div>20</div>
-          </div>
-          <div className="team-item">
-            <div className="champion-profile"></div>
-            <div>로댕맨</div>
-            <div>20</div>
-          </div>
-          <div className="team-item">
-            <div className="champion-profile"></div>
-            <div>로댕맨</div>
-            <div>20</div>
-          </div>
-          <div className="team-item">
-            <div className="champion-profile"></div>
-            <div>로댕맨</div>
-            <div>20</div>
-          </div>
-          <div className="team-item">
-            <div className="champion-profile"></div>
-            <div>로댕맨</div>
-            <div>20</div>
-          </div>
+          {teamBlue.map((user, index) => (
+            <div key={index} className="team-item" onClick={openModal}>
+              <div className="champion-profile">{user.championName}</div>
+              <div>{user.summonerName}</div>
+              <div>
+                {user.kills}/{user.deaths}/{user.assists}
+              </div>
+            </div>
+          ))}
         </div>
+
         <div className="rotated-line"></div>
+
+        {/* Team 200 */}
         <div className="enemy-team">
-          <div className="team-item">
-            <div>20</div>
-            <div className="champion-profile"></div>
-            <div>S2xSense</div>
-          </div>
-          <div className="team-item">
-            <div>20</div>
-            <div className="champion-profile"></div>
-            <div>로댕맨</div>
-          </div>
-          <div className="team-item">
-            <div>20</div>
-            <div className="champion-profile"></div>
-            <div>로댕맨</div>
-          </div>
-          <div className="team-item">
-            <div>20</div>
-            <div className="champion-profile"></div>
-            <div>로댕맨</div>
-          </div>
-          <div className="team-item">
-            <div>20</div>
-            <div className="champion-profile"></div>
-            <div>로댕맨</div>
-          </div>
+          {teamRed.map((user, index) => (
+            <div key={index} className="team-item" onClick={openModal}>
+              <div>
+                {user.kills}/{user.deaths}/{user.assists}
+              </div>
+              <div className="champion-profile">{user.championName}</div>
+              <div>{user.summonerName}</div>
+            </div>
+          ))}
         </div>
       </div>
+
       {isModalOpen && (
         <div className="modal-backdrop" onClick={closeModal}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>

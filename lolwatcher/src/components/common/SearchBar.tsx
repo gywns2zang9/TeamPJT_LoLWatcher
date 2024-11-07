@@ -20,7 +20,7 @@ export default function SearchBar() {
     }
 
     console.log(`Name: ${name}, Tag: ${tag}`);
-    navigate(`/records?name=${name}&tag=${tag}`);
+    navigate(`/users?name=${name}&tag=${tag}`);
   };
 
   return (
