@@ -77,7 +77,8 @@
 }
 
 .info-name {
-  margin: 2% 0;
+  position: absolute;
+  margin: 2%;
   padding: 0;
   font-size: 30px;
   cursor: url("../../assets/cursor/hover-cursor.png"), pointer;
@@ -85,7 +86,7 @@
 }
 
 .info-title {
-  margin: 2% 0;
+  margin: 25% 0 1% 0;
   padding: 0;
   font-size: 20px;
 }
