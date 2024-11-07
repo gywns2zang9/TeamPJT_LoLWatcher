@@ -48,6 +48,21 @@ export default function GameList({ name, tag }: GameListProps) {
         );
         const data = response.data;
 
+        // 빈도 분석을 위해 모든 게임 데이터의 summonerName을 모은 후 가장 자주 나타나는 이름을 찾습니다.
+        const summonerNameCount: { [key: string]: number } = {};
+        data.forEach((game: any) => {
+          game.users.forEach((user: any) => {
+            if (user.summonerName) {
+              summonerNameCount[user.summonerName] =
+                (summonerNameCount[user.summonerName] || 0) + 1;
+            }
+          });
+        });
+
+        const mostFrequentSummonerName = Object.keys(summonerNameCount).reduce(
+          (a, b) => (summonerNameCount[a] > summonerNameCount[b] ? a : b)
+        );
+
         const formattedInfos = data.map((item: any, index: number) => {
           const users = item.users.map((user: any) => ({
             championName: user.championName,
@@ -59,9 +74,11 @@ export default function GameList({ name, tag }: GameListProps) {
             totalMinionsKilled: user.totalMinionsKilled
           }));
 
-          // name과 일치하는 유저를 mainUser로 설정
+          // 가장 자주 등장한 summonerName으로 mainUser 설정
           const mainUser: User | null =
-            users.find((user: User) => user.summonerName === name) || null;
+            users.find(
+              (user: User) => user.summonerName === mostFrequentSummonerName
+            ) || null;
 
           return {
             id: index + 1,
@@ -88,22 +105,35 @@ export default function GameList({ name, tag }: GameListProps) {
 
   const formatKoreaTime = (timestamp: number) => {
     const koreaTime = new Date(timestamp);
-    return koreaTime.toLocaleString("ko-KR", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      weekday: "long",
-      hour: "numeric",
-      minute: "numeric",
-      hour12: false,
-      timeZone: "Asia/Seoul"
-    });
+    return (
+      koreaTime
+        .toLocaleString("ko-KR", {
+          month: "long",
+          day: "numeric",
+          hour: "numeric",
+          minute: "numeric",
+          hour12: false,
+          timeZone: "Asia/Seoul"
+        })
+        .replace(":", "시 ") + "분"
+    );
   };
 
   const formatDuration = (duration: number) => {
     const minutes = Math.floor(duration / 60);
     const seconds = duration % 60;
     return `${minutes}분 ${seconds}초`;
+  };
+
+  //KDA 계산
+  const calculateKDA = (kills: number, assists: number, deaths: number) => {
+    return deaths === 0 ? "노데스" : ((kills + assists) / deaths).toFixed(2);
+  };
+
+  //분당 CS 계산
+  const calculateCSPerMinute = (cs: number, duration: number) => {
+    const minutes = duration / 60;
+    return (cs / minutes).toFixed(1);
   };
 
   return (
@@ -118,23 +148,44 @@ export default function GameList({ name, tag }: GameListProps) {
             onClick={() => handleClick(info.id)}
           >
             <div className="item-game">
-              <p>{formatKoreaTime(info.gameEndStamp)}</p>
-              <p>{formatDuration(info.gameDuration)}</p>
-              <p>{info.win ? "승리" : "패배"}</p>
+              <div className="game-end-time">
+                {formatKoreaTime(info.gameEndStamp)}
+              </div>
+              <div className="game-play">
+                <p>{info.win ? "승" : "패"}</p>
+                <p className="game-play-time">
+                  ({formatDuration(info.gameDuration)})
+                </p>
+              </div>
             </div>
+
             {info.mainUser && (
-              <div className="item-user">
+              <div className="item-main-user">
                 <img
                   src={`${CHAMPION_IMG_BASE_URL}${info.mainUser.championName}.png`}
                   alt={info.mainUser.championName}
-                  className="main-champion-img"
+                  className="main-user-champion"
                 />
-                <p>소환사 이름: {info.mainUser.summonerName}</p>
-                <p>
-                  KDA: {info.mainUser.kills}/{info.mainUser.deaths}/
-                  {info.mainUser.assists}
-                </p>
-                <p>CS: {info.mainUser.totalMinionsKilled}</p>
+                <div className="main-user-result">
+                  <p>
+                    {info.mainUser.kills} / {info.mainUser.deaths} /{" "}
+                    {info.mainUser.assists} (Kda:{" "}
+                    {calculateKDA(
+                      info.mainUser.kills,
+                      info.mainUser.assists,
+                      info.mainUser.deaths
+                    )}
+                    )
+                  </p>
+                  <p>
+                    CS {info.mainUser.totalMinionsKilled} (분당:{" "}
+                    {calculateCSPerMinute(
+                      info.mainUser.totalMinionsKilled,
+                      info.gameDuration
+                    )}
+                    )
+                  </p>{" "}
+                </div>
               </div>
             )}
             <div className="item-team">

@@ -19,7 +19,8 @@ export default function Users() {
     e.preventDefault();
     const [searchName, searchTag] = nickName.split("#");
     if (!searchTag) {
-      alert("올바른 형식으로 입력해주세요. (예: Hide on bush#KR1)");
+      const defaultTag = "KR1";
+      navigate(`/users?name=${searchName}&tag=#${defaultTag}`);
       return;
     }
     navigate(`/users?name=${searchName}&tag=${searchTag}`);
