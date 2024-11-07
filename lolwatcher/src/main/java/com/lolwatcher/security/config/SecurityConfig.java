@@ -39,6 +39,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        System.out.println("process 18 - SecurityConfig securityFilterChain");
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable) // CSRF 보호 비활성화 (JWT 사용 시 필요)
@@ -58,6 +59,8 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
+
+        System.out.println("process 19 - SecurityConfig passwordEncoder");
         return new BCryptPasswordEncoder(); // 비밀번호 암호화
     }
 
@@ -75,6 +78,7 @@ public class SecurityConfig {
 //    }
 @Bean
 public CorsConfigurationSource corsConfigurationSource() {
+    System.out.println("process 20 - SecurityConfig corsConfigurationSource");
     CorsConfiguration configuration = new CorsConfiguration();
 
     // 환경 변수에서 도메인 및 포트 가져오기
@@ -86,7 +90,9 @@ public CorsConfigurationSource corsConfigurationSource() {
     configuration.setAllowedOrigins(Arrays.asList(
             domain, // 도메인 주소
             "http://" + ec2Ip + ":" + frontPort, // EC2 IP 주소와 포트 조합
-            "https://" + ec2Ip + ":" + frontPort // EC2 IP 주소와 포트 조합
+            "https://" + ec2Ip + ":" + frontPort, // EC2 IP 주소와 포트 조합
+            "http://localhost:3000", // 로컬 개발 환경의 주소 (React 테스트)
+            "http://127.0.0.1:3000"  // 로컬 개발 환경의 주소 (React 테스트)
     ));
 
     // 허용할 HTTP 메서드 설정

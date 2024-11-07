@@ -13,8 +13,8 @@ spring:
   jwt:
     secret: ${JWT_KEY}
     # 유효기간은 15분
-    access-token-expiration: 9000000
-    refresh-token-expiration: 36000000
+    access-token-expiration: 86400000 #300000
+    refresh-token-expiration: 86400000 #36000000
 
   jpa:
     hibernate:

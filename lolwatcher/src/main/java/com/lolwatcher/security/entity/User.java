@@ -26,7 +26,7 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-
+    // 추후 riot puid와 accesstoken으로 변경
     @Column(nullable = false)
     private String riotId;
 
