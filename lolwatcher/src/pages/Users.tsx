@@ -50,13 +50,17 @@ export default function Users() {
         </form>
       </div>
 
-      <div className="record-container">
-        <div className="record-profile">
+      <div className="users-main">
+        <div className="users-profile">
           {name && tag && <Profile name={name} tag={tag} />}
         </div>
-        <div className="gamerecord-content">
-          <Overview />
-          {name && tag && <RecordList name={name} tag={tag} />}
+        <div className="users-article">
+          <div className="article-overview">
+            <Overview />
+          </div>
+          <div className="article-games">
+            {name && tag && <RecordList name={name} tag={tag} />}
+          </div>
         </div>
       </div>
     </div>

@@ -1,10 +1,8 @@
 .users-container {
   display: flex;
   width: 100vw;
-  height: 100vh;
   flex-direction: column;
   align-items: center;
-  overflow-y: auto;
 }
 
 .link {
@@ -56,19 +54,35 @@
   background-color: #0056b3;
 }
 
-.record-container {
-  display: flex;
+.users-main {
   width: 100%;
+  display: flex;
   flex-direction: column;
+  /* 지울거 */
+  margin: 2px;
+  border: 2px solid blue;
 }
 
-.record-profile {
+.users-profile {
+  width: 90%;
+  margin: auto;
 }
 
-button {
-  width: 150px;
-  margin-left: 24px;
+.users-article {
+  display: flex;
+  width: 80%;
+  margin: auto;
+  padding: 2%;
+  gap: 5%;
 }
 
-.gamerecord-content {
+.article-overview {
+  position: sticky;
+  top: 10%;
+  width: 30%;
+  height: 90%;
+}
+
+.article-games {
+  width: 60%;
 }
