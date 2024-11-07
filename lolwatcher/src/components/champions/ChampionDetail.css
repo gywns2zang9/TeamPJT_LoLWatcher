@@ -158,3 +158,9 @@
 .skin-dot.active {
   background-color: red;
 }
+
+.learn-more-link {
+  color: wheat;
+  font-size: 18px;
+  cursor: url("../../assets/cursor/hover-cursor.png"), pointer;
+}

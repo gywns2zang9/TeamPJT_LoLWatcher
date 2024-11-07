@@ -246,6 +246,16 @@ export default function ChampionDetail({
             className="item-description"
             dangerouslySetInnerHTML={{ __html: selectedDescription }}
           ></p>
+          {selectedSpellType === null && selectedTitle === champion?.title && (
+            <a
+              href={`https://universe.leagueoflegends.com/ko_KR/champion/${championId}/`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="learn-more-link"
+            >
+              자세히 보기
+            </a>
+          )}
         </div>
       )}
       {/* Skin Selector Dots */}
