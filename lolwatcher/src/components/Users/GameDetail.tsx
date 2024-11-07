@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import "./RecordReport.css";
-import ReportModal from "./modal/ReportModal";
+import "./GameDetail.css";
+import ReportModal from "./ReportModal";
 import { NavLink } from "react-router-dom";
 
 interface User {
@@ -13,11 +13,11 @@ interface User {
   totalMinionsKilled: number;
 }
 
-interface RecordReportProps {
+interface GameDetailProps {
   users: User[];
 }
 
-export default function RecordReport({ users }: RecordReportProps) {
+export default function GameDetail({ users }: GameDetailProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // 모달 열기

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "./RecordList.css";
-import RecordReport from "./RecordReport";
+import "./GameList.css";
+import GameDetail from "./GameDetail";
 
 interface User {
   championName: string; //"Garen"
@@ -22,12 +22,12 @@ interface GameInfo {
   mainUser: User | null; // mainUser 추가
 }
 
-interface RecordListProps {
+interface GameListProps {
   name: string; //카림sk
   tag: string; //kr1
 }
 
-export default function RecordList({ name, tag }: RecordListProps) {
+export default function GameList({ name, tag }: GameListProps) {
   const [selectedInfoId, setSelectedInfoId] = useState<number | null>(null);
   const [infos, setInfos] = useState<GameInfo[]>([]);
 
@@ -99,7 +99,7 @@ export default function RecordList({ name, tag }: RecordListProps) {
   };
 
   return (
-    <div className="recordlist-container">
+    <div className="gameList-container">
       {infos.map((info) => (
         <React.Fragment key={info.id}>
           <div className="record-item" onClick={() => handleClick(info.id)}>
@@ -116,7 +116,7 @@ export default function RecordList({ name, tag }: RecordListProps) {
               </div>
             )}
           </div>
-          {selectedInfoId === info.id && <RecordReport users={info.users} />}
+          {selectedInfoId === info.id && <GameDetail users={info.users} />}
         </React.Fragment>
       ))}
     </div>

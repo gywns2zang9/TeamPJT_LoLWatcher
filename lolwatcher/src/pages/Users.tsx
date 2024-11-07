@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import RecordList from "../components/games/RecordList";
-import Profile from "../components/user/Profile";
-import Overview from "../components/user/Overview";
+import GameList from "../components/Users/GameList";
+import Profile from "../components/Users/Profile";
+import Overview from "../components/Users/Overview";
 import "./Users.css";
 
 export default function Users() {
@@ -59,7 +59,7 @@ export default function Users() {
             <Overview />
           </div>
           <div className="article-games">
-            {name && tag && <RecordList name={name} tag={tag} />}
+            {name && tag && <GameList name={name} tag={tag} />}
           </div>
         </div>
       </div>
