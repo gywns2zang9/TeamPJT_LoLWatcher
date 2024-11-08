@@ -1,4 +1,4 @@
-import MyPageForm from "../components/user/MyPageForm";
+import MyPageForm from "../components/auth/MyPageForm";
 import "./MyPage.css";
 
 export default function Regist() {

@@ -1,4 +1,4 @@
-import RegistForm from "../components/user/RegistForm";
+import RegistForm from "../components/auth/RegistForm";
 import "./Regist.css";
 
 export default function Regist() {
