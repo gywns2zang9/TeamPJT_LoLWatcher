@@ -4,6 +4,7 @@ import com.lolwatcher.event.client.PythonApiClient;
 import com.lolwatcher.event.client.RiotApiClient;
 import com.lolwatcher.event.dto.AccountDto;
 import com.lolwatcher.event.dto.match.MatchDto;
+import com.lolwatcher.event.dto.match.info.InfoDto;
 import com.lolwatcher.event.dto.match.info.participant.ParticipantDto;
 import com.lolwatcher.event.dto.record.RecordDto;
 import com.lolwatcher.event.dto.record.RecordGameInfoDto;
@@ -76,4 +77,9 @@ public class RiotApiService {
         return list;
     }
 
+    // Todo : 제대로 동작하는지 확인
+    public InfoDto getMatchPlayersInfo(String matchId) {
+        MatchDto matchData = riotApiClient.getMatchData(matchId);
+        return matchData.info();
+    }
 }

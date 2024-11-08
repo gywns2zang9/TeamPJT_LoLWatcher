@@ -45,7 +45,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable) // CSRF 보호 비활성화 (JWT 사용 시 필요)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 사용 안함
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/signup", "/auth/**").permitAll() // 로그인, 회원가입, 인증 관련 경로 허용
+                        .requestMatchers("/login", "/signup", "/auth/**", "/records","/error").permitAll() // 로그인, 회원가입, 인증 관련 경로 허용
                         .anyRequest().authenticated() // 그 외 모든 요청은 인증 필요
                 )
                 .logout(logout -> logout
