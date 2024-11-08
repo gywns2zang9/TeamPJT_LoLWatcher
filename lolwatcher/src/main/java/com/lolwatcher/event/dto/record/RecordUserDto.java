@@ -1,7 +1,7 @@
 package com.lolwatcher.event.dto.record;
 
 public record RecordUserDto(String championName,
-                            String riotIdGameName,
+                            String summonerName,
                             int teamId,
                             int kills,
                             int assists,
