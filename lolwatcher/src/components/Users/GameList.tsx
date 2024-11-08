@@ -49,22 +49,6 @@ export default function GameList({ name, tag }: GameListProps) {
           }
         );
         const data = response.data;
-        console.log(data);
-
-        // 빈도 분석을 위해 모든 게임 데이터의 summonerName을 모은 후 가장 자주 나타나는 이름을 찾습니다.
-        const summonerNameCount: { [key: string]: number } = {};
-        data.forEach((game: any) => {
-          game.users.forEach((user: any) => {
-            if (user.summonerName) {
-              summonerNameCount[user.summonerName] =
-                (summonerNameCount[user.summonerName] || 0) + 1;
-            }
-          });
-        });
-
-        const mostFrequentSummonerName = Object.keys(summonerNameCount).reduce(
-          (a, b) => (summonerNameCount[a] > summonerNameCount[b] ? a : b)
-        );
 
         const formattedInfos = data.map((item: any, index: number) => {
           const users = item.users.map((user: any) => ({
@@ -83,11 +67,7 @@ export default function GameList({ name, tag }: GameListProps) {
               (user: User) =>
                 user.summonerName.replace(/\s+/g, "").toLowerCase() ===
                 name.replace(/\s+/g, "").toLowerCase()
-            ) ||
-            users.find(
-              (user: User) => user.summonerName === mostFrequentSummonerName
-            ) ||
-            null;
+            ) || null;
 
           return {
             id: index + 1,
@@ -95,7 +75,7 @@ export default function GameList({ name, tag }: GameListProps) {
             gameEndStamp: item.info.gameEndStamp,
             win: item.info.win,
             users: users,
-            mainUser: mainUser // mainUser를 GameInfo에 추가
+            mainUser: mainUser
           };
         });
         setLoading(false);
