@@ -392,3 +392,339 @@ def calculateStatsForUTILITYLane(collection):
         }
     ])
 
+def calculateStatsForTopLaneByGameDuration(collection):
+    return collection.aggregate([
+        {"$unwind": "$matchDto.info.participants"},
+        {"$match": {"matchDto.info.participants.teamPosition": "TOP"}},
+        {
+            "$project": {
+                "_id": 0,
+                "gameMinute": {
+                    "$cond": {
+                        "if": {"$gte": ["$matchDto.info.gameDuration", 3600]},
+                        "then": 60,
+                        "else": {"$floor": {"$divide": ["$matchDto.info.gameDuration", 60]}}
+                    }
+                },
+                "soloKills": "$matchDto.info.participants.challenges.soloKills",
+                "turretTakedowns": "$matchDto.info.participants.turretTakedowns",
+                "totalDamageTaken": "$matchDto.info.participants.totalDamageTaken",
+                "killParticipation": "$matchDto.info.participants.challenges.killParticipation",
+                "impactScore": {
+                    "$add": [
+                        {"$multiply": ["$matchDto.info.participants.challenges.killParticipation", 0.2]},
+                        {"$multiply": ["$matchDto.info.participants.challenges.kda", 0.1]},
+                        {"$multiply": [{"$add": [
+                            "$matchDto.info.participants.challenges.dragonTakedowns",
+                            "$matchDto.info.participants.challenges.baronTakedowns",
+                            "$matchDto.info.participants.challenges.riftHeraldTakedowns"
+                        ]}, 0.2]},
+                        {"$multiply": ["$matchDto.info.participants.visionScore", 0.2]},
+                        {"$multiply": ["$matchDto.info.participants.challenges.goldPerMinute", 0.1]},
+                        {"$multiply": ["$matchDto.info.participants.turretTakedowns", 0.1]},
+                        {"$multiply": ["$matchDto.info.participants.totalDamageDealtToChampions", 0.1]}
+                    ]
+                }
+            }
+        },
+        {
+            "$group": {
+                "_id": "$gameMinute",
+                "avgSoloKills": {"$avg": "$soloKills"},
+                "stdDevSoloKills": {"$stdDevPop": "$soloKills"},
+                "avgTurretTakedowns": {"$avg": "$turretTakedowns"},
+                "stdDevTurretTakedowns": {"$stdDevPop": "$turretTakedowns"},
+                "avgTotalDamageTaken": {"$avg": "$totalDamageTaken"},
+                "stdDevTotalDamageTaken": {"$stdDevPop": "$totalDamageTaken"},
+                "avgKillParticipation": {"$avg": "$killParticipation"},
+                "stdDevKillParticipation": {"$stdDevPop": "$killParticipation"},
+                "avgImpactScore": {"$avg": "$impactScore"},
+                "stdDevImpactScore": {"$stdDevPop": "$impactScore"}
+            }
+        },
+        {"$sort": {"_id": 1}},
+        {
+            "$project": {
+                "gameMinute": "$_id",
+                "soloKills": {"avg": "$avgSoloKills", "stdDev": "$stdDevSoloKills"},
+                "turretTakedowns": {"avg": "$avgTurretTakedowns", "stdDev": "$stdDevTurretTakedowns"},
+                "totalDamageTaken": {"avg": "$avgTotalDamageTaken", "stdDev": "$stdDevTotalDamageTaken"},
+                "killParticipation": {"avg": "$avgKillParticipation", "stdDev": "$stdDevKillParticipation"},
+                "impactScore": {"avg": "$avgImpactScore", "stdDev": "$stdDevImpactScore"}
+            }
+        }
+    ])
+
+
+def calculateStatsForJungleLaneByGameDuration(collection):
+    return collection.aggregate([
+        {"$unwind": "$matchDto.info.participants"},
+        {"$match": {"matchDto.info.participants.teamPosition": "JUNGLE"}},
+        {
+            "$project": {
+                "_id": 0,
+                "gameMinute": {
+                    "$cond": {
+                        "if": {"$gte": ["$matchDto.info.gameDuration", 3600]},
+                        "then": 60,
+                        "else": {"$floor": {"$divide": ["$matchDto.info.gameDuration", 60]}}
+                    }
+                },
+                "objectTakedowns": {
+                    "$add": [
+                        "$matchDto.info.participants.challenges.dragonTakedowns",
+                        "$matchDto.info.participants.challenges.baronTakedowns",
+                        "$matchDto.info.participants.challenges.riftHeraldTakedowns"
+                    ]
+                },
+                "turretTakedowns": "$matchDto.info.participants.turretTakedowns",
+                "visionScore": "$matchDto.info.participants.visionScore",
+                "lineImpact": {
+                    "$add": [
+                        "$matchDto.info.participants.challenges.takedownsFirstXMinutes",
+                        "$matchDto.info.participants.challenges.earlyLaningPhaseGoldExpAdvantage",
+                        "$matchDto.info.participants.challenges.laningPhaseGoldExpAdvantage"
+                    ]
+                },
+                "impactScore": {
+                    "$add": [
+                        {"$multiply": ["$matchDto.info.participants.challenges.killParticipation", 0.2]},
+                        {"$multiply": ["$matchDto.info.participants.challenges.kda", 0.1]},
+                        {"$multiply": [{"$add": [
+                            "$matchDto.info.participants.challenges.dragonTakedowns",
+                            "$matchDto.info.participants.challenges.baronTakedowns",
+                            "$matchDto.info.participants.challenges.riftHeraldTakedowns"
+                        ]}, 0.2]},
+                        {"$multiply": ["$matchDto.info.participants.visionScore", 0.2]},
+                        {"$multiply": ["$matchDto.info.participants.challenges.goldPerMinute", 0.1]},
+                        {"$multiply": ["$matchDto.info.participants.turretTakedowns", 0.1]},
+                        {"$multiply": ["$matchDto.info.participants.totalDamageDealtToChampions", 0.1]}
+                    ]
+                }
+            }
+        },
+        {
+            "$group": {
+                "_id": "$gameMinute",
+                "avgObjectTakedowns": {"$avg": "$objectTakedowns"},
+                "stdDevObjectTakedowns": {"$stdDevPop": "$objectTakedowns"},
+                "avgTurretTakedowns": {"$avg": "$turretTakedowns"},
+                "stdDevTurretTakedowns": {"$stdDevPop": "$turretTakedowns"},
+                "avgVisionScore": {"$avg": "$visionScore"},
+                "stdDevVisionScore": {"$stdDevPop": "$visionScore"},
+                "avgLineImpact": {"$avg": "$lineImpact"},
+                "stdDevLineImpact": {"$stdDevPop": "$lineImpact"},
+                "avgImpactScore": {"$avg": "$impactScore"},
+                "stdDevImpactScore": {"$stdDevPop": "$impactScore"}
+            }
+        },
+        {"$sort": {"_id": 1}},
+        {
+            "$project": {
+                "gameMinute": "$_id",
+                "objectTakedowns": {"avg": "$avgObjectTakedowns", "stdDev": "$stdDevObjectTakedowns"},
+                "turretTakedowns": {"avg": "$avgTurretTakedowns", "stdDev": "$stdDevTurretTakedowns"},
+                "visionScore": {"avg": "$avgVisionScore", "stdDev": "$stdDevVisionScore"},
+                "lineImpact": {"avg": "$avgLineImpact", "stdDev": "$stdDevLineImpact"},
+                "impactScore": {"avg": "$avgImpactScore", "stdDev": "$stdDevImpactScore"}
+            }
+        }
+    ])
+
+
+def calculateStatsForMiddleLaneByGameDuration(collection):
+    return collection.aggregate([
+        {"$unwind": "$matchDto.info.participants"},
+        {"$match": {"matchDto.info.participants.teamPosition": "MIDDLE"}},
+        {
+            "$project": {
+                "_id": 0,
+                "gameMinute": {
+                    "$cond": {
+                        "if": {"$gte": ["$matchDto.info.gameDuration", 3600]},
+                        "then": 60,
+                        "else": {"$floor": {"$divide": ["$matchDto.info.gameDuration", 60]}}
+                    }
+                },
+                "killParticipation": "$matchDto.info.participants.challenges.killParticipation",
+                "turretTakedowns": "$matchDto.info.participants.turretTakedowns",
+                "totalDamageDealtToChampions": "$matchDto.info.participants.totalDamageDealtToChampions",
+                "objectTakedowns": {
+                    "$add": [
+                        "$matchDto.info.participants.challenges.dragonTakedowns",
+                        "$matchDto.info.participants.challenges.baronTakedowns",
+                        "$matchDto.info.participants.challenges.riftHeraldTakedowns"
+                    ]
+                },
+                "impactScore": {
+                    "$add": [
+                        {"$multiply": ["$matchDto.info.participants.challenges.killParticipation", 0.2]},
+                        {"$multiply": ["$matchDto.info.participants.challenges.kda", 0.1]},
+                        {"$multiply": [{"$add": [
+                            "$matchDto.info.participants.challenges.dragonTakedowns",
+                            "$matchDto.info.participants.challenges.baronTakedowns",
+                            "$matchDto.info.participants.challenges.riftHeraldTakedowns"
+                        ]}, 0.2]},
+                        {"$multiply": ["$matchDto.info.participants.visionScore", 0.2]},
+                        {"$multiply": ["$matchDto.info.participants.challenges.goldPerMinute", 0.1]},
+                        {"$multiply": ["$matchDto.info.participants.turretTakedowns", 0.1]},
+                        {"$multiply": ["$matchDto.info.participants.totalDamageDealtToChampions", 0.1]}
+                    ]
+                }
+            }
+        },
+        {
+            "$group": {
+                "_id": "$gameMinute",
+                "avgKillParticipation": {"$avg": "$killParticipation"},
+                "stdDevKillParticipation": {"$stdDevPop": "$killParticipation"},
+                "avgTurretTakedowns": {"$avg": "$turretTakedowns"},
+                "stdDevTurretTakedowns": {"$stdDevPop": "$turretTakedowns"},
+                "avgTotalDamageDealtToChampions": {"$avg": "$totalDamageDealtToChampions"},
+                "stdDevTotalDamageDealtToChampions": {"$stdDevPop": "$totalDamageDealtToChampions"},
+                "avgObjectTakedowns": {"$avg": "$objectTakedowns"},
+                "stdDevObjectTakedowns": {"$stdDevPop": "$objectTakedowns"},
+                "avgImpactScore": {"$avg": "$impactScore"},
+                "stdDevImpactScore": {"$stdDevPop": "$impactScore"}
+            }
+        },
+        {"$sort": {"_id": 1}},
+        {
+            "$project": {
+                "gameMinute": "$_id",
+                "killParticipation": {"avg": "$avgKillParticipation", "stdDev": "$stdDevKillParticipation"},
+                "turretTakedowns": {"avg": "$avgTurretTakedowns", "stdDev": "$stdDevTurretTakedowns"},
+                "totalDamageDealtToChampions": {"avg": "$avgTotalDamageDealtToChampions", "stdDev": "$stdDevTotalDamageDealtToChampions"},
+                "objectTakedowns": {"avg": "$avgObjectTakedowns", "stdDev": "$stdDevObjectTakedowns"},
+                "impactScore": {"avg": "$avgImpactScore", "stdDev": "$stdDevImpactScore"}
+            }
+        }
+    ])
+
+
+def calculateStatsForBottomLaneByGameDuration(collection):
+    return collection.aggregate([
+        {"$unwind": "$matchDto.info.participants"},
+        {"$match": {"matchDto.info.participants.teamPosition": "BOTTOM"}},
+        {
+            "$project": {
+                "_id": 0,
+                "gameMinute": {
+                    "$cond": {
+                        "if": {"$gte": ["$matchDto.info.gameDuration", 3600]},
+                        "then": 60,
+                        "else": {"$floor": {"$divide": ["$matchDto.info.gameDuration", 60]}}
+                    }
+                },
+                "totalDamageDealtToChampions": "$matchDto.info.participants.totalDamageDealtToChampions",
+                "totalMinionsKilled": "$matchDto.info.participants.totalMinionsKilled",
+                "deaths": "$matchDto.info.participants.deaths",
+                "skillshotsDodged": "$matchDto.info.participants.challenges.skillshotsDodged",
+                "impactScore": {
+                    "$add": [
+                        {"$multiply": ["$matchDto.info.participants.challenges.killParticipation", 0.2]},
+                        {"$multiply": ["$matchDto.info.participants.challenges.kda", 0.1]},
+                        {"$multiply": [{"$add": [
+                            "$matchDto.info.participants.challenges.dragonTakedowns",
+                            "$matchDto.info.participants.challenges.baronTakedowns",
+                            "$matchDto.info.participants.challenges.riftHeraldTakedowns"
+                        ]}, 0.2]},
+                        {"$multiply": ["$matchDto.info.participants.visionScore", 0.2]},
+                        {"$multiply": ["$matchDto.info.participants.challenges.goldPerMinute", 0.1]},
+                        {"$multiply": ["$matchDto.info.participants.turretTakedowns", 0.1]},
+                        {"$multiply": ["$matchDto.info.participants.totalDamageDealtToChampions", 0.1]}
+                    ]
+                }
+            }
+        },
+        {
+            "$group": {
+                "_id": "$gameMinute",
+                "avgTotalDamageDealtToChampions": {"$avg": "$totalDamageDealtToChampions"},
+                "stdDevTotalDamageDealtToChampions": {"$stdDevPop": "$totalDamageDealtToChampions"},
+                "avgTotalMinionsKilled": {"$avg": "$totalMinionsKilled"},
+                "stdDevTotalMinionsKilled": {"$stdDevPop": "$totalMinionsKilled"},
+                "avgDeaths": {"$avg": "$deaths"},
+                "stdDevDeaths": {"$stdDevPop": "$deaths"},
+                "avgSkillshotsDodged": {"$avg": "$skillshotsDodged"},
+                "stdDevSkillshotsDodged": {"$stdDevPop": "$skillshotsDodged"},
+                "avgImpactScore": {"$avg": "$impactScore"},
+                "stdDevImpactScore": {"$stdDevPop": "$impactScore"}
+            }
+        },
+        {"$sort": {"_id": 1}},
+        {
+            "$project": {
+                "gameMinute": "$_id",
+                "totalDamageDealtToChampions": {"avg": "$avgTotalDamageDealtToChampions", "stdDev": "$stdDevTotalDamageDealtToChampions"},
+                "totalMinionsKilled": {"avg": "$avgTotalMinionsKilled", "stdDev": "$stdDevTotalMinionsKilled"},
+                "deaths": {"avg": "$avgDeaths", "stdDev": "$stdDevDeaths"},
+                "skillshotsDodged": {"avg": "$avgSkillshotsDodged", "stdDev": "$stdDevSkillshotsDodged"},
+                "impactScore": {"avg": "$avgImpactScore", "stdDev": "$stdDevImpactScore"}
+            }
+        }
+    ])
+
+
+def calculateStatsForUtilityLaneByGameDuration(collection):
+    return collection.aggregate([
+        {"$unwind": "$matchDto.info.participants"},
+        {"$match": {"matchDto.info.participants.teamPosition": "UTILITY"}},
+        {
+            "$project": {
+                "_id": 0,
+                "gameMinute": {
+                    "$cond": {
+                        "if": {"$gte": ["$matchDto.info.gameDuration", 3600]},
+                        "then": 60,
+                        "else": {"$floor": {"$divide": ["$matchDto.info.gameDuration", 60]}}
+                    }
+                },
+                "visionScore": "$matchDto.info.participants.visionScore",
+                "totalDamageTaken": "$matchDto.info.participants.totalDamageTaken",
+                "totalDamageDealtToChampions": "$matchDto.info.participants.totalDamageDealtToChampions",
+                "totalTimeCCDealt": "$matchDto.info.participants.totalTimeCCDealt",
+                "impactScore": {
+                    "$add": [
+                        {"$multiply": ["$matchDto.info.participants.challenges.killParticipation", 0.2]},
+                        {"$multiply": ["$matchDto.info.participants.challenges.kda", 0.1]},
+                        {"$multiply": [{"$add": [
+                            "$matchDto.info.participants.challenges.dragonTakedowns",
+                            "$matchDto.info.participants.challenges.baronTakedowns",
+                            "$matchDto.info.participants.challenges.riftHeraldTakedowns"
+                        ]}, 0.2]},
+                        {"$multiply": ["$matchDto.info.participants.visionScore", 0.2]},
+                        {"$multiply": ["$matchDto.info.participants.challenges.goldPerMinute", 0.1]},
+                        {"$multiply": ["$matchDto.info.participants.turretTakedowns", 0.1]},
+                        {"$multiply": ["$matchDto.info.participants.totalDamageDealtToChampions", 0.1]}
+                    ]
+                }
+            }
+        },
+        {
+            "$group": {
+                "_id": "$gameMinute",
+                "avgVisionScore": {"$avg": "$visionScore"},
+                "stdDevVisionScore": {"$stdDevPop": "$visionScore"},
+                "avgTotalDamageTaken": {"$avg": "$totalDamageTaken"},
+                "stdDevTotalDamageTaken": {"$stdDevPop": "$totalDamageTaken"},
+                "avgTotalDamageDealtToChampions": {"$avg": "$totalDamageDealtToChampions"},
+                "stdDevTotalDamageDealtToChampions": {"$stdDevPop": "$totalDamageDealtToChampions"},
+                "avgTotalTimeCCDealt": {"$avg": "$totalTimeCCDealt"},
+                "stdDevTotalTimeCCDealt": {"$stdDevPop": "$totalTimeCCDealt"},
+                "avgImpactScore": {"$avg": "$impactScore"},
+                "stdDevImpactScore": {"$stdDevPop": "$impactScore"}
+            }
+        },
+        {"$sort": {"_id": 1}},
+        {
+            "$project": {
+                "gameMinute": "$_id",
+                "visionScore": {"avg": "$avgVisionScore", "stdDev": "$stdDevVisionScore"},
+                "totalDamageTaken": {"avg": "$avgTotalDamageTaken", "stdDev": "$stdDevTotalDamageTaken"},
+                "totalDamageDealtToChampions": {"avg": "$avgTotalDamageDealtToChampions", "stdDev": "$stdDevTotalDamageDealtToChampions"},
+                "totalTimeCCDealt": {"avg": "$avgTotalTimeCCDealt", "stdDev": "$stdDevTotalTimeCCDealt"},
+                "impactScore": {"avg": "$avgImpactScore", "stdDev": "$stdDevImpactScore"}
+            }
+        }
+    ])

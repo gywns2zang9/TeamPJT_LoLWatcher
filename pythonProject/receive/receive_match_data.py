@@ -5,7 +5,8 @@ from http.client import responses
 from flask import Blueprint, jsonify, request
 from config.mongo_config import get_mongo_rank, post_mongo_rank_analytics, get_mongo_rank_analytics
 from analyze.match_analyzer import calculateStatsForTopLane,calculateStatsForJUNGLELane,calculateStatsForMIDLane,calculateStatsForBOTTOMLane,calculateStatsForUTILITYLane
-
+from analyze.match_analyzer import calculateStatsForTopLaneByGameDuration,calculateStatsForJungleLaneByGameDuration,calculateStatsForMiddleLaneByGameDuration,calculateStatsForBottomLaneByGameDuration,calculateStatsForUtilityLaneByGameDuration
+from copy import deepcopy
 
 routes = Blueprint('routes', __name__)
 
@@ -16,25 +17,25 @@ def receive_match_data():
 
     tier = data["tier"] #티어
     division = data["division"] #위치
-    match_id = data.get('id') #분석 확인 식별 용 id
-    match_dto = data.get('matchDto')  # match 정보
+    #match_id = data["id"] #분석 확인 식별 용 id
+    match_dto = data["matchDto"]  # match 정보
 
     top_info = data["top"]
-    # jungle_info = data["jungle"]
-    # mid_info = data["mid"]
-    # bottom_info = data["bottom"]
-    # utility_info = data["utility"]
-    # participants = match_dto["info"]["participants"]
+    participants = process_participants(match_dto)
+
+    for participant in participants:
+        print(f'{participant}')
 
     collection = get_mongo_rank_analytics(tier, division)
 
     tier_division_field = f"{tier}_{division}"
-    #print(tier_division_field)
     result = collection.find_one({},{tier_division_field: 1, "_id":0 })
-    #print(result)
 
     if result and tier_division_field in result:
         tier_data = result[tier_division_field]
+
+
+
         top_data = tier_data["top"]
 
         # Z-score 계산 함수
@@ -62,143 +63,172 @@ def receive_match_data():
     else:
         return jsonify({"status": "error", "message": "No data found"}), 404
 
+
+
+# 전달받은 Dto 데이터에서 participants 배열을 순회하면서 각 플레이어의 포지션에 맞는 필드를 추출하거나 계산
+def process_participants(match_dto):
+    participants = match_dto["info"]["participants"]
+    results = []
+
+    # 포지션별 필요한 필드 정의
+    position_fields = {
+        "top": ["soloKills", "turretTakedowns", "totalDamageTaken", "killParticipation", "impactScore"],
+        "jungle": ["objectTakedowns", "turretTakedowns", "visionScore", "lineImpact", "impactScore"],
+        "middle": ["killParticipation", "turretTakedowns", "totalDamageDealtToChampions", "objectTakedowns", "impactScore"],
+        "bottom": ["totalDamageDealtToChampions", "totalMinionsKilled", "deaths", "skillshotsDodged", "impactScore"],
+        "utility": ["visionScore", "totalDamageTaken", "totalDamageDealtToChampions", "totalTimeCCDealt", "impactScore"]
+    }
+
+    # 각 참가자를 순회하면서 포지션에 맞는 데이터를 추출/계산
+    for participant in participants:
+        team_position = participant["teamPosition"].lower()
+        fields = position_fields.get(team_position, [])
+
+        # 참가자 데이터를 저장할 딕셔너리
+        player_data = {"teamPosition": team_position}
+        print(f"{participant}")
+        for field in fields:
+            if field == "impactScore":
+                # impactScore 계산
+                impact_score = (
+                    participant["challenges"].get("killParticipation", 0) * 0.2 +
+                    participant["challenges"].get("kda", 0) * 0.1 +
+                    (participant["challenges"].get("dragonTakedowns", 0) +
+                     participant["challenges"].get("baronTakedowns", 0) +
+                     participant["challenges"].get("riftHeraldTakedowns", 0)) * 0.2 +
+                    participant.get("visionScore", 0) * 0.2 +
+                    participant["challenges"].get("goldPerMinute", 0) * 0.1 +
+                    participant.get("turretTakedowns", 0) * 0.1 +
+                    participant.get("totalDamageDealtToChampions", 0) * 0.1
+                )
+                player_data["impactScore"] = impact_score
+
+            elif field == "objectTakedowns" and team_position in ["jungle", "middle"]:
+                # objectTakedowns 계산 (특정 포지션에만 적용)
+                player_data["objectTakedowns"] = (
+                    participant["challenges"].get("dragonTakedowns", 0) +
+                    participant["challenges"].get("baronTakedowns", 0) +
+                    participant["challenges"].get("riftHeraldTakedowns", 0)
+                )
+
+            elif field == "lineImpact" and team_position == "jungle":
+                # lineImpact 계산 (Jungle 포지션에만 적용)
+                player_data["lineImpact"] = (
+                    participant["challenges"].get("takedownsFirstXMinutes", 0) +
+                    participant["challenges"].get("earlyLaningPhaseGoldExpAdvantage", 0) +
+                    participant["challenges"].get("laningPhaseGoldExpAdvantage", 0)
+                )
+
+            else:
+                # 바로 접근 가능한 필드 값 가져오기
+                player_data[field] = participant["challenges"].get(field) if field in participant["challenges"] else participant.get(field, 0)
+
+        # 결과 리스트에 저장
+        results.append(player_data)
+
+    return results
+
+
+
+
 #모든 티어별 평균, 표준 편차를 구하는 메소드
 @routes.route('/analytic/tier', methods=['POST'])
 def receive_request_tier_analytic():
-    tiers = ["iron", "bronze", "silver", "gold", "platinum", "emerald", "diamond", "master", "grandmaster",
-             "challenger"]
+    tiers = ["iron", "bronze", "silver", "gold", "platinum", "emerald", "diamond", "master", "grandmaster", "challenger"]
     divisions = ["i", "ii", "iii", "iv"]
-    result={}
+    result = {}
 
     for tier in tiers:
-        # 상위 티어에 대해 division을 빈 문자열로 설정하여 반복
         tier_divisions = divisions if tier not in ["master", "grandmaster", "challenger"] else [""]
-        print(f"{tier}")
+        print(tier)
         for division in tier_divisions:
-            print(f"{division}")
+            print(division)
             try:
                 collection = get_mongo_rank(tier, division)
-                stats = get_stats_for_tier(collection)
+                stats_by_time = calculate_stats_by_time(collection)
                 tier_key = f"{tier}{'_' + division if division else ''}"
-                result[tier_key] = stats
+                result[tier_key] = stats_by_time
             except StopIteration:
                 result[tier_key] = {"message": "No data found"}
 
     collection = post_mongo_rank_analytics()
-    collection.insert_one(result)
-    return jsonify(result),200
+    collection.insert_one(deepcopy(result))
+    return jsonify(result), 200
 
-# 각 라인의 통계별 avg, stdDev 필드 추가
-def get_stats_for_tier(collection):
-    return {
-        "top": {
-            "soloKills": {
-                "avg": calculateStatsForTopLane(collection).next()["avgSoloKills"],
-                "stdDev": calculateStatsForTopLane(collection).next()["stdDevSoloKills"]
-            },
-            "turretTakedowns": {
-                "avg": calculateStatsForTopLane(collection).next()["avgTurretTakedowns"],
-                "stdDev": calculateStatsForTopLane(collection).next()["stdDevTurretTakedowns"]
-            },
-            "totalDamageTaken": {
-                "avg": calculateStatsForTopLane(collection).next()["avgTotalDamageTaken"],
-                "stdDev": calculateStatsForTopLane(collection).next()["stdDevTotalDamageTaken"]
-            },
-            "killParticipation": {
-                "avg": calculateStatsForTopLane(collection).next()["avgKillParticipation"],
-                "stdDev": calculateStatsForTopLane(collection).next()["stdDevKillParticipation"]
-            },
-            "impactScore": {
-                "avg": calculateStatsForTopLane(collection).next()["avgImpactScore"],
-                "stdDev": calculateStatsForTopLane(collection).next()["stdDevImpactScore"]
-            }
-        },
-        "jungle": {
-            "objectTakedowns": {
-                "avg": calculateStatsForJUNGLELane(collection).next()["avgObjectTakedowns"],
-                "stdDev": calculateStatsForJUNGLELane(collection).next()["stdDevObjectTakedowns"]
-            },
-            "turretTakedowns": {
-                "avg": calculateStatsForJUNGLELane(collection).next()["avgTurretTakedowns"],
-                "stdDev": calculateStatsForJUNGLELane(collection).next()["stdDevTurretTakedowns"]
-            },
-            "visionScore": {
-                "avg": calculateStatsForJUNGLELane(collection).next()["avgVisionScore"],
-                "stdDev": calculateStatsForJUNGLELane(collection).next()["stdDevVisionScore"]
-            },
-            "lineImpact": {
-                "avg": calculateStatsForJUNGLELane(collection).next()["avgLineImpact"],
-                "stdDev": calculateStatsForJUNGLELane(collection).next()["stdDevLineImpact"]
-            },
-            "impactScore": {
-                "avg": calculateStatsForJUNGLELane(collection).next()["avgImpactScore"],
-                "stdDev": calculateStatsForJUNGLELane(collection).next()["stdDevImpactScore"]
-            }
-        },
-        "mid": {
-            "killParticipation": {
-                "avg": calculateStatsForMIDLane(collection).next()["avgKillParticipation"],
-                "stdDev": calculateStatsForMIDLane(collection).next()["stdDevKillParticipation"]
-            },
-            "turretTakedowns": {
-                "avg": calculateStatsForMIDLane(collection).next()["avgTurretTakedowns"],
-                "stdDev": calculateStatsForMIDLane(collection).next()["stdDevTurretTakedowns"]
-            },
-            "totalDamageDealtToChampions": {
-                "avg": calculateStatsForMIDLane(collection).next()["avgTotalDamageDealtToChampions"],
-                "stdDev": calculateStatsForMIDLane(collection).next()["stdDevTotalDamageDealtToChampions"]
-            },
-            "objectTakedowns": {
-                "avg": calculateStatsForMIDLane(collection).next()["avgObjectTakedowns"],
-                "stdDev": calculateStatsForMIDLane(collection).next()["stdDevObjectTakedowns"]
-            },
-            "impactScore": {
-                "avg": calculateStatsForMIDLane(collection).next()["avgImpactScore"],
-                "stdDev": calculateStatsForMIDLane(collection).next()["stdDevImpactScore"]
-            }
-        },
-        "bottom": {
-            "totalDamageDealtToChampions": {
-                "avg": calculateStatsForBOTTOMLane(collection).next()["avgTotalDamageDealtToChampions"],
-                "stdDev": calculateStatsForBOTTOMLane(collection).next()["stdDevTotalDamageDealtToChampions"]
-            },
-            "totalMinionsKilled": {
-                "avg": calculateStatsForBOTTOMLane(collection).next()["avgTotalMinionsKilled"],
-                "stdDev": calculateStatsForBOTTOMLane(collection).next()["stdDevTotalMinionsKilled"]
-            },
-            "deaths": {
-                "avg": calculateStatsForBOTTOMLane(collection).next()["avgDeaths"],
-                "stdDev": calculateStatsForBOTTOMLane(collection).next()["stdDevDeaths"]
-            },
-            "skillshotsDodged": {
-                "avg": calculateStatsForBOTTOMLane(collection).next()["avgSkillshotsDodged"],
-                "stdDev": calculateStatsForBOTTOMLane(collection).next()["stdDevSkillshotsDodged"]
-            },
-            "impactScore": {
-                "avg": calculateStatsForBOTTOMLane(collection).next()["avgImpactScore"],
-                "stdDev": calculateStatsForBOTTOMLane(collection).next()["stdDevImpactScore"]
-            }
-        },
-        "utility": {
-            "visionScore": {
-                "avg": calculateStatsForUTILITYLane(collection).next()["avgVisionScore"],
-                "stdDev": calculateStatsForUTILITYLane(collection).next()["stdDevVisionScore"]
-            },
-            "totalDamageTaken": {
-                "avg": calculateStatsForUTILITYLane(collection).next()["avgTotalDamageTaken"],
-                "stdDev": calculateStatsForUTILITYLane(collection).next()["stdDevTotalDamageTaken"]
-            },
-            "totalDamageDealtToChampions": {
-                "avg": calculateStatsForUTILITYLane(collection).next()["avgTotalDamageDealtToChampions"],
-                "stdDev": calculateStatsForUTILITYLane(collection).next()["stdDevTotalDamageDealtToChampions"]
-            },
-            "totalTimeCCDealt": {
-                "avg": calculateStatsForUTILITYLane(collection).next()["avgTotalTimeCCDealt"],
-                "stdDev": calculateStatsForUTILITYLane(collection).next()["stdDevTotalTimeCCDealt"]
-            },
-            "impactScore": {
-                "avg": calculateStatsForUTILITYLane(collection).next()["avgImpactScore"],
-                "stdDev": calculateStatsForUTILITYLane(collection).next()["stdDevImpactScore"]
-            }
+# 시간별로 각 포지션의 평균 및 표준편차를 계산하여 저장
+def calculate_stats_by_time(collection):
+    stats = {str(minute): {} for minute in range(1, 61)}
+
+    top_stats = calculateStatsForTopLaneByGameDuration(collection)
+    jungle_stats = calculateStatsForJungleLaneByGameDuration(collection)
+    middle_stats = calculateStatsForMiddleLaneByGameDuration(collection)
+    bottom_stats = calculateStatsForBottomLaneByGameDuration(collection)
+    utility_stats = calculateStatsForUtilityLaneByGameDuration(collection)
+
+    for minute_stat in top_stats:
+        minute = int(float(minute_stat["gameMinute"]))
+        minute_str = str(minute)  # 문자열로 변환하여 사용
+        if minute_str not in stats:
+            stats[minute_str] = {"top": {}, "jungle": {}, "middle": {}, "bottom": {}, "utility": {}}
+
+        stats[minute_str]["top"] = {
+            "soloKills": minute_stat["soloKills"],
+            "turretTakedowns": minute_stat["turretTakedowns"],
+            "totalDamageTaken": minute_stat["totalDamageTaken"],
+            "killParticipation": minute_stat["killParticipation"],
+            "impactScore": minute_stat["impactScore"]
         }
-    }
+
+    for minute_stat in jungle_stats:
+        minute = int(float(minute_stat["gameMinute"]))
+        minute_str = str(minute)  # 문자열로 변환하여 사용
+        if minute_str not in stats:
+            stats[minute_str] = {"top": {}, "jungle": {}, "middle": {}, "bottom": {}, "utility": {}}
+        stats[minute_str]["jungle"] = {
+            "objectTakedowns": minute_stat["objectTakedowns"],
+            "turretTakedowns": minute_stat["turretTakedowns"],
+            "visionScore": minute_stat["visionScore"],
+            "lineImpact": minute_stat["lineImpact"],
+            "impactScore": minute_stat["impactScore"]
+        }
+
+    for minute_stat in middle_stats:
+        minute = int(float(minute_stat["gameMinute"]))
+        minute_str = str(minute)  # 문자열로 변환하여 사용
+        if minute_str not in stats:
+            stats[minute_str] = {"top": {}, "jungle": {}, "middle": {}, "bottom": {}, "utility": {}}
+        stats[minute_str]["middle"] = {
+            "killParticipation": minute_stat["killParticipation"],
+            "turretTakedowns": minute_stat["turretTakedowns"],
+            "totalDamageDealtToChampions": minute_stat["totalDamageDealtToChampions"],
+            "objectTakedowns": minute_stat["objectTakedowns"],
+            "impactScore": minute_stat["impactScore"]
+        }
+
+    for minute_stat in bottom_stats:
+        minute = int(float(minute_stat["gameMinute"]))
+        minute_str = str(minute)  # 문자열로 변환하여 사용
+        if minute_str not in stats:
+            stats[minute_str] = {"top": {}, "jungle": {}, "middle": {}, "bottom": {}, "utility": {}}
+        stats[minute_str]["bottom"] = {
+            "totalDamageDealtToChampions": minute_stat["totalDamageDealtToChampions"],
+            "totalMinionsKilled": minute_stat["totalMinionsKilled"],
+            "deaths": minute_stat["deaths"],
+            "skillshotsDodged": minute_stat["skillshotsDodged"],
+            "impactScore": minute_stat["impactScore"]
+        }
+
+    for minute_stat in utility_stats:
+        minute = int(float(minute_stat["gameMinute"]))
+        minute_str = str(minute)  # 문자열로 변환하여 사용
+        if minute_str not in stats:
+            stats[minute_str] = {"top": {}, "jungle": {}, "middle": {}, "bottom": {}, "utility": {}}
+        stats[minute_str]["utility"] = {
+            "visionScore": minute_stat["visionScore"],
+            "totalDamageTaken": minute_stat["totalDamageTaken"],
+            "totalDamageDealtToChampions": minute_stat["totalDamageDealtToChampions"],
+            "totalTimeCCDealt": minute_stat["totalTimeCCDealt"],
+            "impactScore": minute_stat["impactScore"]
+        }
+
+    return stats
