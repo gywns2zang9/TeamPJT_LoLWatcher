@@ -1,7 +1,6 @@
 package com.lolwatcher.event.client;
 
 import com.lolwatcher.event.config.DataAnalyticFeignConfig;
-import com.lolwatcher.event.config.RiotFeignConfig;
 import com.lolwatcher.event.dto.match.MatchDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
