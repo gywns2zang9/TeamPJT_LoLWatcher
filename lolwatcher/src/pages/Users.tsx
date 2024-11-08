@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import GameList from "../components/Users/GameList";
-import Profile from "../components/Users/Profile";
-import Overview from "../components/Users/Overview";
+import GameList from "../components/users/GameList";
+import Profile from "../components/users/Profile";
+import Overview from "../components/users/Overview";
 import "./Users.css";
 
 export default function Users() {

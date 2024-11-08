@@ -1,30 +1,35 @@
-import React from "react";
-import { NavLink, useNavigate } from "react-router-dom";
-import SearchBar from "../components/common/SearchBar";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { functionAccessToken } from "../api/authApi";
+import LoginForm from "../components/auth/LoginForm";
+import SignupForm from "../components/auth/SignupForm";
 import "./Main.css";
 
 export default function Main() {
   const navigate = useNavigate();
+  useEffect(() => {
+    const accesstoken = functionAccessToken();
+    // 이미 로그인 한 유저면 접근 막기
+    // if (!accesstoken) {
+    //   navigate("/users");
+    //   return;
+    // }
+  }, [navigate]);
 
-  const handleLogin = () => {
-    const accessToken = localStorage.getItem("accessToken");
-    if (accessToken) {
-      navigate("/record");
-    } else {
-      navigate("/login");
-    }
-  };
+  const [showLogin, setShowLogin] = useState(true);
 
   return (
     <div className="main-container">
-      <div className="main-content">
-        <h1 className="main-intro">LoL Watcher.com</h1>
+      <div className="main-intro">
+        {/* <h1 className="main-title">LoL Watcher .com</h1>s */}
       </div>
-      <SearchBar />
-      <button className="main-btn" onClick={handleLogin}>
-        서비스 이용하기
-      </button>
-      <NavLink to="/champions">챔피언 정보</NavLink>
+      <div className="main-form-area">
+        {showLogin ? (
+          <LoginForm toggleForm={() => setShowLogin(false)} />
+        ) : (
+          <SignupForm toggleForm={() => setShowLogin(true)} />
+        )}
+      </div>
     </div>
   );
 }

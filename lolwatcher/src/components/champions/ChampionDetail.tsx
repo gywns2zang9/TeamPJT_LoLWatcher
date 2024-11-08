@@ -37,9 +37,9 @@ export default function ChampionDetail({
   const CHAMPION_BACKGROUND_IMG_BASE_URL =
     "https://ddragon.leagueoflegends.com/cdn/img/champion/loading/"; // centered or splash or loading
   const PASSIVE_IMG_BASE_URL =
-    "https://ddragon.leagueoflegends.com/cdn/14.21.1/img/passive/"; //Passive
+    "https://ddragon.leagueoflegends.com/cdn/14.22.1/img/passive/"; //Passive
   const SPELL_IMG_BASE_URL =
-    "https://ddragon.leagueoflegends.com/cdn/14.21.1/img/spell/"; //Skills
+    "https://ddragon.leagueoflegends.com/cdn/14.22.1/img/spell/"; //Skills
 
   const [loading, setLoading] = useState(true);
   const [showContent, setShowContent] = useState(true);
@@ -67,7 +67,7 @@ export default function ChampionDetail({
   useEffect(() => {
     const fetchChampionData = async () => {
       try {
-        const url = `https://ddragon.leagueoflegends.com/cdn/14.21.1/data/ko_KR/champion/${championId}.json`;
+        const url = `https://ddragon.leagueoflegends.com/cdn/14.22.1/data/ko_KR/champion/${championId}.json`;
         const response = await axios.get(url);
         const championData = response.data.data[championId];
         setChampion({ title: championData.title, lore: championData.lore });
@@ -102,7 +102,7 @@ export default function ChampionDetail({
   useEffect(() => {
     const fetchSkinData = async () => {
       try {
-        const url = `https://ddragon.leagueoflegends.com/cdn/14.21.1/data/ko_KR/champion/${championId}.json`;
+        const url = `https://ddragon.leagueoflegends.com/cdn/14.22.1/data/ko_KR/champion/${championId}.json`;
         const response = await axios.get(url);
         const championData = response.data.data[championId];
 
