@@ -1,5 +1,5 @@
 import "./ResultReport.css";
-import GlobalGold from "../components/result1/GlobalGold";
+import GlobalGold from "../components/result/GlobalGold";
 
 export default function ResultReport() {
   return (
