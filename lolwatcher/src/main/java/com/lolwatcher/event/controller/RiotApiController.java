@@ -51,7 +51,7 @@ public class RiotApiController {
     }
 
     @GetMapping("/info")
-    public List<RecordDto> getMatchBySummoner(@RequestParam("name") String name, @RequestParam("tag") String tag) {
+    public RecordDto getMatchBySummoner(@RequestParam("name") String name, @RequestParam("tag") String tag) {
         log.info("info : 전적 조회 \n name:{} tag:{}", name, tag);
         System.out.println("info : 전적 조회 \n name : " + name + " tag : " + tag);
         return riotApiService.getMatchDataBySummoner(name, tag);

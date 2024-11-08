@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@FeignClient(name = "RiotApiClient", url = "${riot.lol.url}", configuration = RiotFeignConfig.class)
-public interface RiotApiClient {
+@FeignClient(name = "RiotApiClient", url = "${riot.lol.asia-url}", configuration = RiotFeignConfig.class)
+public interface RiotAsiaApiClient {
 
     @RequestMapping(method = RequestMethod.GET, value = "/riot/account/v1/accounts/by-riot-id/{gameName}/{tagLine}")
     AccountDto getSummonerRequest(@PathVariable String gameName, @PathVariable String tagLine);
