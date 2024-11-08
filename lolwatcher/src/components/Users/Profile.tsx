@@ -3,7 +3,7 @@ import { getUserProfile } from "../../api/gameApi";
 import "./Profile.css";
 
 const CHAMPION_IMG_BASE_URL =
-  "https://ddragon.leagueoflegends.com/cdn/14.21.1/img/champion/";
+  "https://ddragon.leagueoflegends.com/cdn/14.22.1/img/champion/";
 
 interface UserProfile {
   nickname: string;

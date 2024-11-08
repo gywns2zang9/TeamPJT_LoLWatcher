@@ -11,7 +11,7 @@ interface Champion {
 
 export default function Champions() {
   const CHAMPION_IMG_BASE_URL =
-    "https://ddragon.leagueoflegends.com/cdn/14.21.1/img/champion/";
+    "https://ddragon.leagueoflegends.com/cdn/14.22.1/img/champion/";
 
   const [champions, setChampions] = useState<Champion[]>([]);
   const [selectedChampion, setSelectedChampion] = useState<Champion | null>(
@@ -22,7 +22,7 @@ export default function Champions() {
     const fetchChampions = async () => {
       try {
         const response = await axios.get(
-          "https://ddragon.leagueoflegends.com/cdn/14.21.1/data/ko_KR/champion.json"
+          "https://ddragon.leagueoflegends.com/cdn/14.22.1/data/ko_KR/champion.json"
         );
         const data = response.data.data;
         const championsArray = Object.keys(data).map((key) => ({
