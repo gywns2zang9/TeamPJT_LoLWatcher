@@ -1,59 +1,66 @@
-.container {
-  text-align: center;
+.form-container {
   width: 100%;
-  height: 80%;
+  height: 100%;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid pink;
+}
+.form-main {
+  width: 100%;
+  height: 60%;
+  display: flex;
+  justify-content: center;
   align-items: center;
 }
 
-.insert-container {
-  width: 100%;
+.input-box {
+  width: 60%;
   height: 100%;
+  display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
 }
 
-.logo {
-  font-size: 60px;
-  margin-top: 20px;
-}
-
-.insert {
-  width: 100%;
-  padding-left: 13px;
-  padding-right: 13px;
-  padding-top: 14px;
-  padding-bottom: 14px;
+.input-field {
+  max-width: 300px;
+  padding: 10px;
   border-radius: 10px;
-  margin-top: 10px;
   box-sizing: border-box;
   font-size: 20px;
   align-items: center;
-  margin-inline: 400px;
 }
 
 .login-button {
-  width: 40%;
-  height: 100%;
-  border-radius: 10px;
-  margin-top: 20px;
-  box-sizing: border-box;
-  background-color: black;
-  font-size: 20px;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: none;
+  background-color: #99cbfa;
+  font-size: 24px;
   font-weight: bold;
   color: white;
-  font-weight: bold;
 }
 
 .login-button:hover {
-  background-color: gray;
+  background-color: #70b6f7;
+  cursor: url("../../assets/cursor/hover-cursor.png"), pointer;
 }
 
-.regist-button {
-  width: 100%;
-  padding: 15px;
+.toggle-msg {
+  display: flex;
+  font-size: 22px;
   color: white;
-  font-weight: bold;
-  background-color: black;
-  margin-top: 10px;
+  padding: 0;
+  margin-bottom: 20px;
+  cursor: url("../../assets/cursor/hover-cursor.png"), pointer;
+  gap: 8px;
+}
+
+.toggle-msg span {
+  font-size: 20px;
+  margin: auto;
 }
