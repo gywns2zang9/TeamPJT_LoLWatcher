@@ -2,17 +2,18 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { functionAccessToken } from "../api/authApi";
 import LoginForm from "../components/auth/LoginForm";
-import RegistForm from "../components/auth/RegistForm";
+import SignupForm from "../components/auth/SignupForm";
 import "./Main.css";
 
 export default function Main() {
   const navigate = useNavigate();
   useEffect(() => {
     const accesstoken = functionAccessToken();
-    if (!accesstoken) {
-      navigate("/users");
-      return;
-    }
+    // 이미 로그인 한 유저면 접근 막기
+    // if (!accesstoken) {
+    //   navigate("/users");
+    //   return;
+    // }
   }, [navigate]);
 
   const [showLogin, setShowLogin] = useState(true);
@@ -26,8 +27,7 @@ export default function Main() {
         {showLogin ? (
           <LoginForm toggleForm={() => setShowLogin(false)} />
         ) : (
-          // <RegistForm toggleForm={() => setShowLogin(true)} />
-          <RegistForm />
+          <SignupForm toggleForm={() => setShowLogin(true)} />
         )}
       </div>
     </div>

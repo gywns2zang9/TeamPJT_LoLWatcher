@@ -1,7 +1,7 @@
 import axiosInstance from "./axiosInstance";
 
 // 회원가입 API
-export const postRegistAPI = async (
+export const postSignupAPI = async (
   userId: string,
   password: string,
   riotId: string,

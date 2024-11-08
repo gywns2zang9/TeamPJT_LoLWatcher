@@ -34,18 +34,18 @@
   align-items: center;
 }
 
-.login-button {
+.form-button {
   width: 100px;
   height: 100px;
   border-radius: 50%;
   border: none;
   background-color: #99cbfa;
-  font-size: 24px;
+  font-size: 22px;
   font-weight: bold;
   color: white;
 }
 
-.login-button:hover {
+.form-button:hover {
   background-color: #70b6f7;
   cursor: url("../../assets/cursor/hover-cursor.png"), pointer;
 }

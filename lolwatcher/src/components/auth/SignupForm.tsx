@@ -1,37 +1,42 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { functionAccessToken, postLoginAPI } from "../../api/authApi";
+import { postSignupAPI } from "../../api/authApi";
 import "./AuthForm.css";
 
-interface LoginFormProps {
+interface SignupFormProps {
   toggleForm: () => void;
 }
 
-export default function LoginForm({ toggleForm }: LoginFormProps) {
-  const navigate = useNavigate();
+export default function SignupForm({ toggleForm }: SignupFormProps) {
   const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
+  const [riotId, setRiotId] = useState("test");
+  const [riotPassword, setRiotPassword] = useState("test");
+  const navigate = useNavigate();
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!userId || !password) {
       window.alert("아이디와 비밀번호를 입력해주세요.");
       return;
     }
     try {
+      console.log("회원가입 시도");
+      await postSignupAPI(userId, password, riotId, riotPassword);
+      console.log("회원가입 성공");
       console.log("로그인 시도");
       await postLoginAPI(userId, password);
       window.alert("안녕하세요.");
       navigate("/users");
     } catch (err) {
-      console.log("로그인 실패");
       console.log(err);
     }
   };
 
   return (
     <div className="form-container">
-      <h1>로그인</h1>
+      <h1>회원가입</h1>
       <div className="form-main">
         <div className="input-box">
           <input
@@ -51,14 +56,14 @@ export default function LoginForm({ toggleForm }: LoginFormProps) {
             maxLength={20}
           />
         </div>
-        <button className="form-button" onClick={handleLogin}>
-          로그인
+        <button className="form-button" onClick={handleSignup}>
+          회원가입
         </button>
       </div>
 
       <p onClick={toggleForm} className="toggle-msg">
-        회원이 아니신가요?
-        <span>회원가입</span>
+        기존 회원이신가요?
+        <span>로그인</span>
       </p>
     </div>
   );
