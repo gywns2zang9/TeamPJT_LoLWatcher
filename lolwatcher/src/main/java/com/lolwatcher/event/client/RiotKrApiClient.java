@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.Set;
 
-@FeignClient(name = "RiotKrApiClient", url = "${riot.lol.asia-url}", configuration = RiotKrFeignConfig.class)
+@FeignClient(name = "RiotKrApiClient", url = "${riot.lol.kr-url}", configuration = RiotKrFeignConfig.class)
 public interface RiotKrApiClient {
 
     @RequestMapping(method = RequestMethod.GET, value = "/lol/summoner/v4/summoners/by-puuid/{encryptedPUUID}")
