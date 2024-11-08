@@ -21,7 +21,7 @@ export default function Main() {
   return (
     <div className="main-container">
       <div className="main-intro">
-        <h1 className="main-title">LoL Watcher .com</h1>
+        {/* <h1 className="main-title">LoL Watcher .com</h1>s */}
       </div>
       <div className="main-form-area">
         {showLogin ? (

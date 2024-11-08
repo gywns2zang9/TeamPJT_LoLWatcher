@@ -12,6 +12,11 @@
 }
 
 .main-intro {
+  min-width: 800px;
+  height: 160px;
+  background-image: url("../assets/lolwatcher-title.png");
+  background-size: cover;
+  background-position: center;
   display: flex;
   flex-direction: column;
   margin-bottom: 2%;
