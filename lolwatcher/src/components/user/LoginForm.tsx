@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import "./LoginForm.css";
 import { useNavigate } from "react-router-dom";
+import { postLoginAPI } from "../../api/authApi";
+import "./LoginForm.css";
 
 const LoginForm: React.FC = () => {
   const [userId, setUserId] = useState("");
@@ -8,34 +9,14 @@ const LoginForm: React.FC = () => {
   const navigate = useNavigate();
 
   const handleLogin = async () => {
-    console.log("UserId:", userId);
-    //console.log('Password:', password);
-    console.log("---------------");
-    const authApiUrl = process.env.REACT_APP_AUTH_API_URL!;
     try {
-      const response = await fetch(`${authApiUrl}/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          userId,
-          password
-        })
-      });
-
-      if (response.ok) {
-        const result = await response.json();
-        localStorage.setItem("accessToken", result.accessToken);
-        //sessionStorage.setItem('refreshToken',result.refreshToken);
-        clearInput();
-        console.log("로그인 성공:", result);
-        navigate("/users");
-      } else {
-        console.error("로그인 실패");
-      }
-    } catch (error) {
-      console.error("오류 발생:", error);
+      console.log("로그인 시도");
+      await postLoginAPI(userId, password);
+      console.log("로그인 성공");
+      navigate("/users");
+    } catch (err) {
+      console.log("로그인 실패");
+      console.log(err);
     }
   };
 
