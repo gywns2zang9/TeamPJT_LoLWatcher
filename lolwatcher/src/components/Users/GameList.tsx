@@ -69,7 +69,7 @@ export default function GameList({ name, tag }: GameListProps) {
         const formattedInfos = data.map((item: any, index: number) => {
           const users = item.users.map((user: any) => ({
             championName: user.championName,
-            summonerName: user.summonerName || "User Not Found", // summonerName이 없을 경우 "user not found"로 설정
+            summonerName: user.summonerName,
             teamId: user.teamId,
             kills: user.kills,
             assists: user.assists,

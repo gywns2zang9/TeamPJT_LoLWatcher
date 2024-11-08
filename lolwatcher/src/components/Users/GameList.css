@@ -89,7 +89,6 @@
 .item-team {
   width: 40%;
   display: flex;
-  justify-content: flex-end;
   margin: auto 0;
   align-items: center;
   gap: 24px;
@@ -101,6 +100,8 @@
 }
 
 .user-info {
+  display: flex;
+  width: 150px;
   align-items: center;
 }
 
@@ -111,7 +112,7 @@
 }
 
 .users-name {
-  width: 120px;
+  width: 100px;
   margin-left: 4px;
   font-size: 16px;
   white-space: nowrap; /* 한 줄로 표시 */
