@@ -28,7 +28,7 @@ export const postLoginAPI = async (userId: string, password: string) => {
 
 //로그아웃 함수
 export const functionLogout = async (accessToken: string) => {
-  localStorage.removeItem(accessToken);
+  localStorage.removeItem("accessToken");
   return;
 };
 
