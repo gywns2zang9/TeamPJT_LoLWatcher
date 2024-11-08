@@ -20,7 +20,11 @@ export default function SignupForm({ toggleForm }: SignupFormProps) {
     if (!userId || !password) {
       window.alert("아이디와 비밀번호를 입력해주세요.");
       return;
+    } else if (userId) {
+      window.alert("임시로 막았지롱~ㅋ");
+      return;
     }
+
     try {
       console.log("회원가입 시도");
       await postSignupAPI(userId, password, riotId, riotPassword);
