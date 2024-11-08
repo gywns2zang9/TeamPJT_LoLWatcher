@@ -53,7 +53,7 @@ public class RiotApiService {
         // TODO: LIST id를 기반으로 데이터 베이스 확인 후 없는 데이터들만
 
         List<MatchDto> lists = new ArrayList<>();
-        for(int i = 0 ; i < 5; i++) {
+        for(int i = 0 ; i < 10; i++) {
             lists.add(riotApiClient.getMatchData(matchIds.get(i)));
         }
         return matchDtoToRecordDto(puuid, lists);
