@@ -49,8 +49,9 @@ export default function GameList({ name, tag }: GameListProps) {
           }
         );
         const data = response.data;
+        console.log(data);
 
-        const formattedInfos = data.map((item: any, index: number) => {
+        const formattedInfos = data.matchs.map((item: any, index: number) => {
           const users = item.users.map((user: any) => ({
             championName: user.championName,
             summonerName: user.summonerName,
