@@ -40,7 +40,7 @@ export default function SignupForm({ toggleForm }: SignupFormProps) {
 
   return (
     <div className="form-container">
-      <h1>회원가입</h1>
+      <h1>※회원가입 막음※</h1>
       <div className="form-main">
         <div className="input-box">
           <input

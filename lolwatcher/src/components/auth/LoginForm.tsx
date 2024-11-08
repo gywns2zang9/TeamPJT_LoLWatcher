@@ -31,7 +31,7 @@ export default function LoginForm({ toggleForm }: LoginFormProps) {
 
   return (
     <div className="form-container">
-      <h1>로그인</h1>
+      <h1>※로그인 안막음※</h1>
       <div className="form-main">
         <div className="input-box">
           <input
