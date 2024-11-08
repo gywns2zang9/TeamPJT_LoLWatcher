@@ -65,7 +65,7 @@ public class RiotApiService {
             List<RecordUserDto> users = new ArrayList<>();
             boolean win = false;
             for(ParticipantDto participant : matchDto.info().participants()) {
-                users.add(new RecordUserDto(participant.championName(), participant.summonerName(), participant.teamId(), participant.kills(), participant.assists(), participant.deaths(), participant.totalMinionsKilled()));
+                users.add(new RecordUserDto(participant.championName(), participant.riotIdGameName(), participant.teamId(), participant.kills(), participant.assists(), participant.deaths(), participant.totalMinionsKilled()));
                 if(puuid.equals(participant.puuid())) {
                     win = participant.win();
                 }
