@@ -2,12 +2,14 @@ import json
 import string
 from http.client import responses
 
+from bson import ObjectId
 from flask import Blueprint, jsonify, request
-from config.mongo_config import get_mongo_rank, post_mongo_rank_analytics, get_mongo_rank_analytics
+from config.mongo_config import get_mongo_rank, mongo_rank_analytics
 from analyze.match_analyzer import calculateStatsForTopLane,calculateStatsForJUNGLELane,calculateStatsForMIDLane,calculateStatsForBOTTOMLane,calculateStatsForUTILITYLane
 from analyze.match_analyzer import calculateStatsForTopLaneByGameDuration,calculateStatsForJungleLaneByGameDuration,calculateStatsForMiddleLaneByGameDuration,calculateStatsForBottomLaneByGameDuration,calculateStatsForUtilityLaneByGameDuration
 from copy import deepcopy
-
+import os
+from dotenv import load_dotenv
 routes = Blueprint('routes', __name__)
 
 
@@ -17,48 +19,61 @@ def receive_match_data():
 
     tier = data["tier"] #티어
     division = data["division"] #위치
-    #match_id = data["id"] #분석 확인 식별 용 id
+    match_id = data["id"] #분석 확인 식별 용 id
     match_dto = data["matchDto"]  # match 정보
 
-    top_info = data["top"]
-    participants = process_participants(match_dto)
+    duration = match_dto["info"]["gameDuration"] // 60
 
-    for participant in participants:
-        print(f'{participant}')
-
-    collection = get_mongo_rank_analytics(tier, division)
+    collection = mongo_rank_analytics()
 
     tier_division_field = f"{tier}_{division}"
-    result = collection.find_one({},{tier_division_field: 1, "_id":0 })
+    result = collection.find_one({"_id": ObjectId(os.getenv("CALCULATED_DATA"))}, {f"{tier_division_field}.{duration}": 1, "_id": 0})
 
-    if result and tier_division_field in result:
-        tier_data = result[tier_division_field]
-
-
+    if result and tier_division_field in result and str(duration) in result[f"{tier}_{division}"]:
+        tier_data = result[tier_division_field][str(duration)]
 
         top_data = tier_data["top"]
+        jungle_data = tier_data["jungle"]
+        middle_data = tier_data["middle"]
+        bottom_data = tier_data["bottom"]
+        utility_data = tier_data["utility"]
+
+        participants = process_participants(match_dto)
 
         # Z-score 계산 함수
         def calculate_z_score(value, avg, std_dev):
             return (value - avg) / std_dev if std_dev != 0 else 0
 
         # Z-score 계산 결과를 저장할 딕셔너리
-        z_scores = {}
+        z_scores = {
+            "match_id": match_id,
+            "top": [],
+            "jungle": [],
+            "middle": [],
+            "bottom": [],
+            "utility": []
+        }
 
-        # top 필드의 각 항목에 대해 Z-score를 계산
-        for field, value in top_info.items():
-            if field in top_data:
-                avg = top_data[field]["avg"]
-                std_dev = top_data[field]["stdDev"]
-                z_scores[field] = calculate_z_score(value, avg, std_dev)
-                print(f"필드 : {field}, 평균 : {avg} , 표준편차 : {std_dev} , 전달 받은 값 : {value}, 차이 : {z_scores[field]}")
+        for participant in participants:
+            team_position = participant["teamPosition"]
+            position_data = tier_data[team_position]
 
-        return jsonify({
-            "status": "success",
-            "data": {
-                "top": z_scores
-            }
-        }), 200
+            # 현재 참가자의 Z-score 정보를 저장할 딕셔너리
+            participant_z_scores = {}
+            for field, value in participant.items():
+                if field != "teamPosition" and field in position_data:
+                    avg = position_data[field]["avg"]
+                    std_dev = position_data[field]["stdDev"]
+                    participant_z_scores[field] = calculate_z_score(value, avg, std_dev)
+                    print(
+                        f"포지션: {team_position}, 필드: {field}, 평균: {avg}, 표준편차: {std_dev}, 값: {value}, Z-score: {participant_z_scores[field]}")
+
+            # 포지션별 리스트에 현재 참가자의 Z-score 추가
+            z_scores[team_position].append(participant_z_scores)
+            print("------------------------------------")
+
+            # JSON 응답에서 status와 data 필드를 제거하고 z_scores 자체를 반환
+        return jsonify(z_scores), 200
 
     else:
         return jsonify({"status": "error", "message": "No data found"}), 404
@@ -151,7 +166,7 @@ def receive_request_tier_analytic():
             except StopIteration:
                 result[tier_key] = {"message": "No data found"}
 
-    collection = post_mongo_rank_analytics()
+    collection = mongo_rank_analytics()
     collection.insert_one(deepcopy(result))
     return jsonify(result), 200
 
