@@ -24,6 +24,15 @@ interface GameInfo {
   mainUser: User | null; // mainUser 추가
 }
 
+interface UserInfo {
+  division: string;
+  leaguePoint: number;
+  losses: number;
+  queueType: string;
+  tier: string;
+  wins: number;
+}
+
 export default function Users() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -34,6 +43,7 @@ export default function Users() {
 
   const [nickName, setNickName] = useState<string>("");
   const [gameInfos, setGameInfos] = useState<GameInfo[]>([]);
+  const [userInfo, setUserInfo] = useState<UserInfo[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -52,6 +62,7 @@ export default function Users() {
         );
         const data = response.data;
         console.log(data);
+        setUserInfo(data.userInfo);
 
         const formattedInfos = data.matchs.map((item: any, index: number) => {
           const users = item.users.map((user: any) => ({
@@ -137,7 +148,7 @@ export default function Users() {
           <>
             <div className="users-article">
               <div className="article-profile">
-                {<Profile name={name} tag={tag} />}
+                {<Profile name={name} tag={tag} userInfo={userInfo} />}
               </div>
               <div className="article-games">
                 {<GameList gameInfos={gameInfos} />}
