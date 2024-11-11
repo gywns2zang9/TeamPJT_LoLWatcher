@@ -56,10 +56,12 @@ export default function GameList({ gameInfos }: GameListProps) {
     return `${minutes}분 ${seconds}초`;
   };
 
+  //KDA 계산
   const calculateKDA = (kills: number, assists: number, deaths: number) => {
     return deaths === 0 ? "노데스" : ((kills + assists) / deaths).toFixed(2);
   };
 
+  //분당 CS 계산
   const calculateCSPerMinute = (cs: number, duration: number) => {
     const minutes = duration / 60;
     return (cs / minutes).toFixed(1);

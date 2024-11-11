@@ -129,17 +129,25 @@ export default function Users() {
       </div>
 
       <div className="users-main">
-        <div className="users-profile">
-          {name && tag && <Profile name={name} tag={tag} />}
-        </div>
-        <div className="users-article">
-          <div className="article-overview">
-            <Overview />
+        {loading ? (
+          <div className="loading-spinner">
+            <div className="spinner"></div>
           </div>
-          <div className="article-games">
-            {name && tag && !loading && <GameList gameInfos={gameInfos} />}
-          </div>
-        </div>
+        ) : (
+          <>
+            <div className="users-profile">
+              {name && tag && <Profile name={name} tag={tag} />}
+            </div>
+            <div className="users-article">
+              <div className="article-overview">
+                <Overview />
+              </div>
+              <div className="article-games">
+                {name && tag && <GameList gameInfos={gameInfos} />}
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
