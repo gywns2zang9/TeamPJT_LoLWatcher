@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.accessibility.AccessibleIcon;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -51,22 +52,22 @@ public class RiotApiService {
     }
 
     public RecordDto getMatchDataBySummoner(String name, String tag) {
-        String puuid = riotAsiaApiClient.getSummonerRequest(name, tag).puuid();
-        log.info("puuid: {}", puuid);
-        SummonerDTO summoner = riotKrApiClient.getSummoner(puuid);
+        AccountDto accountDto = riotAsiaApiClient.getSummonerRequest(name, tag);
+        log.info("puuid: {}", accountDto.puuid());
+        SummonerDTO summoner = riotKrApiClient.getSummoner(accountDto.puuid());
         Set<LeagueEntryDTO> summonerInfo = riotKrApiClient.getLeagueInfo(summoner.id());
         Set<RecordUserLeagueInfo> userInfo = new HashSet<>();
         for(LeagueEntryDTO leagueEntryDTO : summonerInfo) {
             userInfo.add(new RecordUserLeagueInfo(leagueEntryDTO.queueType(), leagueEntryDTO.tier(), leagueEntryDTO.rank(), leagueEntryDTO.leaguePoint(), leagueEntryDTO.wins(), leagueEntryDTO.losses()));
         }
-        List<String> matchIds = riotAsiaApiClient.getMatchIds(puuid);
+        List<String> matchIds = riotAsiaApiClient.getMatchIds(accountDto.puuid());
         // TODO: LIST id를 기반으로 데이터 베이스 확인 후 없는 데이터들만
 
         List<MatchDto> lists = new ArrayList<>();
         for(int i = 0 ; i < 10; i++) {
             lists.add(riotAsiaApiClient.getMatchData(matchIds.get(i)));
         }
-        return new RecordDto(matchDtoToRecordDto(puuid, lists), userInfo);
+        return new RecordDto(matchDtoToRecordDto(accountDto.puuid(), lists), userInfo, new RecordSummonerDto(accountDto.gameName(), accountDto.tagLine(), accountDto.puuid(), summoner.summonerLevel(), summoner.profileIconId()));
     }
 
     private List<RecordMatchDto> matchDtoToRecordDto(String puuid, List<MatchDto> lists) {
