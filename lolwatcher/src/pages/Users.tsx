@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import GameList from "../components/users/GameList";
 import Profile from "../components/users/Profile";
-import Overview from "../components/users/Overview";
 import axios from "axios";
 import "./Users.css";
 
@@ -52,6 +51,7 @@ export default function Users() {
           }
         );
         const data = response.data;
+        console.log(data);
 
         const formattedInfos = data.matchs.map((item: any, index: number) => {
           const users = item.users.map((user: any) => ({
@@ -135,15 +135,12 @@ export default function Users() {
           </div>
         ) : (
           <>
-            <div className="users-profile">
-              {name && tag && <Profile name={name} tag={tag} />}
-            </div>
             <div className="users-article">
-              <div className="article-overview">
-                <Overview />
+              <div className="article-profile">
+                {<Profile name={name} tag={tag} />}
               </div>
               <div className="article-games">
-                {name && tag && <GameList gameInfos={gameInfos} />}
+                {<GameList gameInfos={gameInfos} />}
               </div>
             </div>
           </>

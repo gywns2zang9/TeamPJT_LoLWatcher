@@ -63,11 +63,6 @@
   border: 2px solid blue;
 }
 
-.users-profile {
-  width: 90%;
-  margin: auto;
-}
-
 .users-article {
   display: flex;
   width: 90%;
@@ -75,7 +70,7 @@
   padding: 2%;
 }
 
-.article-overview {
+.article-profile {
   position: sticky;
   top: 10%;
   width: 25%;

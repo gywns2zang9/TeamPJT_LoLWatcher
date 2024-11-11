@@ -1,6 +1,6 @@
 import "./MyPageForm.css";
 
-export default function Overview() {
+export default function MyPageForm() {
   return (
     <div className="mypage-container">
       <h1>MyPage</h1>
