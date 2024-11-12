@@ -1,28 +1,14 @@
 .profile-container {
   width: 100%;
   border: 1px solid black;
-  margin: 4px;
-  padding: 4px;
   display: flex;
   align-items: center;
-}
-
-.profile-tier {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  object-fit: cover;
+  flex-direction: column;
+  padding: 5%;
 }
 
 .profile-info {
-  margin-left: 16px;
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.profile-nickname {
-  margin: 10px 0px;
 }
 
 .profile-most3 {
@@ -39,5 +25,26 @@
   height: 36px;
   border-radius: 50%;
   border: 3px solid gold;
+  object-fit: cover;
+}
+
+.rank-info {
+  display: flex;
+  width: 100%;
+  border: 1px solid black;
+  flex-direction: column;
+}
+
+.rank-box {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid black;
+  align-items: center;
+}
+
+.rank-tier {
+  width: 60%;
+  height: 60%;
+  border-radius: 50%;
   object-fit: cover;
 }
