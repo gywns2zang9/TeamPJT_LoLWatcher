@@ -27,8 +27,8 @@ public class RecordService {
 
     // Redis에서 사용할 사용자 갱신 토큰의 키 접두사
     private static final String TOKEN_KEY_PREFIX = "user:update:";
-    // 갱신 제한 시간 (분 단위)
-    private static final int COOLDOWN_MINUTES = 2;
+    // 갱신 제한 시간 (초 단위)
+    private static final int COOLDOWN_SECONDS = 120;
 
     // name과 tag로 전적 갱신
     public RecordRes updateRecords(String name, String tag) {
@@ -39,20 +39,20 @@ public class RecordService {
         String tokenKey = TOKEN_KEY_PREFIX + account.puuid();
 
         Boolean wasSet = stringRedisTemplate.opsForValue()
-                .setIfAbsent(tokenKey, "active", Duration.ofMinutes(COOLDOWN_MINUTES));
+                .setIfAbsent(tokenKey, "active", Duration.ofSeconds(COOLDOWN_SECONDS));
 
         System.out.println(wasSet+" 토큰 확인: "+Boolean.FALSE.equals(wasSet));
         if (Boolean.FALSE.equals(wasSet)) {
             System.out.println("접속 확인");
-            int remainingTime = stringRedisTemplate.getExpire(tokenKey, TimeUnit.MINUTES).intValue();
+            int remainingTime = stringRedisTemplate.getExpire(tokenKey, TimeUnit.SECONDS).intValue();
             System.out.println("remainingTime 확인 "+remainingTime);
-            throw new TooManyReqeustsException("전적은 20분에 한 번만 갱신할 수 있습니다.");
+            throw new TooManyReqeustsException("전적은 120초에 한 번만 갱신할 수 있습니다.");
         }
 
         try {
             // 전적 갱신 수행
             performRecordUpdate(account);
-            return new RecordRes(COOLDOWN_MINUTES);
+            return new RecordRes(COOLDOWN_SECONDS);
         } catch (Exception e) {
             stringRedisTemplate.delete(tokenKey);
             throw new RuntimeException("전적 갱신 중 오류가 발생했습니다.", e);
