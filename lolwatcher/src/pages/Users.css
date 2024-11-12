@@ -6,16 +6,17 @@
 }
 
 .link {
-  position: fixed;
   justify-content: flex-end;
-  width: 100%;
+  width: 90%;
+  margin-top: 10px;
+  gap: 10px;
 }
 
 .users-header {
   display: flex;
   flex-direction: column;
   text-align: center;
-  margin: 3%;
+  margin: 2%;
   width: 100%;
   justify-content: center;
   align-items: center;
@@ -48,6 +49,7 @@
   background-color: #007bff;
   color: white;
   border: none;
+  cursor: url("../assets/cursor/hover-cursor.png"), pointer;
 }
 
 .header-btn:hover {
@@ -58,9 +60,6 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  /* 지울거 */
-  margin: 2px;
-  border: 2px solid blue;
 }
 
 .users-article {
@@ -72,7 +71,7 @@
 
 .article-profile {
   position: sticky;
-  top: 10%;
+  top: 5%;
   width: 25%;
   height: 90%;
   margin-right: 5%;
