@@ -63,11 +63,6 @@
   border: 2px solid blue;
 }
 
-.users-profile {
-  width: 90%;
-  margin: auto;
-}
-
 .users-article {
   display: flex;
   width: 90%;
@@ -75,7 +70,7 @@
   padding: 2%;
 }
 
-.article-overview {
+.article-profile {
   position: sticky;
   top: 10%;
   width: 25%;
@@ -85,4 +80,29 @@
 
 .article-games {
   width: 70%;
+}
+
+.loading-spinner {
+  width: 100%;
+  display: flex;
+  justify-content: enter;
+}
+
+.spinner {
+  margin-top: 5%;
+  width: 60px;
+  height: 60px;
+  border: 5px solid #99cbfa;
+  border-top: 5px solid #fff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

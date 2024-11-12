@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import "./GameList.css";
 import GameDetail from "./GameDetail";
 
@@ -25,69 +24,11 @@ interface GameInfo {
 }
 
 interface GameListProps {
-  name: string; //카림sk
-  tag: string; //kr1
+  gameInfos: GameInfo[];
 }
 
-export default function GameList({ name, tag }: GameListProps) {
-  const [loading, setLoading] = useState(true);
+export default function GameList({ gameInfos }: GameListProps) {
   const [selectedInfoId, setSelectedInfoId] = useState<number | null>(null);
-  const [infos, setInfos] = useState<GameInfo[]>([]);
-
-  useEffect(() => {
-    setLoading(true);
-    const fetchData = async () => {
-      try {
-        const accessToken = localStorage.getItem("accessToken");
-        const response = await axios.get(
-          "https://lolwatcher.com/api/riot/info",
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`
-            },
-            params: { name, tag }
-          }
-        );
-        const data = response.data;
-        console.log(data);
-
-        const formattedInfos = data.matchs.map((item: any, index: number) => {
-          const users = item.users.map((user: any) => ({
-            championName: user.championName,
-            summonerName: user.summonerName,
-            teamId: user.teamId,
-            kills: user.kills,
-            assists: user.assists,
-            deaths: user.deaths,
-            totalMinionsKilled: user.totalMinionsKilled
-          }));
-
-          // mainUser 설정 로직
-          const mainUser: User | null =
-            users.find(
-              (user: User) =>
-                user.summonerName.replace(/\s+/g, "").toLowerCase() ===
-                name.replace(/\s+/g, "").toLowerCase()
-            ) || null;
-
-          return {
-            id: index + 1,
-            gameDuration: item.info.gameDuration,
-            gameEndStamp: item.info.gameEndStamp,
-            win: item.info.win,
-            users: users,
-            mainUser: mainUser
-          };
-        });
-        setLoading(false);
-        setInfos(formattedInfos);
-      } catch (error) {
-        console.error("데이터 가져오기 실패:", error);
-      }
-    };
-
-    fetchData();
-  }, [name, tag]);
 
   const handleClick = (id: number) => {
     setSelectedInfoId(id === selectedInfoId ? null : id);
@@ -126,21 +67,10 @@ export default function GameList({ name, tag }: GameListProps) {
     return (cs / minutes).toFixed(1);
   };
 
-  if (loading) {
-    return (
-      <div className="list-container">
-        <h2 className="container-title">게임 목록</h2>
-        <div className="loading-spinner">
-          <div className="spinner"></div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="list-container">
       <h2 className="container-title">게임 목록</h2>
-      {infos.map((info) => (
+      {gameInfos.map((info) => (
         <React.Fragment key={info.id}>
           <div
             className={`list-item ${
