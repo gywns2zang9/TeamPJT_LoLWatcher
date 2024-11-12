@@ -8,6 +8,9 @@ import Users from "./pages/Users";
 import ResultReport from "./pages/ResultReport";
 import MyPage from "./pages/MyPage";
 
+import Privacy from "./pages/riot/Privacy";
+import Tos from "./pages/riot/Tos";
+
 function App() {
   return (
     <Router>
@@ -18,6 +21,9 @@ function App() {
         <Route path="/users" element={<Users />} />
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/result" element={<ResultReport />} />
+
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/tos" element={<Tos />} />
       </Routes>
     </Router>
   );
