@@ -24,3 +24,9 @@ def mongo_rank_analytics():
     collection_name = "analytics"
     return db[collection_name]
 
+def get_mongo_report():
+    mongo_url = os.getenv("MONGO_URL")
+    client = pymongo.MongoClient(mongo_url)
+    db = client[os.getenv("MONGO_DB")]
+    return db["report"]
+
