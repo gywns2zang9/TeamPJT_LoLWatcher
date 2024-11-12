@@ -57,31 +57,72 @@ export default function Users() {
       const remainingSeconds = response.data.remainingSeconds;
       setRemainingTime(remainingSeconds);
       setIsButtonDisabled(true); // 버튼 비활성화
+
+      // 시작 시간과 종료 시간 저장
+      const currentTime = Date.now();
+      const endTime = currentTime + remainingSeconds * 1000;
+      localStorage.setItem('endTime', endTime.toString());
     } catch (error) {
       console.error('레코드 데이터 가져오기 실패:', error);
     }
   };
 
   useEffect(() => {
-    if (remainingTime !== null && remainingTime > 0) {
-      const timerId = setInterval(() => {
-        setRemainingTime((prevTime) => (prevTime !== null ? prevTime - 1 : 0));
-      }, 1000);
+    const updateRemainingTime = () => {
+      const endTime = parseInt(localStorage.getItem('endTime') || '0', 10);
+      const currentTime = Date.now();
+      const remainingSeconds = Math.max(0, Math.floor((endTime - currentTime) / 1000));
+      setRemainingTime(remainingSeconds);
 
-      return () => clearInterval(timerId); // 컴포넌트 언마운트 시 타이머 정리
-    } else if (remainingTime === 0) {
-      setTimeout(() => {
+      if (remainingSeconds === 0) {
         setIsButtonDisabled(false);
-        setRemainingTime(null); // 버튼 텍스트를 원래대로 복구
-      }, 1000); // 1초 후 버튼 활성화
-    }
-  }, [remainingTime]);
+        localStorage.removeItem('endTime');
+      }
+    };
+
+    // 1초마다 남은 시간을 업데이트
+    const intervalId = setInterval(updateRemainingTime, 1000);
+
+    // 포커스를 얻을 때 남은 시간을 업데이트
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        updateRemainingTime();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      clearInterval(intervalId);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, []);
 
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
     return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
   };
+
+  useEffect(() => {
+    const checkTimerStatus = async () => {
+      try {
+        const response = await axios.get('https://lolwatcher.com/api/records', {
+          params: { name, tag },
+        });
+  
+        const remainingSeconds = response.data.remainingSeconds;
+        if (remainingSeconds > 0) {
+          setRemainingTime(remainingSeconds);
+          setIsButtonDisabled(true);
+        }
+      } catch (error) {
+        console.error('타이머 상태 확인 실패:', error);
+      }
+    };
+  
+    checkTimerStatus();
+  }, [name, tag]);
 
   useEffect(() => {
     const fetchData = async () => {
