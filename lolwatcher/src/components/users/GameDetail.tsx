@@ -3,6 +3,8 @@ import "./GameDetail.css";
 import ReportModal from "./ReportModal";
 import { NavLink } from "react-router-dom";
 
+const CHAMPION_IMG_BASE_URL = process.env.REACT_APP_CHAMPION_IMG_BASE_URL;
+
 interface User {
   championName: string;
   summonerName: string;
@@ -34,34 +36,55 @@ export default function GameDetail({ users }: GameDetailProps) {
   const teamRed = users.filter((user) => user.teamId === 200);
 
   return (
-    <div className="report-container">
-      <div className="score-container">
-        <div className="my-team-container">point</div>
-        <div style={{ fontWeight: "bold", fontSize: "20px" }}>:</div>
-        <div className="enemy-team-container">point</div>
-      </div>
-      <div className="link">
-        <NavLink to="/result">ResultReport</NavLink>
-      </div>
-      <div className="report-page">
-        <div className="player-position">
-          <div className="position-line">탑</div>
-          <div className="position-line">정글</div>
-          <div className="position-line">미드</div>
-          <div className="position-line">원딜</div>
-          <div className="position-line">서폿</div>
+    <div className="detail-container">
+      <div className="container-header">
+        <div className="header-title">
+          <b>
+            <span style={{ color: "blue" }}>point</span>
+            <span> vs </span>
+            <span style={{ color: "red" }}>point</span>
+          </b>
         </div>
+        <div className="header-link">
+          <NavLink to="/result">ResultReport</NavLink>
+        </div>
+      </div>
+
+      <div className="detail-main">
+        <div className="main-position-section">
+          <div className="position-box">
+            <img className="position-img" src="/positions/top.png" alt="탑" />
+          </div>
+          <div className="position-box">
+            <img className="position-img" src="/positions/jug.png" alt="정글" />
+          </div>
+          <div className="position-box">
+            <img className="position-img" src="/positions/mid.png" alt="미드" />
+          </div>
+          <div className="position-box">
+            <img className="position-img" src="/positions/adc.png" alt="원딜" />
+          </div>
+          <div className="position-box">
+            <img className="position-img" src="/positions/sup.png" alt="서폿" />
+          </div>
+        </div>
+
         <div className="rotated-line"></div>
 
         {/* Team 100 */}
-        <div className="player-team">
+        <div className="team-section">
           {teamBlue.map((user, index) => (
             <div key={index} className="team-item" onClick={openModal}>
-              <div className="champion-profile">{user.championName}</div>
-              <div>{user.summonerName}</div>
-              <div>
-                {user.kills}/{user.deaths}/{user.assists}
-              </div>
+              <img
+                src={`${CHAMPION_IMG_BASE_URL}${user.championName}.png`}
+                alt={user.championName}
+                className="champion-img"
+              />
+              <b className="user-detail">{user.summonerName}</b>
+              <b className="user-detail">
+                ({user.kills}/{user.deaths}/{user.assists})
+              </b>
+              <b className="user-point"> point </b>
             </div>
           ))}
         </div>
@@ -69,14 +92,20 @@ export default function GameDetail({ users }: GameDetailProps) {
         <div className="rotated-line"></div>
 
         {/* Team 200 */}
-        <div className="enemy-team">
+        <div className="team-section">
           {teamRed.map((user, index) => (
             <div key={index} className="team-item" onClick={openModal}>
-              <div>
-                {user.kills}/{user.deaths}/{user.assists}
-              </div>
-              <div className="champion-profile">{user.championName}</div>
-              <div>{user.summonerName}</div>
+              <img
+                src={`${CHAMPION_IMG_BASE_URL}${user.championName}.png`}
+                alt={user.championName}
+                className="champion-img"
+              />
+              <b className="user-detail">{user.summonerName}</b>
+              <b className="user-detail">
+                ({user.kills}/{user.deaths}/{user.assists})
+              </b>
+
+              <b className="user-point"> point </b>
             </div>
           ))}
         </div>

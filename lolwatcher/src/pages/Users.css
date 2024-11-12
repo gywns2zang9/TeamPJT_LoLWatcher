@@ -3,13 +3,14 @@
   width: 100vw;
   flex-direction: column;
   align-items: center;
+  position: relative;
 }
 
-.link {
-  justify-content: flex-end;
-  width: 90%;
+.nav-link {
+  position: absolute;
+  right: 10px; /* 오른쪽 고정 위치 설정 */
   margin-top: 10px;
-  gap: 10px;
+  margin-right: 5%;
 }
 
 .users-header {

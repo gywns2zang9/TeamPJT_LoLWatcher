@@ -117,7 +117,7 @@ export default function Users() {
 
   return (
     <div className="users-container">
-      <div className="link">
+      <div className="nav-link">
         <NavLink to="/champions">챔피언 정보</NavLink>
         <NavLink to="/logout">로그아웃</NavLink>
       </div>
