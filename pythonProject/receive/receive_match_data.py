@@ -171,8 +171,9 @@ def receive_request_tier_analytic():
     return jsonify(result), 200
 
 # 시간별로 각 포지션의 평균 및 표준편차를 계산하여 저장
+# 시간별로 각 포지션의 평균 및 표준편차를 계산하여 저장
 def calculate_stats_by_time(collection):
-    stats = {str(minute): {} for minute in range(1, 61)}
+    stats = {str(minute): {"count": 0} for minute in range(1, 51)}
 
     top_stats = calculateStatsForTopLaneByGameDuration(collection)
     jungle_stats = calculateStatsForJungleLaneByGameDuration(collection)
@@ -180,11 +181,12 @@ def calculate_stats_by_time(collection):
     bottom_stats = calculateStatsForBottomLaneByGameDuration(collection)
     utility_stats = calculateStatsForUtilityLaneByGameDuration(collection)
 
+    # TOP 포지션에서만 count 값을 stats에 추가
     for minute_stat in top_stats:
         minute = int(float(minute_stat["gameMinute"]))
         minute_str = str(minute)  # 문자열로 변환하여 사용
         if minute_str not in stats:
-            stats[minute_str] = {"top": {}, "jungle": {}, "middle": {}, "bottom": {}, "utility": {}}
+            stats[minute_str] = {"count": 0, "top": {}, "jungle": {}, "middle": {}, "bottom": {}, "utility": {}}
 
         stats[minute_str]["top"] = {
             "soloKills": minute_stat["soloKills"],
@@ -194,11 +196,13 @@ def calculate_stats_by_time(collection):
             "impactScore": minute_stat["impactScore"]
         }
 
+
+    # 다른 포지션에서는 count 값을 stats에 추가하지 않음
     for minute_stat in jungle_stats:
         minute = int(float(minute_stat["gameMinute"]))
-        minute_str = str(minute)  # 문자열로 변환하여 사용
+        minute_str = str(minute)
         if minute_str not in stats:
-            stats[minute_str] = {"top": {}, "jungle": {}, "middle": {}, "bottom": {}, "utility": {}}
+            stats[minute_str] = {"count": 0, "top": {}, "jungle": {}, "middle": {}, "bottom": {}, "utility": {}}
         stats[minute_str]["jungle"] = {
             "objectTakedowns": minute_stat["objectTakedowns"],
             "turretTakedowns": minute_stat["turretTakedowns"],
@@ -207,11 +211,12 @@ def calculate_stats_by_time(collection):
             "impactScore": minute_stat["impactScore"]
         }
 
+
     for minute_stat in middle_stats:
         minute = int(float(minute_stat["gameMinute"]))
-        minute_str = str(minute)  # 문자열로 변환하여 사용
+        minute_str = str(minute)
         if minute_str not in stats:
-            stats[minute_str] = {"top": {}, "jungle": {}, "middle": {}, "bottom": {}, "utility": {}}
+            stats[minute_str] = {"count": 0, "top": {}, "jungle": {}, "middle": {}, "bottom": {}, "utility": {}}
         stats[minute_str]["middle"] = {
             "killParticipation": minute_stat["killParticipation"],
             "turretTakedowns": minute_stat["turretTakedowns"],
@@ -219,12 +224,13 @@ def calculate_stats_by_time(collection):
             "objectTakedowns": minute_stat["objectTakedowns"],
             "impactScore": minute_stat["impactScore"]
         }
+        stats[minute_str]["count"] += minute_stat.get("count", 0)
 
     for minute_stat in bottom_stats:
         minute = int(float(minute_stat["gameMinute"]))
-        minute_str = str(minute)  # 문자열로 변환하여 사용
+        minute_str = str(minute)
         if minute_str not in stats:
-            stats[minute_str] = {"top": {}, "jungle": {}, "middle": {}, "bottom": {}, "utility": {}}
+            stats[minute_str] = {"count": 0, "top": {}, "jungle": {}, "middle": {}, "bottom": {}, "utility": {}}
         stats[minute_str]["bottom"] = {
             "totalDamageDealtToChampions": minute_stat["totalDamageDealtToChampions"],
             "totalMinionsKilled": minute_stat["totalMinionsKilled"],
@@ -235,9 +241,9 @@ def calculate_stats_by_time(collection):
 
     for minute_stat in utility_stats:
         minute = int(float(minute_stat["gameMinute"]))
-        minute_str = str(minute)  # 문자열로 변환하여 사용
+        minute_str = str(minute)
         if minute_str not in stats:
-            stats[minute_str] = {"top": {}, "jungle": {}, "middle": {}, "bottom": {}, "utility": {}}
+            stats[minute_str] = {"count": 0, "top": {}, "jungle": {}, "middle": {}, "bottom": {}, "utility": {}}
         stats[minute_str]["utility"] = {
             "visionScore": minute_stat["visionScore"],
             "totalDamageTaken": minute_stat["totalDamageTaken"],

@@ -399,10 +399,11 @@ def calculateStatsForTopLaneByGameDuration(collection):
         {
             "$project": {
                 "_id": 0,
+                "gameId": "$matchDto.metadata.matchId",
                 "gameMinute": {
                     "$cond": {
-                        "if": {"$gte": ["$matchDto.info.gameDuration", 3600]},
-                        "then": 60,
+                        "if": {"$gte": ["$matchDto.info.gameDuration", 3000]},
+                        "then": 50,
                         "else": {"$floor": {"$divide": ["$matchDto.info.gameDuration", 60]}}
                     }
                 },
@@ -429,7 +430,18 @@ def calculateStatsForTopLaneByGameDuration(collection):
         },
         {
             "$group": {
-                "_id": "$gameMinute",
+                "_id": {"gameMinute": "$gameMinute", "gameId": "$gameId"},
+                "soloKills": {"$avg": "$soloKills"},
+                "turretTakedowns": {"$avg": "$turretTakedowns"},
+                "totalDamageTaken": {"$avg": "$totalDamageTaken"},
+                "killParticipation": {"$avg": "$killParticipation"},
+                "impactScore": {"$avg": "$impactScore"}
+            }
+        },
+        {
+            "$group": {
+                "_id": "$_id.gameMinute",
+                "count": {"$sum": 1},
                 "avgSoloKills": {"$avg": "$soloKills"},
                 "stdDevSoloKills": {"$stdDevPop": "$soloKills"},
                 "avgTurretTakedowns": {"$avg": "$turretTakedowns"},
@@ -446,6 +458,7 @@ def calculateStatsForTopLaneByGameDuration(collection):
         {
             "$project": {
                 "gameMinute": "$_id",
+                "count": 1,
                 "soloKills": {"avg": "$avgSoloKills", "stdDev": "$stdDevSoloKills"},
                 "turretTakedowns": {"avg": "$avgTurretTakedowns", "stdDev": "$stdDevTurretTakedowns"},
                 "totalDamageTaken": {"avg": "$avgTotalDamageTaken", "stdDev": "$stdDevTotalDamageTaken"},
@@ -463,10 +476,11 @@ def calculateStatsForJungleLaneByGameDuration(collection):
         {
             "$project": {
                 "_id": 0,
+                "gameId": "$matchDto.metadata.matchId",
                 "gameMinute": {
                     "$cond": {
-                        "if": {"$gte": ["$matchDto.info.gameDuration", 3600]},
-                        "then": 60,
+                        "if": {"$gte": ["$matchDto.info.gameDuration", 3000]},
+                        "then": 50,
                         "else": {"$floor": {"$divide": ["$matchDto.info.gameDuration", 60]}}
                     }
                 },
@@ -505,7 +519,18 @@ def calculateStatsForJungleLaneByGameDuration(collection):
         },
         {
             "$group": {
-                "_id": "$gameMinute",
+                "_id": {"gameMinute": "$gameMinute", "gameId": "$gameId"},
+                "objectTakedowns": {"$avg": "$objectTakedowns"},
+                "turretTakedowns": {"$avg": "$turretTakedowns"},
+                "visionScore": {"$avg": "$visionScore"},
+                "lineImpact": {"$avg": "$lineImpact"},
+                "impactScore": {"$avg": "$impactScore"}
+            }
+        },
+        {
+            "$group": {
+                "_id": "$_id.gameMinute",
+                "count": {"$sum": 1},
                 "avgObjectTakedowns": {"$avg": "$objectTakedowns"},
                 "stdDevObjectTakedowns": {"$stdDevPop": "$objectTakedowns"},
                 "avgTurretTakedowns": {"$avg": "$turretTakedowns"},
@@ -522,6 +547,7 @@ def calculateStatsForJungleLaneByGameDuration(collection):
         {
             "$project": {
                 "gameMinute": "$_id",
+                "count": 1,
                 "objectTakedowns": {"avg": "$avgObjectTakedowns", "stdDev": "$stdDevObjectTakedowns"},
                 "turretTakedowns": {"avg": "$avgTurretTakedowns", "stdDev": "$stdDevTurretTakedowns"},
                 "visionScore": {"avg": "$avgVisionScore", "stdDev": "$stdDevVisionScore"},
@@ -539,10 +565,11 @@ def calculateStatsForMiddleLaneByGameDuration(collection):
         {
             "$project": {
                 "_id": 0,
+                "gameId": "$matchDto.metadata.matchId",
                 "gameMinute": {
                     "$cond": {
-                        "if": {"$gte": ["$matchDto.info.gameDuration", 3600]},
-                        "then": 60,
+                        "if": {"$gte": ["$matchDto.info.gameDuration", 3000]},
+                        "then": 50,
                         "else": {"$floor": {"$divide": ["$matchDto.info.gameDuration", 60]}}
                     }
                 },
@@ -575,7 +602,18 @@ def calculateStatsForMiddleLaneByGameDuration(collection):
         },
         {
             "$group": {
-                "_id": "$gameMinute",
+                "_id": {"gameMinute": "$gameMinute", "gameId": "$gameId"},
+                "killParticipation": {"$avg": "$killParticipation"},
+                "turretTakedowns": {"$avg": "$turretTakedowns"},
+                "totalDamageDealtToChampions": {"$avg": "$totalDamageDealtToChampions"},
+                "objectTakedowns": {"$avg": "$objectTakedowns"},
+                "impactScore": {"$avg": "$impactScore"}
+            }
+        },
+        {
+            "$group": {
+                "_id": "$_id.gameMinute",
+                "count": {"$sum": 1},
                 "avgKillParticipation": {"$avg": "$killParticipation"},
                 "stdDevKillParticipation": {"$stdDevPop": "$killParticipation"},
                 "avgTurretTakedowns": {"$avg": "$turretTakedowns"},
@@ -592,6 +630,7 @@ def calculateStatsForMiddleLaneByGameDuration(collection):
         {
             "$project": {
                 "gameMinute": "$_id",
+                "count": 1,
                 "killParticipation": {"avg": "$avgKillParticipation", "stdDev": "$stdDevKillParticipation"},
                 "turretTakedowns": {"avg": "$avgTurretTakedowns", "stdDev": "$stdDevTurretTakedowns"},
                 "totalDamageDealtToChampions": {"avg": "$avgTotalDamageDealtToChampions", "stdDev": "$stdDevTotalDamageDealtToChampions"},
@@ -609,10 +648,11 @@ def calculateStatsForBottomLaneByGameDuration(collection):
         {
             "$project": {
                 "_id": 0,
+                "gameId": "$matchDto.metadata.matchId",
                 "gameMinute": {
                     "$cond": {
-                        "if": {"$gte": ["$matchDto.info.gameDuration", 3600]},
-                        "then": 60,
+                        "if": {"$gte": ["$matchDto.info.gameDuration", 3000]},
+                        "then": 50,
                         "else": {"$floor": {"$divide": ["$matchDto.info.gameDuration", 60]}}
                     }
                 },
@@ -639,7 +679,18 @@ def calculateStatsForBottomLaneByGameDuration(collection):
         },
         {
             "$group": {
-                "_id": "$gameMinute",
+                "_id": {"gameMinute": "$gameMinute", "gameId": "$gameId"},
+                "totalDamageDealtToChampions": {"$avg": "$totalDamageDealtToChampions"},
+                "totalMinionsKilled": {"$avg": "$totalMinionsKilled"},
+                "deaths": {"$avg": "$deaths"},
+                "skillshotsDodged": {"$avg": "$skillshotsDodged"},
+                "impactScore": {"$avg": "$impactScore"}
+            }
+        },
+        {
+            "$group": {
+                "_id": "$_id.gameMinute",
+                "count": {"$sum": 1},
                 "avgTotalDamageDealtToChampions": {"$avg": "$totalDamageDealtToChampions"},
                 "stdDevTotalDamageDealtToChampions": {"$stdDevPop": "$totalDamageDealtToChampions"},
                 "avgTotalMinionsKilled": {"$avg": "$totalMinionsKilled"},
@@ -656,6 +707,7 @@ def calculateStatsForBottomLaneByGameDuration(collection):
         {
             "$project": {
                 "gameMinute": "$_id",
+                "count": 1,
                 "totalDamageDealtToChampions": {"avg": "$avgTotalDamageDealtToChampions", "stdDev": "$stdDevTotalDamageDealtToChampions"},
                 "totalMinionsKilled": {"avg": "$avgTotalMinionsKilled", "stdDev": "$stdDevTotalMinionsKilled"},
                 "deaths": {"avg": "$avgDeaths", "stdDev": "$stdDevDeaths"},
@@ -673,10 +725,11 @@ def calculateStatsForUtilityLaneByGameDuration(collection):
         {
             "$project": {
                 "_id": 0,
+                "gameId": "$matchDto.metadata.matchId",
                 "gameMinute": {
                     "$cond": {
-                        "if": {"$gte": ["$matchDto.info.gameDuration", 3600]},
-                        "then": 60,
+                        "if": {"$gte": ["$matchDto.info.gameDuration", 3000]},
+                        "then": 50,
                         "else": {"$floor": {"$divide": ["$matchDto.info.gameDuration", 60]}}
                     }
                 },
@@ -703,7 +756,18 @@ def calculateStatsForUtilityLaneByGameDuration(collection):
         },
         {
             "$group": {
-                "_id": "$gameMinute",
+                "_id": {"gameMinute": "$gameMinute", "gameId": "$gameId"},
+                "visionScore": {"$avg": "$visionScore"},
+                "totalDamageTaken": {"$avg": "$totalDamageTaken"},
+                "totalDamageDealtToChampions": {"$avg": "$totalDamageDealtToChampions"},
+                "totalTimeCCDealt": {"$avg": "$totalTimeCCDealt"},
+                "impactScore": {"$avg": "$impactScore"}
+            }
+        },
+        {
+            "$group": {
+                "_id": "$_id.gameMinute",
+                "count": {"$sum": 1},
                 "avgVisionScore": {"$avg": "$visionScore"},
                 "stdDevVisionScore": {"$stdDevPop": "$visionScore"},
                 "avgTotalDamageTaken": {"$avg": "$totalDamageTaken"},
@@ -720,6 +784,7 @@ def calculateStatsForUtilityLaneByGameDuration(collection):
         {
             "$project": {
                 "gameMinute": "$_id",
+                "count": 1,
                 "visionScore": {"avg": "$avgVisionScore", "stdDev": "$stdDevVisionScore"},
                 "totalDamageTaken": {"avg": "$avgTotalDamageTaken", "stdDev": "$stdDevTotalDamageTaken"},
                 "totalDamageDealtToChampions": {"avg": "$avgTotalDamageDealtToChampions", "stdDev": "$stdDevTotalDamageDealtToChampions"},
