@@ -166,7 +166,7 @@ export default function Users() {
           onClick={handleRecordButtonClick}
           disabled={isButtonDisabled}
         >
-          {isButtonDisabled && remainingTime !== null ? formatTime(remainingTime) : '집가고싶다'}
+          {isButtonDisabled && remainingTime !== null ? formatTime(remainingTime) : '새로고침'}
         </button>
         <NavLink to='/champions'>챔피언 정보</NavLink>
         <NavLink to='/logout'>로그아웃</NavLink>
