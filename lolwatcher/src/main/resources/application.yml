@@ -41,7 +41,7 @@ spring:
     active: local
 
 analytic:
-  url: http://localhost:5000
+  url: ${DATA_SERVER_URL}
 
 riot:
   lol:
