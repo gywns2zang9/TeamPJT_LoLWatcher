@@ -78,11 +78,15 @@ export default function GameDetail({ users }: GameDetailProps) {
     <div className="detail-container">
       <div className="container-header">
         <div className="header-title">
-          <b>
-            <span style={{ color: "blue" }}>{teamBluePoints}</span>
-            <span> vs </span>
-            <span style={{ color: "red" }}>{teamRedPoints}</span>
-          </b>
+          <div className="blue-team-score">
+            <span>(Red Blue Score)</span>
+            {teamBluePoints}
+          </div>
+          <span> vs </span>
+          <div className="red-team-score">
+            {teamRedPoints}
+            <span>(Red Team Score)</span>
+          </div>
         </div>
         <div className="header-link">
           <NavLink to="/result">ResultReport</NavLink>
