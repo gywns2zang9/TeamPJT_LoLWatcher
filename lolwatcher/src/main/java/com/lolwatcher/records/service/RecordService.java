@@ -1,5 +1,7 @@
 package com.lolwatcher.records.service;
 
+import com.lolwatcher.event.client.RiotAsiaApiClient;
+import com.lolwatcher.event.client.RiotKrApiClient;
 import com.lolwatcher.event.dto.AccountDto;
 import com.lolwatcher.event.dto.match.MatchDto;
 import com.lolwatcher.event.service.RiotApiService;
@@ -23,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 public class RecordService {
 
     private final StringRedisTemplate stringRedisTemplate;
-    private final RiotApiService riotApiService;
+    private final RiotAsiaApiClient riotAsiaApiClient;
 
     // Redis에서 사용할 사용자 갱신 토큰의 키 접두사
     private static final String TOKEN_KEY_PREFIX = "user:update:";
@@ -34,7 +36,7 @@ public class RecordService {
     // name과 tag로 전적 갱신
     public RecordRes updateRecords(String name, String tag) {
         // 소환사 정보로 먼저 puuid를 가져옴
-        AccountDto account = riotApiService.findSummonerByNameAndTag(name, tag);
+        AccountDto account = riotAsiaApiClient.getSummonerRequest(name, tag);
         int remainingTime;
         // puuid로 Redis 키 생성
         String tokenKey = TOKEN_KEY_PREFIX + account.puuid();
@@ -65,7 +67,7 @@ public class RecordService {
     }
 
     public RecordRes getRecords(String name,String tag){
-        AccountDto account = riotApiService.findSummonerByNameAndTag(name, tag);
+        AccountDto account = riotAsiaApiClient.getSummonerRequest(name, tag);
         int remainingTime;
         String tokenKey = TOKEN_KEY_PREFIX + account.puuid();
 
@@ -84,12 +86,12 @@ public class RecordService {
     private void performRecordUpdate(AccountDto account) {
         try {
             // 1. puuid로 매치 목록 조회
-            List<String> matchIds = riotApiService.findMatchList(account.puuid());
+            List<String> matchIds = riotAsiaApiClient.getMatchIds(account.puuid());
 
             // 2. 각 매치의 상세 정보 조회
             for (int i = 0; i < Math.min(matchIds.size(), 5); i++) {
                 String matchId = matchIds.get(i);
-                MatchDto matchData = riotApiService.findMatchDataByMatchId(matchId);
+                MatchDto matchData = riotAsiaApiClient.getMatchData(matchId);
                 log.info("Match data fetched: {} for summoner: {}", matchId, account.gameName());
             }
 
