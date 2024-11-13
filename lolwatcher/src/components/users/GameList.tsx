@@ -92,11 +92,12 @@ export default function GameList({ gameInfos }: GameListProps) {
 
             {info.mainUser && (
               <div className="item-main-user">
-                <img
-                  src={`${CHAMPION_IMG_BASE_URL}${info.mainUser.championName}.png`}
-                  alt={info.mainUser.championName}
+                <div
                   className="main-user-champion"
-                />
+                  style={{
+                    backgroundImage: `url(${CHAMPION_IMG_BASE_URL}${info.mainUser.championName}.png)`
+                  }}
+                ></div>
                 <div className="main-user-result">
                   <p>
                     {info.mainUser.kills} / {info.mainUser.deaths} /{" "}
