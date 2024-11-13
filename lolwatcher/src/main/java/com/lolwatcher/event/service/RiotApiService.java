@@ -11,6 +11,8 @@ import com.lolwatcher.event.dto.match.info.InfoDto;
 import com.lolwatcher.event.dto.match.info.participant.ParticipantDto;
 import com.lolwatcher.event.dto.record.*;
 import com.lolwatcher.event.dto.timeline.TimelineDto;
+import com.lolwatcher.event.enumeration.Division;
+import com.lolwatcher.event.enumeration.Tier;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -85,6 +87,28 @@ public class RiotApiService {
             list.add(new RecordMatchDto(users, info));
         }
         return list;
+    }
+
+    public int customComparabeTo(Tier tier1, Division division1, Tier tier2, Division division2) {
+        if(tier1 != tier2) {
+            return tier1.compareTo(tier2);
+        } else {
+            return division1.compareTo(division2);
+        }
+    }
+
+    public String fetchAvgTierAndDivision(List<RecordUserDto> users) {
+        double sum = 0;
+        for(RecordUserDto recordUserDto : users) {
+            Tier tier = Tier.CHALLENGER;
+            Division division = Division.I;
+            sum += tier.ordinal() * 4 + division.ordinal();
+        }
+        int avg = (int) Math.round(sum / users.size());
+        if(avg / 4 >= Tier.MASTER.ordinal()) {
+            return Tier.fromOrdinal(avg/4).toString();
+        }
+        return Tier.fromOrdinal(avg/4).toString() + Division.fromOrdinal(avg%4).toString();
     }
 
     // Todo : 제대로 동작하는지 확인
