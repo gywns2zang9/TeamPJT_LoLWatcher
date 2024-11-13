@@ -35,14 +35,18 @@ export default function GameDetail({ users }: GameDetailProps) {
   const teamBlue = users.filter((user) => user.teamId === 100);
   const teamRed = users.filter((user) => user.teamId === 200);
 
+  // 임시 포인트 합산
+  const teamBluePoints = teamBlue.reduce((total, user) => total + 20, 0);
+  const teamRedPoints = teamRed.reduce((total, user) => total + 20, 0);
+
   return (
     <div className="detail-container">
       <div className="container-header">
         <div className="header-title">
           <b>
-            <span style={{ color: "blue" }}>point</span>
+            <span style={{ color: "blue" }}>{teamBluePoints}</span>
             <span> vs </span>
-            <span style={{ color: "red" }}>point</span>
+            <span style={{ color: "red" }}>{teamRedPoints}</span>
           </b>
         </div>
         <div className="header-link">
@@ -85,7 +89,7 @@ export default function GameDetail({ users }: GameDetailProps) {
               <b className="user-detail">
                 ({user.kills}/{user.deaths}/{user.assists})
               </b>
-              <b className="user-point"> point </b>
+              <b className="user-point"> 20 </b>
             </div>
           ))}
         </div>
@@ -106,7 +110,7 @@ export default function GameDetail({ users }: GameDetailProps) {
                 ({user.kills}/{user.deaths}/{user.assists})
               </b>
 
-              <b className="user-point"> point </b>
+              <b className="user-point"> 20 </b>
             </div>
           ))}
         </div>
