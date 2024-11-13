@@ -5,7 +5,7 @@ import GameDetail from "./GameDetail";
 const CHAMPION_IMG_BASE_URL = process.env.REACT_APP_CHAMPION_IMG_BASE_URL;
 
 interface User {
-  championName: string; //"Garen"
+  championName: string; //"Hecarim"
   summonerName: string; //"카림sk"
   teamId: number; // 100 or 200
   kills: number;
@@ -34,6 +34,7 @@ export default function GameList({ gameInfos }: GameListProps) {
     setSelectedInfoId(id === selectedInfoId ? null : id);
   };
 
+  //게임 종료 시간
   const formatKoreaTime = (timestamp: number) => {
     const koreaTime = new Date(timestamp);
     return (
@@ -50,18 +51,19 @@ export default function GameList({ gameInfos }: GameListProps) {
     );
   };
 
+  //게임 진행 시간
   const formatDuration = (duration: number) => {
     const minutes = Math.floor(duration / 60);
     const seconds = duration % 60;
     return `${minutes}분 ${seconds}초`;
   };
 
-  //KDA 계산
+  //KDA
   const calculateKDA = (kills: number, assists: number, deaths: number) => {
     return deaths === 0 ? "노데스" : ((kills + assists) / deaths).toFixed(2);
   };
 
-  //분당 CS 계산
+  //분당 CS
   const calculateCSPerMinute = (cs: number, duration: number) => {
     const minutes = duration / 60;
     return (cs / minutes).toFixed(1);
@@ -69,7 +71,7 @@ export default function GameList({ gameInfos }: GameListProps) {
 
   return (
     <div className="list-container">
-      <h2 className="container-title">게임 목록</h2>
+      <h2 className="list-container-title">게임 목록</h2>
       {gameInfos.map((info) => (
         <React.Fragment key={info.id}>
           <div
@@ -78,70 +80,86 @@ export default function GameList({ gameInfos }: GameListProps) {
             }`}
             onClick={() => handleClick(info.id)}
           >
-            <div className="item-game">
-              <div className="game-end-time">
+            <div className="item-match-section">
+              <div className="match-end-time">
                 {formatKoreaTime(info.gameEndStamp)}
               </div>
-              <div className="game-play">
-                <p>{info.win ? "승" : "패"}</p>
-                <p className="game-play-time">
-                  ({formatDuration(info.gameDuration)})
+              <div className="match-data">
+                <p>
+                  {info.win ? "승" : "패"}
+                  <span className="match-type">개인?자유?</span>
                 </p>
+              </div>
+              <div className="match-play-time">
+                {formatDuration(info.gameDuration)}
               </div>
             </div>
 
             {info.mainUser && (
-              <div className="item-main-user">
-                <img
-                  src={`${CHAMPION_IMG_BASE_URL}${info.mainUser.championName}.png`}
-                  alt={info.mainUser.championName}
+              <div className="item-user-section">
+                <div
                   className="main-user-champion"
-                />
-                <div className="main-user-result">
-                  <p>
+                  style={{
+                    backgroundImage: `url(${CHAMPION_IMG_BASE_URL}${info.mainUser.championName}.png)`
+                  }}
+                ></div>
+                <div className="main-user-data">
+                  <span>
                     {info.mainUser.kills} / {info.mainUser.deaths} /{" "}
-                    {info.mainUser.assists} (Kda:{" "}
+                    {info.mainUser.assists}
+                  </span>
+                  <span className="user-data-summary">
+                    (Kda:{" "}
                     {calculateKDA(
                       info.mainUser.kills,
                       info.mainUser.assists,
                       info.mainUser.deaths
                     )}
                     )
-                  </p>
-                  <p>
-                    CS {info.mainUser.totalMinionsKilled} (분당:{" "}
+                  </span>
+                  <span>CS {info.mainUser.totalMinionsKilled}</span>
+                  <span className="user-data-summary">
+                    (분당:{" "}
                     {calculateCSPerMinute(
                       info.mainUser.totalMinionsKilled,
                       info.gameDuration
                     )}
                     )
-                  </p>{" "}
+                  </span>
                 </div>
               </div>
             )}
-            <div className="item-team">
-              <div className="team-group">
+
+            <div className="point-section">
+              <div>
+                ??
+                <span className="point-tag">점</span>
+              </div>
+            </div>
+
+            <div className="item-team-section">
+              <div className="team-box">
                 {info.users.slice(0, 5).map((user, index) => (
-                  <div key={index} className="user-info">
+                  <div key={index} className="team-user">
                     <img
                       src={`${CHAMPION_IMG_BASE_URL}${user.championName}.png`}
                       alt={user.championName}
-                      className="users-champion-img"
+                      className="team-user-champion"
                     />
-                    <span className="users-name">{user.summonerName}</span>
+                    <span className="team-user-name">{user.summonerName}</span>
                   </div>
                 ))}
               </div>
 
-              <div className="team-group">
+              <div className="team-box">
                 {info.users.slice(5, 10).map((user, index) => (
-                  <div key={index + 5} className="user-info">
+                  <div key={index + 5} className="team-user">
                     <img
                       src={`${CHAMPION_IMG_BASE_URL}${user.championName}.png`}
                       alt={user.championName}
-                      className="users-champion-img"
+                      className="team-user-champion"
                     />
-                    <span className="users-name">{user.summonerName}</span>
+                    <span className="team-user-name">{user.summonerName}</span>
                   </div>
                 ))}
               </div>
