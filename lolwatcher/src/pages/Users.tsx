@@ -4,7 +4,7 @@ import GameList from '../components/users/GameList';
 import Profile from '../components/users/Profile';
 import axios from 'axios';
 import './Users.css';
-
+const API_URL = process.env.REACT_APP_LOLWATCHER_API_URL;
 interface User {
   championName: string; //"Garen"
   summonerName: string; //"카림sk"
@@ -50,7 +50,7 @@ export default function Users() {
   const [endTime, setEndTime] = useState<number | null>(null);
   const handleRecordButtonClick = async () => {
     try {
-      const response = await axios.post('https://lolwatcher.com/api/records', null, {
+      const response = await axios.post(`${API_URL}records`, null, {
         params: { name, tag },
       });
 
@@ -59,7 +59,6 @@ export default function Users() {
       setIsButtonDisabled(true); // 버튼 비활성화
     } catch (error) {
       alert('잠시 후 다시 시도해주세요.');
-      console.error('레코드 데이터 가져오기 실패:', error);
       window.location.reload(); // 페이지 새로고침
     }
   };
@@ -92,7 +91,7 @@ export default function Users() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const recordsResponse = await axios.get('https://lolwatcher.com/api/records', {
+        const recordsResponse = await axios.get(`${API_URL}records`, {
           params: { name, tag },
         });
 
@@ -102,14 +101,13 @@ export default function Users() {
         setIsButtonDisabled(remainingSeconds > 0); // 남은 시간이 있으면 버튼을 비활성화
 
         const accessToken = localStorage.getItem('accessToken');
-        const response = await axios.get('https://lolwatcher.com/api/riot/info', {
+        const response = await axios.get(`${API_URL}riot/info`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
           params: { name, tag },
         });
         const data = response.data;
-        console.log(data);
         setUserInfo(data.userInfo);
         const formattedInfos = data.matchs.map((item: any, index: number) => {
           const users = item.users.map((user: any) => ({
