@@ -48,7 +48,7 @@ public class RecordService {
             remainingTime = stringRedisTemplate.getExpire(tokenKey, TimeUnit.SECONDS).intValue();
             System.out.println("remainingTime 확인 "+remainingTime);
             //return new RecordRes(remainingTime);
-            //throw new TooManyReqeustsException("전적은 120초에 한 번만 갱신할 수 있습니다.");
+            throw new TooManyReqeustsException("전적은 120초에 한 번만 갱신할 수 있습니다.");
         }else{
             remainingTime=COOLDOWN_SECONDS;
         }
