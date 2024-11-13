@@ -51,13 +51,21 @@ public class RiotApiService {
                 throw new RuntimeException("Error saving record");
             }
         }
+        List<Record> recordList = recordRepository.findAllById(matchIds);
 
-        return new RecordDto(recordRepository.findAllById(matchIds)
-                .stream()
-                .map(record -> {
-                    return (RecordMatchDto) record.getData().get("matchResult");
-                })
-                .toList(),
+        return new RecordDto(
+                recordList
+                        .stream()
+                        .map(record -> {
+                            return (RecordMatchDto) record.getData().get("matchResult");
+                        })
+                        .toList(),
+                recordList
+                        .stream()
+                        .map(record -> {
+                            return (RecordReportDto) record.getData().get("matchReport");
+                        })
+                        .toList(),
                 userInfo,
                 new RecordSummonerDto(accountDto.gameName(),
                         accountDto.tagLine(),
