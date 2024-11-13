@@ -419,11 +419,11 @@ def calculateStatsForTopLaneByGameDuration(collection):
                             "$matchDto.info.participants.challenges.dragonTakedowns",
                             "$matchDto.info.participants.challenges.baronTakedowns",
                             "$matchDto.info.participants.challenges.riftHeraldTakedowns"
-                        ]}, 0.2]},
-                        {"$multiply": ["$matchDto.info.participants.visionScore", 0.2]},
-                        {"$multiply": ["$matchDto.info.participants.challenges.goldPerMinute", 0.1]},
-                        {"$multiply": ["$matchDto.info.participants.turretTakedowns", 0.1]},
-                        {"$multiply": ["$matchDto.info.participants.totalDamageDealtToChampions", 0.1]}
+                        ]}, 0.15]},
+                        {"$multiply": ["$matchDto.info.participants.visionScore", 0.1]},
+                        {"$multiply": ["$matchDto.info.participants.challenges.goldPerMinute", 0.15]},
+                        {"$multiply": ["$matchDto.info.participants.turretTakedowns", 0.15]},
+                        {"$multiply": ["$matchDto.info.participants.totalDamageDealtToChampions", 0.15]}
                     ]
                 }
             }

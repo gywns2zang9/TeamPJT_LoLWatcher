@@ -15,29 +15,28 @@ routes = Blueprint('routes', __name__)
 
 @routes.route('/analytic/report', methods=['POST'])
 def receive_match_data():
-    data_list = request.get_json()
+    receive_list = request.get_json()
     report_collection = get_mongo_report()
 
     result = []
 
-    for data in data_list:
-        tier = data["tier"]  # 티어
-        division = data["division"]  # 위치
-        match_id = data["match_id"]  # 분석 확인 식별 용 id
-        match_dto = data["matchDto"]  # match 정보
+    for match_id in receive_list:
 
-        if report_collection.find_one({"match_id": match_id}):
+        data = report_collection.find_one({"_id": match_id})
+
+        if "matchReport" in data["data"]:
             continue
 
-        duration = match_dto["info"]["gameDuration"] // 60
+        match_dto = data["data"]["matchDto"]
+        rank = data["data"]["rank"]
 
+        duration = match_dto["info"]["gameDuration"] // 60
         collection = mongo_rank_analytics()
 
-        tier_division_field = f"{tier}_{division}"
-        result_data = collection.find_one({"_id": ObjectId(os.getenv("CALCULATED_DATA"))}, {f"{tier_division_field}.{duration}": 1, "_id": 0})
+        result_data = collection.find_one({"_id": ObjectId(os.getenv("CALCULATED_DATA"))}, {f"{rank}.{duration}": 1, "_id": 0})
 
-        if result_data and tier_division_field in result_data and str(duration) in result_data[tier_division_field]:
-            tier_data = result_data[tier_division_field][str(duration)]
+        if result_data and rank in result_data and str(duration) in result_data[rank]:
+            tier_data = result_data[rank][str(duration)]
             participants = process_participants(match_dto)
 
             # Z-score 계산 함수
@@ -45,16 +44,27 @@ def receive_match_data():
                 return (value - avg) / std_dev if std_dev != 0 else 0
 
             # Z-score 계산 결과를 저장할 딕셔너리
-            z_scores = {
-                "match_id": match_id,
-                "top": [],
-                "jungle": [],
-                "middle": [],
-                "bottom": [],
-                "utility": []
+            report = {
+                "team_100": {
+                    "top": {},
+                    "jungle": {},
+                    "middle": {},
+                    "bottom": {},
+                    "utility": {}
+                },
+                "team_200": {
+                    "top": {},
+                    "jungle": {},
+                    "middle": {},
+                    "bottom": {},
+                    "utility": {}
+                }
             }
 
-            for participant in participants:
+            for index, participant in enumerate(participants):
+
+                team_key = "team_100" if index < 5 else "team_200"
+
                 team_position = participant["teamPosition"]
                 position_data = tier_data[team_position]
 
@@ -75,11 +85,18 @@ def receive_match_data():
                         )
 
                 # 포지션별 리스트에 현재 참가자의 Z-score 추가
-                z_scores[team_position].append(participant_z_scores)
+                report[team_key][team_position] = participant_z_scores
                 print("------------------------------------")
 
-            result.append(z_scores)
-            report_collection.insert_one({"match_id": match_id, "z_scores": z_scores})
+            result.append(report)
+            report_collection.update_one(
+                {"_id": match_id},
+                {
+                    "$rename":{"data.matchDto":"data.matchReport"},
+                    "$set":{"data.matchReport":report}
+                }
+            )
+            #report_collection.insert_one({"match_id": match_id, "report": report})
 
     if result:
         return jsonify(result), 200
@@ -91,7 +108,7 @@ def receive_match_data():
 
 # 전달받은 Dto 데이터에서 participants 배열을 순회하면서 각 플레이어의 포지션에 맞는 필드를 추출하거나 계산
 def process_participants(match_dto):
-    participants = match_dto["info"]["participants"]
+    participants = match_dto["participants"]
     results = []
 
     # 포지션별 필요한 필드 정의
