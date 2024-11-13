@@ -24,32 +24,6 @@ public class RiotApiController {
 
     private final RiotApiService riotApiService;
 
-    @GetMapping("/summoner")
-    public AccountDto findSummenr(@RequestParam("name") String summonerName, @RequestParam("tag") String tag) {
-        return riotApiService.findSummonerByNameAndTag(summonerName, tag);
-    }
-
-    @GetMapping("/match")
-    public List<String> findMatches(@RequestParam("puuid") String puuid) {
-        return riotApiService.findMatchList(puuid);
-    }
-
-    @GetMapping("/match/data")
-    public MatchDto findMatchData(@RequestParam("match") String matchId) {
-        return riotApiService.findMatchDataByMatchId(matchId);
-    }
-
-    @GetMapping("/match/timeline")
-    public TimelineDto findTimeLineData(@RequestParam("match") String matchId) {
-        return riotApiService.findTimeLineDataByMatchId(matchId);
-    }
-
-    @GetMapping("/match/data-post")
-    public HttpStatus sendMatchData(@RequestParam("match") String matchId) {
-        riotApiService.sendMatchDataByMatchId(matchId);
-        return HttpStatus.OK;
-    }
-
     @GetMapping("/info")
     public RecordDto getMatchBySummoner(@RequestParam("name") String name, @RequestParam("tag") String tag) {
         log.info("info : 전적 조회 \n name:{} tag:{}", name, tag);
