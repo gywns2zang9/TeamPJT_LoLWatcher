@@ -75,11 +75,12 @@ export default function GameDetail({ users }: GameDetailProps) {
         <div className="team-section">
           {teamBlue.map((user, index) => (
             <div key={index} className="team-item" onClick={openModal}>
-              <img
-                src={`${CHAMPION_IMG_BASE_URL}${user.championName}.png`}
-                alt={user.championName}
+              <div
                 className="champion-img"
-              />
+                style={{
+                  backgroundImage: `url(${CHAMPION_IMG_BASE_URL}${user.championName}.png)`
+                }}
+              ></div>
               <b className="user-detail">{user.summonerName}</b>
               <b className="user-detail">
                 ({user.kills}/{user.deaths}/{user.assists})

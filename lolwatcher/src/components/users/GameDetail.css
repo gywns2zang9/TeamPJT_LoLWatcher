@@ -90,7 +90,10 @@
 .champion-img {
   width: 36px;
   height: 36px;
-  border-radius: 50px;
+  border-radius: 50%;
+  border: 1px solid gold;
+  background-size: 120%;
+  background-position: center;
 }
 
 .user-detail {
