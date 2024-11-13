@@ -12,16 +12,12 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
-import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
-import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter;
-import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.beans.factory.annotation.Value;
+
 import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -41,9 +37,6 @@ public class SecurityConfig {
         this.userCache = userCache; // userCache 초기화
     }
 
-//    @Value("${DOMAIN}") // 환경 변수 DOMAIN 값 주입
-//    private String domain;
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         System.out.println("process 18 - SecurityConfig securityFilterChain");
@@ -55,11 +48,6 @@ public class SecurityConfig {
                         .requestMatchers("/login", "/signup", "/auth/**", "/records","/error").permitAll() // 로그인, 회원가입, 인증 관련 경로 허용
                         .anyRequest().authenticated() // 그 외 모든 요청은 인증 필요
                 )
-//                .oauth2Login(oauth2 -> oauth2
-//                        .loginPage("/login") // RSO 로그인 페이지로 자동 리디렉션
-//                        .defaultSuccessUrl("http://localhost:3000/home", true) // 성공 시 프론트엔드 URL로 리디렉션
-//                        .failureUrl("http://localhost:3000/login?error=true") // 실패 시 프론트엔드 로그인 페이지로 리디렉션
-//                )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout") // 로그아웃 후 로그인 페이지로 리디렉션
@@ -69,8 +57,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-
-
     @Bean
     public PasswordEncoder passwordEncoder() {
 
@@ -78,7 +64,7 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder(); // 비밀번호 암호화
     }
 
-//    @Bean
+    //    @Bean
 //    public CorsConfigurationSource corsConfigurationSource() {
 //        CorsConfiguration configuration = new CorsConfiguration();
 //        configuration.setAllowedOrigins(Arrays.asList("https://localhost:3000")); // 허용할 오리진
@@ -90,35 +76,35 @@ public class SecurityConfig {
 //        source.registerCorsConfiguration("/**", configuration); // 모든 경로에 CORS 설정 적용
 //        return source;
 //    }
-@Bean
-public CorsConfigurationSource corsConfigurationSource() {
-    System.out.println("process 20 - SecurityConfig corsConfigurationSource");
-    CorsConfiguration configuration = new CorsConfiguration();
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        System.out.println("process 20 - SecurityConfig corsConfigurationSource");
+        CorsConfiguration configuration = new CorsConfiguration();
 
-    // 환경 변수에서 도메인 및 포트 가져오기
-    String domain = System.getenv("DOMAIN"); // 도메인 주소
-    String ec2Ip = System.getenv("EC2_IP"); // EC2 IP 주소
-    String frontPort = System.getenv("FRONT_PORT"); // 프론트엔드 포트
+        // 환경 변수에서 도메인 및 포트 가져오기
+        String domain = System.getenv("DOMAIN"); // 도메인 주소
+        String ec2Ip = System.getenv("EC2_IP"); // EC2 IP 주소
+        String frontPort = System.getenv("FRONT_PORT"); // 프론트엔드 포트
 
-    // 허용할 오리진 설정
-    configuration.setAllowedOrigins(Arrays.asList(
-            domain, // 도메인 주소
-            "http://" + ec2Ip + ":" + frontPort, // EC2 IP 주소와 포트 조합
-            "https://" + ec2Ip + ":" + frontPort, // EC2 IP 주소와 포트 조합
-            "http://localhost:3000", // 로컬 개발 환경의 주소 (React 테스트)
-            "http://127.0.0.1:3000"  // 로컬 개발 환경의 주소 (React 테스트)
-    ));
+        // 허용할 오리진 설정
+        configuration.setAllowedOrigins(Arrays.asList(
+                domain, // 도메인 주소
+                "http://" + ec2Ip + ":" + frontPort, // EC2 IP 주소와 포트 조합
+                "https://" + ec2Ip + ":" + frontPort, // EC2 IP 주소와 포트 조합
+                "http://localhost:3000", // 로컬 개발 환경의 주소 (React 테스트)
+                "http://127.0.0.1:3000"  // 로컬 개발 환경의 주소 (React 테스트)
+        ));
 
-    // 허용할 HTTP 메서드 설정
-    configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
-    // 허용할 헤더 설정
-    configuration.setAllowedHeaders(Arrays.asList("*"));
-    // 자격 증명 허용 설정
-    configuration.setAllowCredentials(true);
+        // 허용할 HTTP 메서드 설정
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
+        // 허용할 헤더 설정
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        // 자격 증명 허용 설정
+        configuration.setAllowCredentials(true);
 
-    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration("/**", configuration); // 모든 경로에 CORS 설정 적용
-    return source;
-}
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration); // 모든 경로에 CORS 설정 적용
+        return source;
+    }
 
 }
