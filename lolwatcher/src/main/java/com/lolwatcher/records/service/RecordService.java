@@ -64,6 +64,23 @@ public class RecordService {
         }
     }
 
+    public RecordRes getRecords(String name,String tag){
+        AccountDto account = riotApiService.findSummonerByNameAndTag(name, tag);
+        int remainingTime;
+        String tokenKey = TOKEN_KEY_PREFIX + account.puuid();
+
+        Boolean wasSet = stringRedisTemplate.opsForValue()
+                .setIfAbsent(tokenKey, "active", Duration.ofSeconds(COOLDOWN_SECONDS));
+
+        if (Boolean.FALSE.equals(wasSet)) {
+            System.out.println("접속 확인");
+            remainingTime = stringRedisTemplate.getExpire(tokenKey, TimeUnit.SECONDS).intValue();
+            System.out.println("remainingTime 확인 "+remainingTime);
+            return new RecordRes(remainingTime);
+        }
+        return new RecordRes(0);
+    }
+
     /**
      * 실제 전적 갱신 처리를 수행하는 내부 메소드
      */
