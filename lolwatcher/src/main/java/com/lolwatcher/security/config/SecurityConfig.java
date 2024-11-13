@@ -12,12 +12,16 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter;
+import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
+import org.springframework.beans.factory.annotation.Value;
 import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -37,6 +41,9 @@ public class SecurityConfig {
         this.userCache = userCache; // userCache 초기화
     }
 
+//    @Value("${DOMAIN}") // 환경 변수 DOMAIN 값 주입
+//    private String domain;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         System.out.println("process 18 - SecurityConfig securityFilterChain");
@@ -48,6 +55,11 @@ public class SecurityConfig {
                         .requestMatchers("/login", "/signup", "/auth/**", "/records","/error").permitAll() // 로그인, 회원가입, 인증 관련 경로 허용
                         .anyRequest().authenticated() // 그 외 모든 요청은 인증 필요
                 )
+//                .oauth2Login(oauth2 -> oauth2
+//                        .loginPage("/login") // RSO 로그인 페이지로 자동 리디렉션
+//                        .defaultSuccessUrl("http://localhost:3000/home", true) // 성공 시 프론트엔드 URL로 리디렉션
+//                        .failureUrl("http://localhost:3000/login?error=true") // 실패 시 프론트엔드 로그인 페이지로 리디렉션
+//                )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout") // 로그아웃 후 로그인 페이지로 리디렉션
@@ -56,6 +68,8 @@ public class SecurityConfig {
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, customUserDetailsService, userCache), UsernamePasswordAuthenticationFilter.class); // JWT 필터 추가
         return http.build();
     }
+
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {

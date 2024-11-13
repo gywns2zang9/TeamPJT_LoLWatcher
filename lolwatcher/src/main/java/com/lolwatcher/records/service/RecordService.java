@@ -30,11 +30,12 @@ public class RecordService {
     // 갱신 제한 시간 (초 단위)
     private static final int COOLDOWN_SECONDS = 120;
 
+
     // name과 tag로 전적 갱신
     public RecordRes updateRecords(String name, String tag) {
         // 소환사 정보로 먼저 puuid를 가져옴
         AccountDto account = riotApiService.findSummonerByNameAndTag(name, tag);
-
+        int remainingTime;
         // puuid로 Redis 키 생성
         String tokenKey = TOKEN_KEY_PREFIX + account.puuid();
 
@@ -44,15 +45,19 @@ public class RecordService {
         System.out.println(wasSet+" 토큰 확인: "+Boolean.FALSE.equals(wasSet));
         if (Boolean.FALSE.equals(wasSet)) {
             System.out.println("접속 확인");
-            int remainingTime = stringRedisTemplate.getExpire(tokenKey, TimeUnit.SECONDS).intValue();
+            remainingTime = stringRedisTemplate.getExpire(tokenKey, TimeUnit.SECONDS).intValue();
             System.out.println("remainingTime 확인 "+remainingTime);
-            throw new TooManyReqeustsException("전적은 120초에 한 번만 갱신할 수 있습니다.");
+            //return new RecordRes(remainingTime);
+            //throw new TooManyReqeustsException("전적은 120초에 한 번만 갱신할 수 있습니다.");
+        }else{
+            remainingTime=COOLDOWN_SECONDS;
         }
 
         try {
             // 전적 갱신 수행
             performRecordUpdate(account);
-            return new RecordRes(COOLDOWN_SECONDS);
+            return new RecordRes(remainingTime);
+            //return new RecordRes(COOLDOWN_SECONDS);
         } catch (Exception e) {
             stringRedisTemplate.delete(tokenKey);
             throw new RuntimeException("전적 갱신 중 오류가 발생했습니다.", e);
