@@ -46,57 +46,41 @@ export default function Users() {
   const [userInfo, setUserInfo] = useState<UserInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [remainingTime, setRemainingTime] = useState<number | null>(null);
-  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const [endTime, setEndTime] = useState<number | null>(null);
   const handleRecordButtonClick = async () => {
     try {
-      const response = await axios.get('https://lolwatcher.com/api/records', {
+      const response = await axios.post('https://lolwatcher.com/api/records', null, {
         params: { name, tag },
       });
 
       const remainingSeconds = response.data.remainingSeconds;
-      setRemainingTime(remainingSeconds);
+      setEndTime(Date.now() + remainingSeconds * 1000);
       setIsButtonDisabled(true); // 버튼 비활성화
-
-      // 시작 시간과 종료 시간 저장
-      const currentTime = Date.now();
-      const endTime = currentTime + remainingSeconds * 1000;
-      localStorage.setItem('endTime', endTime.toString());
     } catch (error) {
+      alert('잠시 후 다시 시도해주세요.');
       console.error('레코드 데이터 가져오기 실패:', error);
+      window.location.reload(); // 페이지 새로고침
     }
   };
 
   useEffect(() => {
-    const updateRemainingTime = () => {
-      const endTime = parseInt(localStorage.getItem('endTime') || '0', 10);
-      const currentTime = Date.now();
-      const remainingSeconds = Math.max(0, Math.floor((endTime - currentTime) / 1000));
-      setRemainingTime(remainingSeconds);
+    if (endTime) {
+      const updateRemainingTime = () => {
+        const timeLeft = Math.max(0, Math.floor((endTime - Date.now()) / 1000));
+        setRemainingTime(timeLeft);
 
-      if (remainingSeconds === 0) {
-        setIsButtonDisabled(false);
-        localStorage.removeItem('endTime');
-      }
-    };
+        if (timeLeft > 0) {
+          requestAnimationFrame(updateRemainingTime);
+        } else {
+          setIsButtonDisabled(false);
+          setRemainingTime(null);
+        }
+      };
 
-    // 1초마다 남은 시간을 업데이트
-    const intervalId = setInterval(updateRemainingTime, 1000);
-
-    // 포커스를 얻을 때 남은 시간을 업데이트
-    const handleVisibilityChange = () => {
-      if (!document.hidden) {
-        updateRemainingTime();
-      }
-    };
-
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-
-    return () => {
-      clearInterval(intervalId);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-    };
-  }, []);
+      updateRemainingTime();
+    }
+  }, [endTime]);
 
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
@@ -105,29 +89,18 @@ export default function Users() {
   };
 
   useEffect(() => {
-    const checkTimerStatus = async () => {
-      try {
-        const response = await axios.get('https://lolwatcher.com/api/records', {
-          params: { name, tag },
-        });
-  
-        const remainingSeconds = response.data.remainingSeconds;
-        if (remainingSeconds > 0) {
-          setRemainingTime(remainingSeconds);
-          setIsButtonDisabled(true);
-        }
-      } catch (error) {
-        console.error('타이머 상태 확인 실패:', error);
-      }
-    };
-  
-    checkTimerStatus();
-  }, [name, tag]);
-
-  useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
+        const recordsResponse = await axios.get('https://lolwatcher.com/api/records', {
+          params: { name, tag },
+        });
+
+        const remainingSeconds = recordsResponse.data.remainingSeconds;
+        console.log(remainingSeconds);
+        setEndTime(Date.now() + remainingSeconds * 1000);
+        setIsButtonDisabled(remainingSeconds > 0); // 남은 시간이 있으면 버튼을 비활성화
+
         const accessToken = localStorage.getItem('accessToken');
         const response = await axios.get('https://lolwatcher.com/api/riot/info', {
           headers: {
@@ -138,7 +111,6 @@ export default function Users() {
         const data = response.data;
         console.log(data);
         setUserInfo(data.userInfo);
-
         const formattedInfos = data.matchs.map((item: any, index: number) => {
           const users = item.users.map((user: any) => ({
             championName: user.championName,
