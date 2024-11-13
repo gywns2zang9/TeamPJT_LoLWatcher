@@ -1,14 +1,14 @@
 package com.lolwatcher.event.document;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Map;
 
 @Document(collection = "report")
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 @ToString
