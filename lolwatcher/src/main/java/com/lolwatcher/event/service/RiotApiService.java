@@ -15,6 +15,7 @@ import com.lolwatcher.event.enumeration.Division;
 import com.lolwatcher.event.enumeration.Tier;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 import javax.accessibility.AccessibleIcon;
@@ -77,18 +78,58 @@ public class RiotApiService {
             List<RecordUserDto> users = new ArrayList<>();
             boolean win = false;
             for(ParticipantDto participant : matchDto.info().participants()) {
-                users.add(new RecordUserDto(participant.championName(), participant.riotIdGameName(), participant.puuid(), participant.teamId(), participant.kills(), participant.assists(), participant.deaths(), participant.totalMinionsKilled()));
+                SummonerDTO summoner = riotKrApiClient.getSummoner(participant.puuid());
+                Set<LeagueEntryDTO> summonerInfo = riotKrApiClient.getLeagueInfo(summoner.id());
+                 Tier tier = null; Division division = null;
+                if(matchDto.info().queueId() == 420) {
+                    for(LeagueEntryDTO leagueEntryDTO : summonerInfo) {
+                        if(leagueEntryDTO.queueType().equals("RANKED_SOLO_5x5")) {
+                            tier = leagueEntryDTO.tier();
+                            division = leagueEntryDTO.rank();
+                        }
+                    }
+                } else if(matchDto.info().queueId() == 440) {
+                    for(LeagueEntryDTO leagueEntryDTO : summonerInfo) {
+                        if(leagueEntryDTO.queueType().equals("RANKED_FLEX_SR")) {
+                            tier = leagueEntryDTO.tier();
+                            division = leagueEntryDTO.rank();
+                        }
+                    }
+                } else {
+                    if(summonerInfo == null || summonerInfo.isEmpty()) {
+                        tier = Tier.UNRANKED;
+                        division = Division.I;
+                    } else {
+                        Tier tier1 = Tier.UNRANKED;
+                        Division division1 = Division.I;
+
+                        for (LeagueEntryDTO leagueEntryDTO : summonerInfo) {
+                            Tier currentTier = leagueEntryDTO.tier();
+                            Division currentDivision = leagueEntryDTO.rank();
+
+                            if (customCompareTo(currentTier, currentDivision, tier1, division1) > 0) {
+                                tier1 = currentTier;
+                                division1 = currentDivision;
+                            }
+                        }
+                        tier = tier1;
+                        division = division1;
+                    }
+                }
+
+                users.add(new RecordUserDto(participant.championName(), participant.riotIdGameName(), participant.puuid(), tier, division, participant.teamId(), participant.kills(), participant.assists(), participant.deaths(), participant.totalMinionsKilled()));
                 if(puuid.equals(participant.puuid())) {
                     win = participant.win();
                 }
             }
             RecordGameInfoDto info = new RecordGameInfoDto(matchDto.info().gameEndTimestamp(), matchDto.info().gameDuration(), win);
-            list.add(new RecordMatchDto(users, info));
+            Pair<Tier, Division> avgRank = fetchAvgTierAndDivision(users);
+            list.add(new RecordMatchDto(avgRank.getFirst(), avgRank.getSecond(), users, info));
         }
         return list;
     }
 
-    public int customComparabeTo(Tier tier1, Division division1, Tier tier2, Division division2) {
+    public int customCompareTo(Tier tier1, Division division1, Tier tier2, Division division2) {
         if(tier1 != tier2) {
             return tier1.compareTo(tier2);
         } else {
@@ -96,18 +137,22 @@ public class RiotApiService {
         }
     }
 
-    public String fetchAvgTierAndDivision(List<RecordUserDto> users) {
+    public Pair<Tier, Division> fetchAvgTierAndDivision(List<RecordUserDto> users) {
         double sum = 0;
+        int count = 0;
         for(RecordUserDto recordUserDto : users) {
+            if(recordUserDto.tier() == Tier.UNRANKED) continue;
             Tier tier = Tier.CHALLENGER;
             Division division = Division.I;
             sum += tier.ordinal() * 4 + division.ordinal();
+            count++;
         }
-        int avg = (int) Math.round(sum / users.size());
+        if(count == 0 ) return Pair.of(Tier.UNRANKED, Division.I);
+        int avg = (int) Math.round(sum / count);
         if(avg / 4 >= Tier.MASTER.ordinal()) {
-            return Tier.fromOrdinal(avg/4).toString();
+            return Pair.of(Tier.fromOrdinal(avg/4), Division.I);
         }
-        return Tier.fromOrdinal(avg/4).toString() + Division.fromOrdinal(avg%4).toString();
+        return Pair.of(Tier.fromOrdinal(avg/4), Division.fromOrdinal(avg%4));
     }
 
     // Todo : 제대로 동작하는지 확인

@@ -1,6 +1,7 @@
 package com.lolwatcher.event.enumeration;
 
 public enum Tier {
+    UNRANKED,
     IRON,
     BRONZE,
     SILVER,
