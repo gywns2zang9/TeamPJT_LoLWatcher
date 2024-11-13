@@ -23,10 +23,9 @@ export default function Profile({ name, tag, userInfo }: ProfileProps) {
   return (
     <div className="profile-container">
       <div className="profile-info">
-        <h2 className="profile-nickname">
-          {name}#{tag} {"  "}
-          <button>새로고침</button>
-        </h2>
+        <p className="profile-nickname">
+          {name} <span>#{tag}</span>
+        </p>
         {/* <div className="profile-most3">
           <img
             src={`${CHAMPION_IMG_BASE_URL}${profile.most1}.png`}
@@ -46,20 +45,18 @@ export default function Profile({ name, tag, userInfo }: ProfileProps) {
       <div className="rank-info">
         {userInfo.map((info, index) => (
           <div key={index} className="rank-box">
-            <h3>
+            <p className="rank-title">
               {info.queueType === "RANKED_SOLO_5x5"
                 ? "개인/2인 랭크"
                 : "자유 랭크"}
-            </h3>
-            <img
-              className="rank-tier"
-              src={`/tiers/Rank=${info.tier}.png`}
-              alt="티어"
-            />
-            <h3>
+            </p>
+            <div className="rank-tier">
+              <img src={`/tiers/Rank=${info.tier}.png`} alt="티어" />
+            </div>
+            <p className="rank-record">
               {info.tier} {info.division} - {info.leaguePoint}점 ({info.wins}승{" "}
               {info.losses}패)
-            </h3>
+            </p>
           </div>
         ))}
       </div>
