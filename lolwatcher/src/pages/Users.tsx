@@ -38,7 +38,7 @@ export default function Users() {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   // URL의 params에서 name과 tag를 가져오거나 기본값을 설정
-  const name = searchParams.get("name") || "Hide on bush";
+  const name = searchParams.get("name") || "카림sk";
   const tag = searchParams.get("tag") || "KR1";
 
   const [nickName, setNickName] = useState<string>("");
