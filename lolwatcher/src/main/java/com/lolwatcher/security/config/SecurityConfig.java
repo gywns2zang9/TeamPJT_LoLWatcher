@@ -41,8 +41,8 @@ public class SecurityConfig {
         this.userCache = userCache; // userCache 초기화
     }
 
-    @Value("${DOMAIN}") // 환경 변수 DOMAIN 값 주입
-    private String domain;
+//    @Value("${DOMAIN}") // 환경 변수 DOMAIN 값 주입
+//    private String domain;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -55,11 +55,11 @@ public class SecurityConfig {
                         .requestMatchers("/login", "/signup", "/auth/**", "/records","/error").permitAll() // 로그인, 회원가입, 인증 관련 경로 허용
                         .anyRequest().authenticated() // 그 외 모든 요청은 인증 필요
                 )
-                .oauth2Login(oauth2 -> oauth2
-                        .loginPage("/login") // RSO 로그인 페이지로 자동 리디렉션
-                        .defaultSuccessUrl("http://localhost:3000/home", true) // 성공 시 프론트엔드 URL로 리디렉션
-                        .failureUrl("http://localhost:3000/login?error=true") // 실패 시 프론트엔드 로그인 페이지로 리디렉션
-                )
+//                .oauth2Login(oauth2 -> oauth2
+//                        .loginPage("/login") // RSO 로그인 페이지로 자동 리디렉션
+//                        .defaultSuccessUrl("http://localhost:3000/home", true) // 성공 시 프론트엔드 URL로 리디렉션
+//                        .failureUrl("http://localhost:3000/login?error=true") // 실패 시 프론트엔드 로그인 페이지로 리디렉션
+//                )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout") // 로그아웃 후 로그인 페이지로 리디렉션
