@@ -63,7 +63,6 @@ public class RiotApiService {
             userInfo.add(new RecordUserLeagueInfo(leagueEntryDTO.queueType(), leagueEntryDTO.tier(), leagueEntryDTO.rank(), leagueEntryDTO.leaguePoint(), leagueEntryDTO.wins(), leagueEntryDTO.losses()));
         }
         List<String> matchIds = riotAsiaApiClient.getMatchIds(accountDto.puuid());
-        // TODO: LIST id를 기반으로 데이터 베이스 확인 후 없는 데이터들만
 
         List<MatchDto> lists = new ArrayList<>();
         for(int i = 0 ; i < 10; i++) {
