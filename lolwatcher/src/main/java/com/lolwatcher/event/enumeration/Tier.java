@@ -1,6 +1,7 @@
 package com.lolwatcher.event.enumeration;
 
 public enum Tier {
+    UNRANKED,
     IRON,
     BRONZE,
     SILVER,
@@ -10,5 +11,14 @@ public enum Tier {
     DIAMOND,
     MASTER,
     GRANDMASTER,
-    CHALLENGER,
+    CHALLENGER;
+
+    public static Tier fromOrdinal(int ordinal) {
+        Tier[] tiers = Tier.values();
+        if (ordinal >= 0 && ordinal < tiers.length) {
+            return tiers[ordinal];
+        } else {
+            throw new IllegalArgumentException("Invalid ordinal: " + ordinal);
+        }
+    }
 }
