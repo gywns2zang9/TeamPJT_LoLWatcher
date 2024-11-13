@@ -69,16 +69,13 @@ public class RecordService {
         int remainingTime;
         String tokenKey = TOKEN_KEY_PREFIX + account.puuid();
 
-        Boolean wasSet = stringRedisTemplate.opsForValue()
-                .setIfAbsent(tokenKey, "active", Duration.ofSeconds(COOLDOWN_SECONDS));
+        remainingTime = stringRedisTemplate.getExpire(tokenKey, TimeUnit.SECONDS).intValue();
 
-        if (Boolean.FALSE.equals(wasSet)) {
-            System.out.println("접속 확인");
-            remainingTime = stringRedisTemplate.getExpire(tokenKey, TimeUnit.SECONDS).intValue();
-            System.out.println("remainingTime 확인 "+remainingTime);
-            return new RecordRes(remainingTime);
+        if (remainingTime <= 0) {
+            remainingTime = 0;
         }
-        return new RecordRes(0);
+
+        return new RecordRes(remainingTime);
     }
 
     /**
