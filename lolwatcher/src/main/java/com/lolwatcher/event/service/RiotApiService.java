@@ -151,8 +151,8 @@ public class RiotApiService {
         int count = 0;
         for(RecordUserDto recordUserDto : users) {
             if(recordUserDto.tier() == Tier.UNRANKED) continue;
-            Tier tier = Tier.CHALLENGER;
-            Division division = Division.I;
+            Tier tier = recordUserDto.tier();
+            Division division = recordUserDto.division();
             sum += tier.ordinal() * 4 + division.ordinal();
             count++;
         }
