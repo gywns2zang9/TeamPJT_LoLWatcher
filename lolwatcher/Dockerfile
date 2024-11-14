@@ -8,13 +8,23 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 
-# 4. Copy source code and build
+# 4. Define build arguments
+ARG REACT_APP_LOLWATCHER_API_URL
+ARG REACT_APP_CHAMPION_IMG_BASE_URL
+ARG REACT_APP_CHAMPION_SPLASH_IMG_BASE_URL
+
+# 5. Set environment variables for the build
+ENV REACT_APP_LOLWATCHER_API_URL=$REACT_APP_LOLWATCHER_API_URL
+ENV REACT_APP_CHAMPION_IMG_BASE_URL=$REACT_APP_CHAMPION_IMG_BASE_URL
+ENV REACT_APP_CHAMPION_SPLASH_IMG_BASE_URL=$REACT_APP_CHAMPION_SPLASH_IMG_BASE_URL
+
+# 6. Copy source code and build
 COPY . .
 RUN npm run build
 
-# 5. Deploying with a lightweight web server
+# 7. Deploying with a lightweight web server
 FROM nginx:alpine
 COPY --from=builder /app/build /usr/share/nginx/html
 
-# 6. Expose port 80
+# 8. Expose port 80
 EXPOSE 80
