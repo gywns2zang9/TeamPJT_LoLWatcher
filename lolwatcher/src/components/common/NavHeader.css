@@ -30,7 +30,7 @@
   background-color: #333;
   border: none;
   border-radius: 4px;
-  cursor: pointer;
+  cursor: url("../../assets/cursor/hover-cursor.png"), pointer;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 

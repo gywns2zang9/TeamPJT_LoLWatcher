@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import NavHeader from "../components/common/NavHeader";
 import ChampionDetail from "../components/champions/ChampionDetail";
 import "./Champions.css";
 
@@ -59,6 +60,8 @@ export default function Champions() {
 
   return (
     <div className="champions-container">
+      <NavHeader />
+
       <div className="champion-list">
         {champions.map((champion, index) => (
           <div
