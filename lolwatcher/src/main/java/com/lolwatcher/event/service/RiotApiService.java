@@ -34,8 +34,7 @@ public class RiotApiService {
     private final PythonApiClient pythonApiClient;
     private final RecordRepository recordRepository;
 
-    public RecordDto getMatchDataBySummoner(String name, String tag) {
-        AccountDto accountDto = riotAsiaApiClient.getSummonerRequest(name, tag);
+    public RecordDto getMatchDataBySummoner(String name, String tag, AccountDto accountDto) {
         log.info("puuid: {}", accountDto.puuid());
         SummonerDTO summoner = riotKrApiClient.getSummoner(accountDto.puuid());
         Set<LeagueEntryDTO> summonerInfo = riotKrApiClient.getLeagueInfo(summoner.id());
@@ -128,8 +127,13 @@ public class RiotApiService {
 
                 users.add(new RecordUserDto(participant.championName(), participant.riotIdGameName(), participant.puuid(), tier, division, participant.teamId(), participant.kills(), participant.assists(), participant.deaths(), participant.totalMinionsKilled()));
             }
-            RecordGameInfoDto info = new RecordGameInfoDto(matchDto.info().gameEndTimestamp(), matchDto.info().gameDuration());
             Pair<Tier, Division> avgRank = fetchAvgTierAndDivision(users);
+            RecordGameInfoDto info = new RecordGameInfoDto(
+                    avgRank.getFirst(),
+                    avgRank.getSecond(),
+                    matchDto.info().teams().get(0).win() ? matchDto.info().teams().get(0).teamId() : matchDto.info().teams().get(1).teamId(),
+                    matchDto.info().gameEndTimestamp(),
+                    matchDto.info().gameDuration());
             record.getData().put("matchResult", new RecordMatchDto(avgRank.getFirst(), avgRank.getSecond(), users, info));
             record.getData().put("matchDto", matchDto);
             record.getData().put("timelineDto", timelineDto);
