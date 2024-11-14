@@ -50,7 +50,7 @@ export default function Users() {
   const [endTime, setEndTime] = useState<number | null>(null);
   const handleRecordButtonClick = async () => {
     try {
-      const response = await axios.post(`${API_URL}records`, null, {
+      const response = await axios.post(`${API_URL}/records`, null, {
         params: { name, tag },
       });
 
@@ -91,7 +91,7 @@ export default function Users() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const recordsResponse = await axios.get(`${API_URL}records`, {
+        const recordsResponse = await axios.get(`${API_URL}/records`, {
           params: { name, tag },
         });
 
@@ -101,7 +101,7 @@ export default function Users() {
         setIsButtonDisabled(remainingSeconds > 0); // 남은 시간이 있으면 버튼을 비활성화
 
         const accessToken = localStorage.getItem('accessToken');
-        const response = await axios.get(`${API_URL}riot/info`, {
+        const response = await axios.get(`${API_URL}/riot/info`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
