@@ -15,6 +15,7 @@ import com.lolwatcher.event.dto.timeline.TimelineDto;
 import com.lolwatcher.event.enumeration.Division;
 import com.lolwatcher.event.enumeration.Tier;
 import com.lolwatcher.event.repository.RecordRepository;
+import com.lolwatcher.event.util.RecordRequestRedisUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.util.Pair;
@@ -33,6 +34,7 @@ public class RiotApiService {
     private final RiotKrApiClient riotKrApiClient;
     private final PythonApiClient pythonApiClient;
     private final RecordRepository recordRepository;
+    private final RecordRequestRedisUtil recordRequestRedisUtil;
 
     public RecordDto getMatchDataBySummoner(String name, String tag, AccountDto accountDto) {
         log.info("puuid: {}", accountDto.puuid());
@@ -51,8 +53,7 @@ public class RiotApiService {
             }
         }
         List<Record> recordList = recordRepository.findAllById(matchIds);
-
-        return new RecordDto(
+        RecordDto recordDto = new RecordDto(
                 recordList
                         .stream()
                         .map(record -> {
@@ -71,6 +72,8 @@ public class RiotApiService {
                         accountDto.puuid(),
                         summoner.summonerLevel(),
                         summoner.profileIconId()));
+        recordRequestRedisUtil.updateRequestTimer(accountDto.puuid(), recordDto);
+        return recordDto;
     }
 
     private HttpStatus matchDtoToRecordDtoAndSave(List<String> ids) {
