@@ -5,11 +5,12 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border: 1px solid pink;
+  border: 2px solid white;
+  border-radius: 8px;
 }
 
 .form-container h1 {
-  color: red;
+  color: white;
 }
 
 .form-main {

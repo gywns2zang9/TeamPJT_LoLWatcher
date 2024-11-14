@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { functionAccessToken, postLoginAPI } from "../../api/authApi";
+import { postLoginAPI } from "../../api/authApi";
 import "./AuthForm.css";
 
 interface LoginFormProps {
@@ -12,8 +12,9 @@ export default function LoginForm({ toggleForm }: LoginFormProps) {
   const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleLogin = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+
     if (!userId || !password) {
       window.alert("아이디와 비밀번호를 입력해주세요.");
       return;
@@ -26,12 +27,19 @@ export default function LoginForm({ toggleForm }: LoginFormProps) {
     } catch (err) {
       console.log("로그인 실패");
       console.log(err);
+      window.alert("아이디와 비밀번호를 확인해주세요.");
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleLogin();
     }
   };
 
   return (
     <div className="form-container">
-      <h1>※로그인 안막음※</h1>
+      <h1>로그인</h1>
       <div className="form-main">
         <div className="input-box">
           <input
@@ -41,6 +49,7 @@ export default function LoginForm({ toggleForm }: LoginFormProps) {
             onChange={(e) => setUserId(e.target.value)}
             placeholder="아이디"
             maxLength={20}
+            onKeyDown={handleKeyDown}
           />
           <input
             className="input-field"
@@ -49,6 +58,7 @@ export default function LoginForm({ toggleForm }: LoginFormProps) {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="비밀번호"
             maxLength={20}
+            onKeyDown={handleKeyDown}
           />
         </div>
         <button className="form-button" onClick={handleLogin}>
