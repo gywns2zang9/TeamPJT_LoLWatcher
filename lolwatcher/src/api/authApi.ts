@@ -14,8 +14,8 @@ export const postSignupAPI = async (userId: string, password: string, riotId: st
 // 로그인 API
 export const postLoginAPI = async (userId: string, password: string) => {
   const response = await axiosInstance.post('/auth/login', {
-    userId: userId,
-    password: password,
+    userId,
+    password,
   });
   localStorage.setItem('accessToken', response.data.accessToken);
   return response.data;
