@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import "./App.css";
+import NavHeader from "./components/common/NavHeader"; // NavHeader 컴포넌트 추가
 import Main from "./pages/Main";
 import Logout from "./pages/Logout";
 import Champions from "./pages/Champions";
@@ -14,6 +15,7 @@ import Tos from "./pages/riot/Tos";
 function App() {
   return (
     <Router>
+      <NavHeader />
       <Routes>
         <Route path="/" element={<Main />} />
         <Route path="/logout" element={<Logout />} />
