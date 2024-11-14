@@ -18,27 +18,32 @@ def receive_match_data():
     receive_list = request.get_json()
     report_collection = get_mongo_report()
 
-    result = []
+    result = {}
 
     for match_id in receive_list:
-
+        # print(match_id)
         data = report_collection.find_one({"_id": match_id})
-
         if "matchReport" in data["data"]:
             continue
 
         match_dto = data["data"]["matchDto"]
-        rank = data["data"]["rank"]
+        tier = data["data"]["matchResult"]["tier"]
+        division = data["data"]["matchResult"]["division"]
 
+        if tier.lower() in ["master", "grandmaster", "challenger"]:
+            rank = tier.lower()
+        else:
+            rank = f"{tier}_{division}".lower()
         duration = match_dto["info"]["gameDuration"] // 60
         collection = mongo_rank_analytics()
 
         result_data = collection.find_one({"_id": ObjectId(os.getenv("CALCULATED_DATA"))}, {f"{rank}.{duration}": 1, "_id": 0})
-
         if result_data and rank in result_data and str(duration) in result_data[rank]:
             tier_data = result_data[rank][str(duration)]
+            # print(rank)
             participants = process_participants(match_dto)
-
+            # print(duration)
+            count = result_data[rank][str(duration)]["count"]
             # Z-score 계산 함수
             def calculate_z_score(value, avg, std_dev):
                 return (value - avg) / std_dev if std_dev != 0 else 0
@@ -58,7 +63,8 @@ def receive_match_data():
                     "middle": {},
                     "bottom": {},
                     "utility": {}
-                }
+                },
+                "count": count
             }
 
             for index, participant in enumerate(participants):
@@ -80,22 +86,33 @@ def receive_match_data():
                             "avg": avg,
                             "std_dev": std_dev
                         }
-                        print(
-                            f"포지션: {team_position}, 필드: {field}, 평균: {avg}, 표준편차: {std_dev}, 값: {value}, Z-score: {participant_z_scores[field]}"
-                        )
+                        # print(
+                        #     f"포지션: {team_position}, 필드: {field}, 평균: {avg}, 표준편차: {std_dev}, 값: {value}, Z-score: {participant_z_scores[field]}"
+                        # )
 
                 # 포지션별 리스트에 현재 참가자의 Z-score 추가
                 report[team_key][team_position] = participant_z_scores
-                print("------------------------------------")
+                # print("------------------------------------")
 
-            result.append(report)
-            report_collection.update_one(
-                {"_id": match_id},
-                {
-                    "$rename":{"data.matchDto":"data.matchReport"},
-                    "$set":{"data.matchReport":report}
-                }
-            )
+
+            result = report
+            data = report_collection.find_one({"_id": match_id})
+
+            # 데이터가 존재하는지 확인
+            if data is not None:
+                # matchDto 필드를 matchReport로 이름 변경
+                report_collection.update_one(
+                    {"_id": match_id},
+                    {"$rename": {"data.matchDto": "data.matchReport"}}
+                )
+
+                # 새로 생성한 matchReport 필드에 report 데이터를 추가
+                report_collection.update_one(
+                    {"_id": match_id},
+                    {"$set": {"data.matchReport": result}}
+                )
+            else:
+                print(f"문서를 찾을 수 없습니다: {match_id}")
             #report_collection.insert_one({"match_id": match_id, "report": report})
 
     if result:
@@ -108,7 +125,7 @@ def receive_match_data():
 
 # 전달받은 Dto 데이터에서 participants 배열을 순회하면서 각 플레이어의 포지션에 맞는 필드를 추출하거나 계산
 def process_participants(match_dto):
-    participants = match_dto["participants"]
+    participants = match_dto["info"]["participants"]
     results = []
 
     # 포지션별 필요한 필드 정의
@@ -127,7 +144,7 @@ def process_participants(match_dto):
 
         # 참가자 데이터를 저장할 딕셔너리
         player_data = {"teamPosition": team_position}
-        print(f"{participant}")
+        # print(f"{participant}")
         for field in fields:
             if field == "impactScore":
                 # impactScore 계산
@@ -181,9 +198,9 @@ def receive_request_tier_analytic():
 
     for tier in tiers:
         tier_divisions = divisions if tier not in ["master", "grandmaster", "challenger"] else [""]
-        print(tier)
+        # print(tier)
         for division in tier_divisions:
-            print(division)
+            #print(division)
             try:
                 collection = get_mongo_rank(tier, division)
                 stats_by_time = calculate_stats_by_time(collection)
