@@ -1,0 +1,12 @@
+.statistics-container {
+  background-image: url("../assets/background.jpg");
+  background-size: cover;
+  background-position: center;
+  opacity: 1;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
