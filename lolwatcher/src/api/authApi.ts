@@ -13,7 +13,8 @@ export const postSignupAPI = async (userId: string, password: string, riotId: st
 
 // 로그인 API
 export const postLoginAPI = async (userId: string, password: string) => {
-  console.log(`${process.env.REACT_APP_LOLWATCHER_API_URL}/auth/login`);
+  console.log(`login을 요청하는 url ${process.env.REACT_APP_LOLWATCHER_API_URL}/auth/login`);
+  console.log('----------------');
   const response = await axiosInstance.post('/auth/login', {
     userId,
     password,
