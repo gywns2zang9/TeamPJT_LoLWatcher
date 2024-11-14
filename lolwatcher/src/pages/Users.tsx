@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import GameList from '../components/users/GameList';
-import Profile from '../components/users/Profile';
-import axios from 'axios';
-import './Users.css';
+import React, { useState, useEffect } from "react";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import NavHeader from "../components/common/NavHeader";
+import GameList from "../components/users/GameList";
+import Profile from "../components/users/Profile";
+import axios from "axios";
+import "./Users.css";
 const API_URL = process.env.REACT_APP_LOLWATCHER_API_URL;
 interface User {
   championName: string; //"Garen"
@@ -38,10 +39,10 @@ export default function Users() {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   // URL의 params에서 name과 tag를 가져오거나 기본값을 설정
-  const name = searchParams.get('name') || '카림sk';
-  const tag = searchParams.get('tag') || 'KR1';
+  const name = searchParams.get("name") || "카림sk";
+  const tag = searchParams.get("tag") || "KR1";
 
-  const [nickName, setNickName] = useState<string>('');
+  const [nickName, setNickName] = useState<string>("");
   const [gameInfos, setGameInfos] = useState<GameInfo[]>([]);
   const [userInfo, setUserInfo] = useState<UserInfo[]>([]);
   const [loading, setLoading] = useState(true);
@@ -51,14 +52,14 @@ export default function Users() {
   const handleRecordButtonClick = async () => {
     try {
       const response = await axios.post(`${API_URL}/records`, null, {
-        params: { name, tag },
+        params: { name, tag }
       });
 
       const remainingSeconds = response.data.remainingSeconds;
       setEndTime(Date.now() + remainingSeconds * 1000);
       setIsButtonDisabled(true); // 버튼 비활성화
     } catch (error) {
-      alert('잠시 후 다시 시도해주세요.');
+      alert("잠시 후 다시 시도해주세요.");
       window.location.reload(); // 페이지 새로고침
     }
   };
@@ -84,7 +85,7 @@ export default function Users() {
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
-    return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+    return `${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
   };
 
   useEffect(() => {
@@ -92,7 +93,7 @@ export default function Users() {
       setLoading(true);
       try {
         const recordsResponse = await axios.get(`${API_URL}/records`, {
-          params: { name, tag },
+          params: { name, tag }
         });
 
         const remainingSeconds = recordsResponse.data.remainingSeconds;
@@ -100,12 +101,12 @@ export default function Users() {
         setEndTime(Date.now() + remainingSeconds * 1000);
         setIsButtonDisabled(remainingSeconds > 0); // 남은 시간이 있으면 버튼을 비활성화
 
-        const accessToken = localStorage.getItem('accessToken');
+        const accessToken = localStorage.getItem("accessToken");
         const response = await axios.get(`${API_URL}/riot/info`, {
           headers: {
-            Authorization: `Bearer ${accessToken}`,
+            Authorization: `Bearer ${accessToken}`
           },
-          params: { name, tag },
+          params: { name, tag }
         });
         const data = response.data;
         setUserInfo(data.userInfo);
@@ -117,13 +118,14 @@ export default function Users() {
             kills: user.kills,
             assists: user.assists,
             deaths: user.deaths,
-            totalMinionsKilled: user.totalMinionsKilled,
+            totalMinionsKilled: user.totalMinionsKilled
           }));
 
           const mainUser: User | null =
             users.find(
               (user: User) =>
-                user.summonerName.replace(/\s+/g, '').toLowerCase() === name.replace(/\s+/g, '').toLowerCase()
+                user.summonerName.replace(/\s+/g, "").toLowerCase() ===
+                name.replace(/\s+/g, "").toLowerCase()
             ) || null;
 
           return {
@@ -132,13 +134,13 @@ export default function Users() {
             gameEndStamp: item.info.gameEndStamp,
             win: item.info.win,
             users: users,
-            mainUser: mainUser,
+            mainUser: mainUser
           };
         });
 
         setGameInfos(formattedInfos);
       } catch (error) {
-        console.error('데이터 가져오기 실패:', error);
+        console.error("데이터 가져오기 실패:", error);
       } finally {
         setLoading(false);
       }
@@ -149,70 +151,60 @@ export default function Users() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    const [searchName, searchTag] = nickName.split('#');
+    const [searchName, searchTag] = nickName.split("#");
     if (!searchTag) {
-      const defaultTag = 'KR1';
+      const defaultTag = "KR1";
       navigate(`/users?name=${searchName}&tag=#${defaultTag}`);
       return;
     }
     navigate(`/users?name=${searchName}&tag=${searchTag}`);
-    setNickName('');
+    setNickName("");
   };
 
   return (
-    <div className='users-container'>
-      <div className='nav-link'>
-        <button
-          onClick={handleRecordButtonClick}
-          disabled={isButtonDisabled}
-        >
-          {isButtonDisabled && remainingTime !== null ? formatTime(remainingTime) : '새로고침'}
+    <div className="users-container">
+      <NavHeader />
+      <div className="nav-link">
+        <button onClick={handleRecordButtonClick} disabled={isButtonDisabled}>
+          {isButtonDisabled && remainingTime !== null
+            ? formatTime(remainingTime)
+            : "새로고침"}
         </button>
-        <NavLink to='/champions'>챔피언 정보</NavLink>
-        <NavLink to='/logout'>로그아웃</NavLink>
+        <NavLink to="/champions">챔피언 정보</NavLink>
+        <NavLink to="/logout">로그아웃</NavLink>
       </div>
 
-      <div className='users-header'>
-        <h1 className='header-title'>유저 검색</h1>
-        <form
-          className='header-form'
-          onSubmit={handleSearch}
-        >
+      <div className="users-header">
+        <h1 className="header-title">유저 검색</h1>
+        <form className="header-form" onSubmit={handleSearch}>
           <input
-            type='text'
+            type="text"
             value={nickName}
             onChange={(e) => setNickName(e.target.value)}
-            placeholder='Hide on bush#KR1'
+            placeholder="Hide on bush#KR1"
             maxLength={30}
-            className='header-input'
+            className="header-input"
           />
-          <button
-            type='submit'
-            className='header-btn'
-          >
+          <button type="submit" className="header-btn">
             검색
           </button>
         </form>
       </div>
 
-      <div className='users-main'>
+      <div className="users-main">
         {loading ? (
-          <div className='loading-spinner'>
-            <div className='spinner'></div>
+          <div className="loading-spinner">
+            <div className="spinner"></div>
           </div>
         ) : (
           <>
-            <div className='users-article'>
-              <div className='article-profile'>
-                {
-                  <Profile
-                    name={name}
-                    tag={tag}
-                    userInfo={userInfo}
-                  />
-                }
+            <div className="users-article">
+              <div className="article-profile">
+                {<Profile name={name} tag={tag} userInfo={userInfo} />}
               </div>
-              <div className='article-games'>{<GameList gameInfos={gameInfos} />}</div>
+              <div className="article-games">
+                {<GameList gameInfos={gameInfos} />}
+              </div>
             </div>
           </>
         )}

@@ -24,7 +24,28 @@
 
 .header-title {
   display: flex;
-  font-size: 24px;
+  width: 100%;
+  justify-content: center;
+  font-size: 30px;
+  font-weight: 600;
+  position: relative;
+}
+
+.blue-team-score {
+  color: blue;
+  padding-right: 24px;
+}
+.blue-team-score span {
+  font-size: 20px;
+  margin-right: 8px;
+}
+.red-team-score {
+  color: red;
+  padding-left: 24px;
+}
+.red-team-score span {
+  font-size: 20px;
+  margin-left: 8px;
 }
 
 .header-link {
@@ -42,13 +63,23 @@
   width: 50%;
   min-width: 400px;
   display: flex;
+  border-radius: 8px;
+  background-color: #99cbfa;
 }
+.blue-team-section .team-section :hover {
+  background-color: #70b6f7;
+}
+
 .red-team-section {
   width: 50%;
   min-width: 400px;
   display: flex;
+  border-radius: 8px;
+  background-color: #fdddef;
 }
-
+.red-team-section .team-section :hover {
+  background-color: #f99fd0;
+}
 .main-position-section {
   width: 10%;
   min-width: 40px;
@@ -67,6 +98,7 @@
 .position-img {
   width: 30px;
   height: 30px;
+  filter: grayscale(100%);
 }
 
 .team-section {
@@ -76,25 +108,21 @@
 }
 
 .team-item {
-  width: 90%;
   height: 20%;
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-weight: bold;
+  border-radius: 8px;
   padding: 5px;
 }
 
 .team-item:hover {
-  background-color: #e9e9e9;
   cursor: url("../../assets/cursor/hover-cursor.png"), pointer;
 }
 
 .rotated-line {
-  width: 2px;
-  background-color: black;
-  height: 90%;
-  margin: auto 1%;
+  width: 1px;
 }
 
 .champion-img {
