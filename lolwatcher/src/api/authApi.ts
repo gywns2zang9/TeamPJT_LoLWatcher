@@ -13,29 +13,12 @@ export const postSignupAPI = async (userId: string, password: string, riotId: st
 
 // 로그인 API
 export const postLoginAPI = async (userId: string, password: string) => {
-  const BASE_URL = process.env.REACT_APP_LOLWATCHER_API_URL!;
-  console.log('-----------------');
-  console.log('BASE_URL:', BASE_URL);
-  console.log('----------------');
-
-  const response = await fetch(`${BASE_URL}/auth/login`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      userId,
-      password,
-    }),
+  const response = await axiosInstance.post('/auth/login', {
+    userId,
+    password,
   });
-
-  if (!response.ok) {
-    throw new Error('Login request failed');
-  }
-
-  const data = await response.json();
-  localStorage.setItem('accessToken', data.accessToken);
-  return data;
+  localStorage.setItem('accessToken', response.data.accessToken);
+  return response.data;
 };
 
 //로그아웃 함수
