@@ -116,9 +116,9 @@ def receive_match_data():
             #report_collection.insert_one({"match_id": match_id, "report": report})
 
     if result:
-        return "", 200
+        return "OK", 200
     else:
-        return "", 404
+        return "NOT_FOUND", 404
 
 
 
