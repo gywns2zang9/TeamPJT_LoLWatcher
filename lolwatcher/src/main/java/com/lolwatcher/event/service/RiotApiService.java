@@ -48,6 +48,7 @@ public class RiotApiService {
         List<String> nonExistsMatchIds = recordRepository.findNonExistingIds(matchIds);
         if(!nonExistsMatchIds.isEmpty()) {
             HttpStatus httpStatus = matchDtoToRecordDtoAndSave(nonExistsMatchIds);
+            log.info("data analytic response: {}", httpStatus);
             if(httpStatus != HttpStatus.OK) {
                 throw new RuntimeException("Error saving record");
             }
