@@ -116,9 +116,9 @@ def receive_match_data():
             #report_collection.insert_one({"match_id": match_id, "report": report})
 
     if result:
-        return jsonify(result), 200
+        return "", 200
     else:
-        return jsonify({"status": "error", "message": "No data found"}), 404
+        return "", 404
 
 
 
