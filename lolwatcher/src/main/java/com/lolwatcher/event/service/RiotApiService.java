@@ -127,7 +127,7 @@ public class RiotApiService {
                     }
                 }
 
-                users.add(new RecordUserDto(participant.championName(), participant.riotIdGameName(), participant.puuid(), tier, division, participant.teamId(), participant.kills(), participant.assists(), participant.deaths(), participant.totalMinionsKilled()));
+                users.add(new RecordUserDto(participant.championName(), participant.riotIdGameName(), participant.puuid(), tier, division, participant.teamId(), participant.kills(), participant.assists(), participant.deaths(), participant.totalMinionsKilled() + participant.neutralMinionsKilled()));
             }
             Pair<Tier, Division> avgRank = fetchAvgTierAndDivision(users);
             String rank = switch (matchDto.info().queueId()) {
