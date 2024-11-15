@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 public class RecordRequestRedisUtil {
 
     private final RedisTemplate<String, String> redisTemplate;
-    private final String prefix = "record_request:";\
+    private final String prefix = "record_request:";
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public int fetchRemainingTime(String puuid) {
