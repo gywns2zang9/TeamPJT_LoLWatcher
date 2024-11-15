@@ -72,7 +72,7 @@ def receive_match_data():
                 team_key = "team_100" if index < 5 else "team_200"
 
                 team_position = participant["teamPosition"]
-                position_data = tier_data[team_position]
+                position_data = tier_data[team_position.lower()]
 
                 # 현재 참가자의 Z-score 정보를 저장할 딕셔너리
                 participant_z_scores = {}
