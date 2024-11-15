@@ -63,7 +63,7 @@ public class RiotApiService {
                 recordList
                         .stream()
                         .map(record -> {
-                            return (RecordReportDto) record.getData().get("matchReport");
+                            return (Map<String, Object>) record.getData().get("matchReport");
                         })
                         .toList(),
                 userInfo,
