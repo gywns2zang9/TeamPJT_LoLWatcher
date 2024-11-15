@@ -63,16 +63,16 @@ public class RedisConfig {    // RedisConfig 클래스를 Spring 설정 클래�
         redisTemplate.setKeySerializer(new StringRedisSerializer());
 
         // Key-Value 쌍의 Value를 문자열로 직렬화하는 Serializer 설정
-        redisTemplate.setValueSerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
 
 
         // Hash 타입을 사용하는 경우 Key와 Value에 대해 각각 문자열 직렬화 설정
         redisTemplate.setHashKeySerializer(new StringRedisSerializer());
-        redisTemplate.setHashValueSerializer(new StringRedisSerializer());
+        redisTemplate.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
 
-
-        // 모든 경우에 대해 기본 직렬화 방식을 문자열 직렬화로 설정
-        redisTemplate.setDefaultSerializer(new StringRedisSerializer());
+//
+//        // 모든 경우에 대해 기본 직렬화 방식을 문자열 직렬화로 설정
+//        redisTemplate.setDefaultSerializer(new StringRedisSerializer());
 
         // 구성된 RedisTemplate 인스턴스를 반환
         return redisTemplate;
