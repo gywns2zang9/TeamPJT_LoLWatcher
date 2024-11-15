@@ -4,10 +4,10 @@ import java.util.List;
 import java.util.Map;
 
 public record RecordReportTeamDto(
-        List<Map<String, RecordReportTeamParticipantScoreDto>> top
-        ,List<Map<String, RecordReportTeamParticipantScoreDto>> jungle
-        ,List<Map<String, RecordReportTeamParticipantScoreDto>> middle
-        ,List<Map<String, RecordReportTeamParticipantScoreDto>> bottom
-        ,List<Map<String, RecordReportTeamParticipantScoreDto>> utility
+        Map<String, RecordReportTeamParticipantScoreDto> top,
+        Map<String, RecordReportTeamParticipantScoreDto> jungle,
+        Map<String, RecordReportTeamParticipantScoreDto> middle,
+        Map<String, RecordReportTeamParticipantScoreDto> bottom,
+        Map<String, RecordReportTeamParticipantScoreDto> utility
 ) {
 }
