@@ -91,7 +91,7 @@ public class RiotApiService {
             for(ParticipantDto participant : matchDto.info().participants()) {
                 SummonerDTO summoner = riotKrApiClient.getSummoner(participant.puuid());
                 Set<LeagueEntryDTO> summonerInfo = riotKrApiClient.getLeagueInfo(summoner.id());
-                Tier tier = null; Division division = null;
+                Tier tier = Tier.UNRANKED; Division division = Division.I;
                 if(matchDto.info().queueId() == 420) {
                     for(LeagueEntryDTO leagueEntryDTO : summonerInfo) {
                         if(leagueEntryDTO.queueType().equals("RANKED_SOLO_5x5")) {
@@ -107,10 +107,7 @@ public class RiotApiService {
                         }
                     }
                 } else {
-                    if(summonerInfo == null || summonerInfo.isEmpty()) {
-                        tier = Tier.UNRANKED;
-                        division = Division.I;
-                    } else {
+                    if(summonerInfo != null && !summonerInfo.isEmpty()) {
                         Tier tier1 = Tier.UNRANKED;
                         Division division1 = Division.I;
 
