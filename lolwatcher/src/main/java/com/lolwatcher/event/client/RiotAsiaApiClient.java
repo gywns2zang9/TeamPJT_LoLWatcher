@@ -15,7 +15,7 @@ public interface RiotAsiaApiClient {
     @RequestMapping(method = RequestMethod.GET, value = "/riot/account/v1/accounts/by-riot-id/{gameName}/{tagLine}")
     AccountDto getSummonerRequest(@PathVariable String gameName, @PathVariable String tagLine);
 
-    @RequestMapping(method = RequestMethod.GET, value = "/lol/match/v5/matches/by-puuid/{puuid}/ids?start=0&count=20")
+    @RequestMapping(method = RequestMethod.GET, value = "/lol/match/v5/matches/by-puuid/{puuid}/ids?type=ranked&start=0&count=20")
     List<String> getMatchIds(@PathVariable String puuid);
 
     @RequestMapping(method = RequestMethod.GET, value = "/lol/match/v5/matches/{matchId}")
