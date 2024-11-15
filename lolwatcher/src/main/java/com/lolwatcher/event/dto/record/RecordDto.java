@@ -1,5 +1,6 @@
 package com.lolwatcher.event.dto.record;
 
+import java.util.Map;
 import java.util.List;
 import java.util.Set;
 
