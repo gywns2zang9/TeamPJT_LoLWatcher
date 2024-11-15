@@ -128,11 +128,20 @@ public class RiotApiService {
                 users.add(new RecordUserDto(participant.championName(), participant.riotIdGameName(), participant.puuid(), tier, division, participant.teamId(), participant.kills(), participant.assists(), participant.deaths(), participant.totalMinionsKilled()));
             }
             Pair<Tier, Division> avgRank = fetchAvgTierAndDivision(users);
+            String rank = switch (matchDto.info().queueId()) {
+                case 420 -> "개인/2인";
+                case 440 -> "자유";
+                default -> {
+                    log.warn("Unchecked Queue Id {}", matchDto.info().queueId());
+                    yield "오류";
+                }
+            };
             int winTeam = (matchDto.info().teams().get(0).win() ? matchDto.info().teams().get(0).teamId() : matchDto.info().teams().get(1).teamId());
             log.info("tier : {} \ndivision : {}\nwinTeam: {}", avgRank.getFirst(), avgRank.getSecond(), winTeam);
             RecordGameInfoDto info = new RecordGameInfoDto(
                     avgRank.getFirst(),
                     avgRank.getSecond(),
+                    rank,
                     winTeam,
                     matchDto.info().gameEndTimestamp(),
                     matchDto.info().gameDuration());
