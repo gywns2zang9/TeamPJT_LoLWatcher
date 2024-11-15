@@ -2,6 +2,7 @@ package com.lolwatcher.event.client;
 
 import com.lolwatcher.event.config.DataAnalyticFeignConfig;
 import com.lolwatcher.event.dto.match.MatchDto;
+import feign.Response;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,6 +15,6 @@ import java.util.List;
 public interface PythonApiClient {
 
     @RequestMapping(method = RequestMethod.POST, value = "/analytic/report")
-    HttpStatus postMatchData(@RequestBody List<String> matchIds);
+    Response postMatchData(@RequestBody List<String> matchIds);
 
 }

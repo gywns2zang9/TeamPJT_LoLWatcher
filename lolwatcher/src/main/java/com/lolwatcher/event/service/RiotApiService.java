@@ -16,6 +16,7 @@ import com.lolwatcher.event.enumeration.Division;
 import com.lolwatcher.event.enumeration.Tier;
 import com.lolwatcher.event.repository.RecordRepository;
 import com.lolwatcher.event.util.RecordRequestRedisUtil;
+import feign.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.util.Pair;
@@ -47,9 +48,9 @@ public class RiotApiService {
         List<String> matchIds = riotAsiaApiClient.getMatchIds(accountDto.puuid());
         List<String> nonExistsMatchIds = recordRepository.findNonExistingIds(matchIds);
         if(!nonExistsMatchIds.isEmpty()) {
-            HttpStatus httpStatus = matchDtoToRecordDtoAndSave(nonExistsMatchIds);
-            log.info("data analytic response: {}", httpStatus);
-            if(httpStatus != HttpStatus.OK) {
+            Response res = matchDtoToRecordDtoAndSave(nonExistsMatchIds);
+            log.info("data analytic response: {}", res);
+            if(res.status() != 200 && res.status() != 404 ) {
                 throw new RuntimeException("Error saving record");
             }
         }
@@ -77,7 +78,7 @@ public class RiotApiService {
         return recordDto;
     }
 
-    private HttpStatus matchDtoToRecordDtoAndSave(List<String> ids) {
+    private Response matchDtoToRecordDtoAndSave(List<String> ids) {
 
         List<Record> records = new ArrayList<>();
 
