@@ -61,7 +61,7 @@ public class RiotApiService {
                         .map(record -> {
                             return new RecordResultDto((RecordMatchDto) record.getData().get("matchResult"), (Map<String, Object>) record.getData().get("matchReport"));
                         })
-                        .sorted(Comparator.comparingLong(o -> o.match().info().gameEndStamp()))
+                        .sorted(Comparator.comparingLong((RecordResultDto o) -> o.match().info().gameEndStamp()).reversed())
                         .toList()
                 ,
                 userInfo,
