@@ -44,6 +44,7 @@
   flex-direction: column;
   position: relative;
   justify-content: center;
+  z-index: 0;
 }
 .match-end-time {
   position: absolute;
@@ -151,4 +152,8 @@
   white-space: nowrap; /* 한 줄로 표시 */
   overflow: hidden; /* 넘치는 텍스트 숨기기 */
   text-overflow: ellipsis; /* 말줄임표(...) 추가 */
+}
+
+.user-detail{
+  font-size: 30px;
 }
