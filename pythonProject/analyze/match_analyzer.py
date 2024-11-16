@@ -508,11 +508,11 @@ def calculateStatsForJungleLaneByGameDuration(collection):
                             "$matchDto.info.participants.challenges.dragonTakedowns",
                             "$matchDto.info.participants.challenges.baronTakedowns",
                             "$matchDto.info.participants.challenges.riftHeraldTakedowns"
-                        ]}, 0.2]},
-                        {"$multiply": ["$matchDto.info.participants.visionScore", 0.2]},
-                        {"$multiply": ["$matchDto.info.participants.challenges.goldPerMinute", 0.1]},
-                        {"$multiply": ["$matchDto.info.participants.turretTakedowns", 0.1]},
-                        {"$multiply": ["$matchDto.info.participants.totalDamageDealtToChampions", 0.1]}
+                        ]}, 0.15]},
+                        {"$multiply": ["$matchDto.info.participants.visionScore", 0.1]},
+                        {"$multiply": ["$matchDto.info.participants.challenges.goldPerMinute", 0.15]},
+                        {"$multiply": ["$matchDto.info.participants.turretTakedowns", 0.15]},
+                        {"$multiply": ["$matchDto.info.participants.totalDamageDealtToChampions", 0.15]}
                     ]
                 }
             }
@@ -591,11 +591,11 @@ def calculateStatsForMiddleLaneByGameDuration(collection):
                             "$matchDto.info.participants.challenges.dragonTakedowns",
                             "$matchDto.info.participants.challenges.baronTakedowns",
                             "$matchDto.info.participants.challenges.riftHeraldTakedowns"
-                        ]}, 0.2]},
-                        {"$multiply": ["$matchDto.info.participants.visionScore", 0.2]},
-                        {"$multiply": ["$matchDto.info.participants.challenges.goldPerMinute", 0.1]},
-                        {"$multiply": ["$matchDto.info.participants.turretTakedowns", 0.1]},
-                        {"$multiply": ["$matchDto.info.participants.totalDamageDealtToChampions", 0.1]}
+                        ]}, 0.15]},
+                        {"$multiply": ["$matchDto.info.participants.visionScore", 0.1]},
+                        {"$multiply": ["$matchDto.info.participants.challenges.goldPerMinute", 0.15]},
+                        {"$multiply": ["$matchDto.info.participants.turretTakedowns", 0.15]},
+                        {"$multiply": ["$matchDto.info.participants.totalDamageDealtToChampions", 0.15]}
                     ]
                 }
             }
@@ -657,7 +657,12 @@ def calculateStatsForBottomLaneByGameDuration(collection):
                     }
                 },
                 "totalDamageDealtToChampions": "$matchDto.info.participants.totalDamageDealtToChampions",
-                "totalMinionsKilled": "$matchDto.info.participants.totalMinionsKilled",
+                "totalMinionsKilled": {
+                    "$add": [
+                        "$matchDto.info.participants.totalMinionsKilled",
+                        "$matchDto.info.participants.neutralMinionsKilled"
+                    ]
+                },
                 "deaths": "$matchDto.info.participants.deaths",
                 "skillshotsDodged": "$matchDto.info.participants.challenges.skillshotsDodged",
                 "impactScore": {
@@ -668,11 +673,11 @@ def calculateStatsForBottomLaneByGameDuration(collection):
                             "$matchDto.info.participants.challenges.dragonTakedowns",
                             "$matchDto.info.participants.challenges.baronTakedowns",
                             "$matchDto.info.participants.challenges.riftHeraldTakedowns"
-                        ]}, 0.2]},
-                        {"$multiply": ["$matchDto.info.participants.visionScore", 0.2]},
-                        {"$multiply": ["$matchDto.info.participants.challenges.goldPerMinute", 0.1]},
-                        {"$multiply": ["$matchDto.info.participants.turretTakedowns", 0.1]},
-                        {"$multiply": ["$matchDto.info.participants.totalDamageDealtToChampions", 0.1]}
+                        ]}, 0.15]},
+                        {"$multiply": ["$matchDto.info.participants.visionScore", 0.1]},
+                        {"$multiply": ["$matchDto.info.participants.challenges.goldPerMinute", 0.15]},
+                        {"$multiply": ["$matchDto.info.participants.turretTakedowns", 0.15]},
+                        {"$multiply": ["$matchDto.info.participants.totalDamageDealtToChampions", 0.15]}
                     ]
                 }
             }
@@ -745,11 +750,11 @@ def calculateStatsForUtilityLaneByGameDuration(collection):
                             "$matchDto.info.participants.challenges.dragonTakedowns",
                             "$matchDto.info.participants.challenges.baronTakedowns",
                             "$matchDto.info.participants.challenges.riftHeraldTakedowns"
-                        ]}, 0.2]},
-                        {"$multiply": ["$matchDto.info.participants.visionScore", 0.2]},
-                        {"$multiply": ["$matchDto.info.participants.challenges.goldPerMinute", 0.1]},
-                        {"$multiply": ["$matchDto.info.participants.turretTakedowns", 0.1]},
-                        {"$multiply": ["$matchDto.info.participants.totalDamageDealtToChampions", 0.1]}
+                        ]}, 0.15]},
+                        {"$multiply": ["$matchDto.info.participants.visionScore", 0.1]},
+                        {"$multiply": ["$matchDto.info.participants.challenges.goldPerMinute", 0.15]},
+                        {"$multiply": ["$matchDto.info.participants.turretTakedowns", 0.15]},
+                        {"$multiply": ["$matchDto.info.participants.totalDamageDealtToChampions", 0.15]}
                     ]
                 }
             }
