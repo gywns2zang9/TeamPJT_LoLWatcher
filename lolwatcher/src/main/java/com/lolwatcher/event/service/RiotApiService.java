@@ -59,15 +59,11 @@ public class RiotApiService {
                 recordList
                         .stream()
                         .map(record -> {
-                            return (RecordMatchDto) record.getData().get("matchResult");
+                            return new RecordResultDto((RecordMatchDto) record.getData().get("matchResult"), (Map<String, Object>) record.getData().get("matchReport"));
                         })
-                        .toList(),
-                recordList
-                        .stream()
-                        .map(record -> {
-                            return (Map<String, Object>) record.getData().get("matchReport");
-                        })
-                        .toList(),
+                        .sorted(Comparator.comparingLong(o -> o.match().info().gameEndStamp()))
+                        .toList()
+                ,
                 userInfo,
                 new RecordSummonerDto(accountDto.gameName(),
                         accountDto.tagLine(),
