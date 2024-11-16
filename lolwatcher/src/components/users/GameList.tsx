@@ -23,11 +23,26 @@ interface GameInfo {
   mainUser: User | null; // mainUser 추가
 }
 
-interface GameListProps {
-  gameInfos: GameInfo[];
+export interface ReportInfo{
+  count: number;
+  team_100: TeamReport;
+  team_200: TeamReport;
 }
 
-export default function GameList({ gameInfos }: GameListProps) {
+interface TeamReport{
+  top: any;
+  jungle: any;
+  middle : any;
+  bottom : any;
+  utility : any;
+}
+
+interface GameListProps {
+  gameInfos: GameInfo[];
+  reports: ReportInfo[];
+}
+
+export default function GameList({ gameInfos, reports: gameReports }: GameListProps) {
   const [selectedInfoId, setSelectedInfoId] = useState<number | null>(null);
 
   const handleClick = (id: number) => {
@@ -72,7 +87,7 @@ export default function GameList({ gameInfos }: GameListProps) {
   return (
     <div className="list-container">
       <h2 className="list-container-title">게임 목록</h2>
-      {gameInfos.map((info) => (
+      {gameInfos.map((info, index) => (
         <React.Fragment key={info.id}>
           <div
             className={`list-item ${
@@ -165,7 +180,7 @@ export default function GameList({ gameInfos }: GameListProps) {
               </div>
             </div>
           </div>
-          {selectedInfoId === info.id && <GameDetail users={info.users} />}
+          {selectedInfoId === info.id && <GameDetail users={info.users} report={gameReports[index]} />}
         </React.Fragment>
       ))}
     </div>

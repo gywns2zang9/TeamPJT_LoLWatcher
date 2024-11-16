@@ -39,11 +39,12 @@ export default function Users() {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   // URL의 params에서 name과 tag를 가져오거나 기본값을 설정
-  const name = searchParams.get("name") || "카림sk";
+  const name = searchParams.get("name") || "로댕맨";
   const tag = searchParams.get("tag") || "KR1";
 
   const [nickName, setNickName] = useState<string>("");
   const [gameInfos, setGameInfos] = useState<GameInfo[]>([]);
+  const [gameReports, setGameReports] = useState<any[]>([]); // reports 상태 추가
   const [userInfo, setUserInfo] = useState<UserInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [remainingTime, setRemainingTime] = useState<number | null>(null);
@@ -102,15 +103,13 @@ export default function Users() {
         });
         const data = response.data;
         console.log(data)
-        console.log("나는 나다")
         setUserInfo(data.recordDto.userInfo);
         const remainingSeconds = response.data.remainTime;
-        console.log(remainingSeconds);
         setEndTime(Date.now() + remainingSeconds * 1000);
         setIsButtonDisabled(remainingSeconds > 0); // 남은 시간이 있으면 버튼을 비활성화
         
         const formattedInfos = data.recordDto.matches.map((item: any, index: number) => {
-          const users = item.users.map((user: any) => ({
+          const users = item.match.users.map((user: any) => ({
             championName: user.championName,
             summonerName: user.summonerName,
             teamId: user.teamId,
@@ -128,15 +127,23 @@ export default function Users() {
 
           return {
             id: index + 1,
-            gameDuration: item.info.gameDuration,
-            gameEndStamp: item.info.gameEndStamp,
-            win: item.info.win,
+            gameDuration: item.match.info.gameDuration,
+            gameEndStamp: item.match.info.gameEndStamp,
+            win: item.match.info.win,
             users: users,
             mainUser: mainUser
           };
         });
 
         setGameInfos(formattedInfos);
+
+        const formattedReports = data.recordDto.matches.map((item: any, index: number) => ({
+          id: index + 1, // matches와 동일한 순서를 유지
+          ...item.report, // 기존 report 데이터를 모두 포함
+        }));
+
+        setGameReports(formattedReports);
+
       } catch (error) {
         console.error("데이터 가져오기 실패:", error);
       } finally {
@@ -202,7 +209,7 @@ export default function Users() {
                 {<Profile name={name} tag={tag} userInfo={userInfo} />}
               </div>
               <div className="article-games">
-                {<GameList gameInfos={gameInfos} />}
+                {<GameList gameInfos={gameInfos} reports={gameReports}/>}
               </div>
             </div>
           </>
