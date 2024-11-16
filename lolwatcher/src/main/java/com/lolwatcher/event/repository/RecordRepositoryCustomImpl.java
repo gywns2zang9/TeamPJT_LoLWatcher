@@ -22,7 +22,7 @@ public class RecordRepositoryCustomImpl implements RecordRepositoryCustom {
         List<Record> existingRecords = mongoTemplate.find(query, Record.class);
 
         List<String> existingIds = existingRecords.stream()
-                .filter(record -> record.getData() != null && record.getData().containsKey("MatchReport"))
+                .filter(record -> record.getData() != null && record.getData().containsKey("matchReport"))
                 .map(Record::getMatchId)
                 .toList();
 
