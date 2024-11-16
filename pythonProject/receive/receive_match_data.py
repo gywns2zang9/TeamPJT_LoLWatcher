@@ -169,6 +169,12 @@ def process_participants(match_dto):
                     participant["challenges"].get("riftHeraldTakedowns", 0)
                 )
 
+            elif field == "totalMinionsKilled" and team_position == "bottom":
+                player_data["totalMinionsKilled"] = (
+                    participant.get("totalMinionsKilled", 0) +
+                    participant.get("neutralMinionsKilled", 0)
+                )
+
             elif field == "lineImpact" and team_position == "jungle":
                 # lineImpact 계산 (Jungle 포지션에만 적용)
                 player_data["lineImpact"] = (
@@ -198,9 +204,9 @@ def receive_request_tier_analytic():
 
     for tier in tiers:
         tier_divisions = divisions if tier not in ["master", "grandmaster", "challenger"] else [""]
-        # print(tier)
+        print(tier)
         for division in tier_divisions:
-            #print(division)
+            print(division)
             try:
                 collection = get_mongo_rank(tier, division)
                 stats_by_time = calculate_stats_by_time(collection)
