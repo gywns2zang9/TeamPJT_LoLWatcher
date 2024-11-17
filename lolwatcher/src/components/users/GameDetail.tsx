@@ -4,6 +4,12 @@ import ReportModal from "./ReportModal";
 import { NavLink } from "react-router-dom";
 import { ReportInfo } from "./GameList";
 
+import TopIcon from "../../assets/positions/top.png";
+import JugIcon from "../../assets/positions/jug.png";
+import MidIcon from "../../assets/positions/mid.png";
+import AdcIcon from "../../assets/positions/adc.png";
+import SupIcon from "../../assets/positions/sup.png";
+
 const CHAMPION_IMG_BASE_URL = process.env.REACT_APP_CHAMPION_IMG_BASE_URL;
 
 interface User {
@@ -24,34 +30,42 @@ interface GameDetailProps {
 // 포지션 표시
 const PositionSection = () => (
   <div className="main-position-section">
-    {["top", "jug", "mid", "adc", "sup"].map((position) => (
-      <div key={position} className="position-box">
-        <img
-          className="position-img"
-          src={`/positions/${position}.png`}
-          alt={position}
-        />
-      </div>
-    ))}
+    <div className="position-box">
+      <img className="position-img" src={TopIcon} alt="top" />
+    </div>
+    <div className="position-box">
+      <img className="position-img" src={JugIcon} alt="jug" />
+    </div>
+    <div className="position-box">
+      <img className="position-img" src={MidIcon} alt="mid" />
+    </div>
+    <div className="position-box">
+      <img className="position-img" src={AdcIcon} alt="adc" />
+    </div>
+    <div className="position-box">
+      <img className="position-img" src={SupIcon} alt="sup" />
+    </div>
   </div>
 );
-
 
 const TeamSection = ({
   team,
   teamKey,
-  onUserClick,
+  onUserClick
 }: {
   team: User[];
   teamKey: "team_100" | "team_200";
-  onUserClick: (team: "team_100" | "team_200", role: keyof ReportInfo["team_100"]) => void;
+  onUserClick: (
+    team: "team_100" | "team_200",
+    role: keyof ReportInfo["team_100"]
+  ) => void;
 }) => {
   const roles: Array<keyof ReportInfo["team_100"]> = [
     "top",
     "jungle",
     "middle",
     "bottom",
-    "utility",
+    "utility"
   ]; // 역할 배열
 
   return (
@@ -59,11 +73,15 @@ const TeamSection = ({
       {team.map((user, index) => {
         const role = roles[index]; // 인덱스를 기반으로 역할 매핑
         return (
-          <div key={index} className="team-item" onClick={() => onUserClick(teamKey, role)}>
+          <div
+            key={index}
+            className="team-item"
+            onClick={() => onUserClick(teamKey, role)}
+          >
             <div
               className="champion-img"
               style={{
-                backgroundImage: `url(${CHAMPION_IMG_BASE_URL}${user.championName}.png)`,
+                backgroundImage: `url(${CHAMPION_IMG_BASE_URL}${user.championName}.png)`
               }}
             ></div>
             <b className="user-detail">{user.summonerName}</b>
@@ -96,6 +114,7 @@ export default function GameDetail({ users, report }: GameDetailProps) {
   const teamRedPoints = teamRed.reduce((total, user) => total + 20, 0);
 
   const handleUserClick = (team: "team_100" | "team_200", role: keyof ReportInfo["team_100"], userName: string, championImgUrl: string) => {
+
     const userReport = report[team][role]; // 클릭한 유저의 report
     const opponentTeam = team === "team_100" ? "team_200" : "team_100"; // 상대 팀 계산
     const opponentReport = report[opponentTeam][role]; // 상대 팀의 동일 역할 report
@@ -106,7 +125,7 @@ export default function GameDetail({ users, report }: GameDetailProps) {
       userName,
       championImgUrl,
       userReport,
-      opponentReport,
+      opponentReport
     });
 
     setIsModalOpen(true); // 모달 열기
@@ -117,7 +136,13 @@ export default function GameDetail({ users, report }: GameDetailProps) {
     setSelectedReport(null); // 선택 데이터 초기화
   };
 
-  const roles: Array<keyof ReportInfo["team_100"]> = ["top", "jungle", "middle", "bottom", "utility"];
+  const roles: Array<keyof ReportInfo["team_100"]> = [
+    "top",
+    "jungle",
+    "middle",
+    "bottom",
+    "utility"
+  ];
 
   return (
     <div className="detail-container">
@@ -147,11 +172,12 @@ export default function GameDetail({ users, report }: GameDetailProps) {
                 key={index}
                 className="team-item"
                 onClick={() => handleUserClick("team_100", roles[index], user.summonerName, `${user.championName}.png`)}
+
               >
                 <div
                   className="champion-img"
                   style={{
-                    backgroundImage: `url(${CHAMPION_IMG_BASE_URL}${user.championName}.png)`,
+                    backgroundImage: `url(${CHAMPION_IMG_BASE_URL}${user.championName}.png)`
                   }}
                 ></div>
                 <b className="user-detail">{user.summonerName}</b>
@@ -173,11 +199,12 @@ export default function GameDetail({ users, report }: GameDetailProps) {
                 key={index}
                 className="team-item"
                 onClick={() => handleUserClick("team_200", roles[index], user.summonerName, `${user.championName}.png`)}
+
               >
                 <div
                   className="champion-img"
                   style={{
-                    backgroundImage: `url(${CHAMPION_IMG_BASE_URL}${user.championName}.png)`,
+                    backgroundImage: `url(${CHAMPION_IMG_BASE_URL}${user.championName}.png)`
                   }}
                 ></div>
                 <b className="user-detail">{user.summonerName}</b>

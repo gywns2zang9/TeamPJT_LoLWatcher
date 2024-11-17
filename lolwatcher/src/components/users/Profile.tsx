@@ -1,7 +1,30 @@
-import React, { useState } from "react";
+import React from "react";
 import "./Profile.css";
 
-const CHAMPION_IMG_BASE_URL = process.env.REACT_APP_CHAMPION_IMG_BASE_URL;
+import BRONZE from "../../assets/tiers/bronze.png";
+import CHALLENGER from "../../assets/tiers/challenger.png";
+import DIAMOND from "../../assets/tiers/diamond.png";
+import EMERALD from "../../assets/tiers/emerald.png";
+import GOLD from "../../assets/tiers/gold.png";
+import GRANDMASTER from "../../assets/tiers/grandmaster.png";
+import IRON from "../../assets/tiers/iron.png";
+import MASTER from "../../assets/tiers/master.png";
+import PLATINUM from "../../assets/tiers/platinum.png";
+import SILVER from "../../assets/tiers/silver.png";
+
+// 티어별 이미지 매핑
+const tierImages: { [key: string]: string } = {
+  BRONZE,
+  CHALLENGER,
+  DIAMOND,
+  EMERALD,
+  GOLD,
+  GRANDMASTER,
+  IRON,
+  MASTER,
+  PLATINUM,
+  SILVER
+};
 
 interface Summoner {
   profileIcon: number;
@@ -26,6 +49,10 @@ interface ProfileProps {
 }
 
 export default function Profile({ summoner, userInfo }: ProfileProps) {
+  const getTierImage = (tier: string) => {
+    return tierImages[tier] || IRON; // 이미지가 없을 경우 기본으로 IRON 사용
+  };
+
   return (
     <div className="profile-container">
       <div className="profile-info">
@@ -46,7 +73,7 @@ export default function Profile({ summoner, userInfo }: ProfileProps) {
                 : "자유 랭크"}
             </p>
             <div className="rank-tier">
-              <img src={`/tiers/${info.tier}.png`} alt="티어" />
+              <img src={getTierImage(info.tier)} alt="티어png" />
             </div>
             <p className="rank-record">
               {info.tier} {info.division} - {info.leaguePoint}점 ({info.wins}승{" "}
