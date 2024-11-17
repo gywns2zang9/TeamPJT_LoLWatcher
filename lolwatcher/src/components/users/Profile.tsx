@@ -12,7 +12,8 @@ import MASTER from "../../assets/tiers/master.png";
 import PLATINUM from "../../assets/tiers/platinum.png";
 import SILVER from "../../assets/tiers/silver.png";
 
-// 티어별 이미지 매핑
+const SUMMONER_ICON_URL = process.env.REACT_APP_SUMMONER_ICON_URL;
+
 const tierImages: { [key: string]: string } = {
   BRONZE,
   CHALLENGER,
@@ -58,9 +59,17 @@ export default function Profile({ summoner, userInfo }: ProfileProps) {
       <div className="profile-info">
         {summoner && (
           <>
-            <p className="profile-nickname">
-              {summoner.summonerName} <span>#{summoner.tag}</span>
-            </p>
+            <img
+              src={`${SUMMONER_ICON_URL}${summoner.profileIcon}.png`}
+              alt="Profile Icon"
+              className="profile-icon"
+            />
+            <div className="profile-descriptions">
+              <p className="profile-nickname">
+                {summoner.summonerName} <span>#{summoner.tag}</span>
+              </p>
+              <p className="profile-level">Lv. {summoner.summonerLevel}</p>
+            </div>
           </>
         )}
       </div>
