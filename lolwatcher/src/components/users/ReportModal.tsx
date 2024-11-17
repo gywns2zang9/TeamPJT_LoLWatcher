@@ -22,6 +22,7 @@ interface ReportModalProps {
   opponentName: string;
   opponentChampionImgUrl: string;
   opponentReport: any;
+  count: number;
   onClose: () => void; // 모달 닫기 콜백 추가
 }
 
@@ -35,6 +36,7 @@ export default function ReportModal({
   opponentName,
   opponentChampionImgUrl,
   opponentReport,
+  count,
   onClose,
 }: ReportModalProps) {
   
@@ -362,7 +364,6 @@ export default function ReportModal({
                     className="score-item"
                     key={index}
                     onClick={() => {
-                      console.log("Clicked Opponent Field:", field); // 디버깅 로그
                       setSelectedField(field); // 상태 업데이트
                     }}
                     style={{
@@ -407,9 +408,14 @@ export default function ReportModal({
                     },
                     title: {
                       display: true,
-                      text: `${getTranslatedField(
-                        selectedField!
-                      )} 정규분포 그래프`,
+                      text: [
+                        `${userName}님의 ${getTranslatedField(selectedField!)}은`,
+                        ``,
+                        `${getPercentileText(
+                          selectedField!,
+                          userReport[selectedField!]?.z_score || 0
+                        )} 입니다`,
+                      ],
                       font: {
                         size: 25,
                       },
@@ -431,14 +437,9 @@ export default function ReportModal({
                     color: "darksalmon",
                   }}
                 >
-                  {userName} 님은{" "}
-                  {getTranslatedField(selectedField)} 점수에서{" "}
-                  <br />
-                  {getPercentileText(
-                    selectedField,
-                    userReport[selectedField]?.z_score || 0
-                  )}
-                  에 위치하고 있어요.
+                  {userName} 님과{" "}
+                  비슷한 실력을 가진 <br/> {count}경기 {translatedRole} 라이너 <br/> {getTranslatedField(selectedField)}을 비교했어요{" "}
+                  
                 </p>
               )}
             </>
