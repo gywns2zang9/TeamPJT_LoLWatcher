@@ -31,6 +31,7 @@ export default function GameDetail({ users, report }: GameDetailProps) {
     opponentName: string;
     opponentChampionImgUrl: string;
     opponentReport: any;
+    count: number;
   } | null>(null);
 
   const roles: Array<keyof ReportInfo["team_100"]> = [
@@ -70,7 +71,6 @@ export default function GameDetail({ users, report }: GameDetailProps) {
       // 점수 범위 제한
       const clampedScore = Math.min(100, Math.max(0, score));
 
-      console.log(`Role: ${role}, Field: ${field}, Score: ${clampedScore}`);
       return sum + clampedScore; // 합산
     }, 0);
 
@@ -110,6 +110,7 @@ export default function GameDetail({ users, report }: GameDetailProps) {
       opponentName: opponentUser.summonerName,
       opponentChampionImgUrl: `${opponentUser.championName}.png`,
       opponentReport,
+      count: report.count,
     });
 
     setIsModalOpen(true);
@@ -225,6 +226,7 @@ export default function GameDetail({ users, report }: GameDetailProps) {
               opponentName={selectedReport.opponentName}
               opponentChampionImgUrl={selectedReport.opponentChampionImgUrl}
               opponentReport={selectedReport.opponentReport}
+              count={selectedReport.count}
               onClose={closeModal}
             />
           </div>

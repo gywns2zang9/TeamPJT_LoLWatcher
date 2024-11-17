@@ -69,6 +69,13 @@
   background-color: #99cbfa;
   text-align: center;
   border-radius: 10px;
+  
+  color: white;
+  text-shadow: 
+    -1px -1px 0 #0d47a1, /* 위 왼쪽 */
+    1px -1px 0 #0d47a1, /* 위 오른쪽 */
+    -1px 1px 0 #0d47a1,  /* 아래 왼쪽 */
+    1px 1px 0 #0d47a1;   /* 아래 오른쪽 */
 }
 .blue-team-section .team-section :hover {
   background-color: #70b6f7;
@@ -84,6 +91,14 @@
   background-color: #fdddef;
   text-align: center;
   border-radius: 10px;
+  
+  
+  color: white;
+  text-shadow: 
+    -1px -1px 0 rgb(255, 89, 89), /* 위 왼쪽 */
+    1px -1px 0 rgb(255, 89, 89),
+    -1px 1px 0 rgb(255, 89, 89),
+    1px 1px 0 rgb(255, 89, 89),
 }
 .red-team-section .team-section :hover {
   background-color: #f99fd0;
@@ -152,7 +167,7 @@
 
 .user-detail {
   width: 30%;
-  font-size: 12px;
+  font-size: 17px;
 }
 .user-point {
   width: 20%;

@@ -89,6 +89,8 @@ export default function Users() {
   
       setUserInfo(data.recordDto.userInfo);
       setSummoner(data.recordDto.summoner);
+
+      console.log(data)
   
       const remainingSeconds = response.data.remainTime;
       setEndTime(Date.now() + remainingSeconds * 1000);
