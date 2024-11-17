@@ -46,7 +46,10 @@ export default function Profile({ summoner, userInfo }: ProfileProps) {
                 : "자유 랭크"}
             </p>
             <div className="rank-tier">
-              <img src={`/tiers/${info.tier}.png`} alt="티어" />
+              <img
+                src={`${process.env.PUBLIC_URL}/tier/${info.tier}.png`}
+                alt="티어"
+              />
             </div>
             <p className="rank-record">
               {info.tier} {info.division} - {info.leaguePoint}점 ({info.wins}승{" "}
