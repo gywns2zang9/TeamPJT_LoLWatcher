@@ -219,13 +219,17 @@ export default function GameDetail({ users, report }: GameDetailProps) {
 
       {isModalOpen && selectedReport && (
         <div className="modal-backdrop" onClick={closeModal}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+          <div 
+          className={`modal-content ${isModalOpen ? "open" : ""}`} // open 클래스 추가
+          onClick={(e) => e.stopPropagation()}
+          >
             <ReportModal
               role={selectedReport.role}
               userName={selectedReport.userName}
               championImgUrl={selectedReport.championImgUrl}
               userReport={selectedReport.userReport}
               opponentReport={selectedReport.opponentReport}
+              onClose={closeModal}
             />
           </div>
         </div>

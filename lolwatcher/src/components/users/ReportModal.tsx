@@ -20,6 +20,7 @@ interface ReportModalProps {
   championImgUrl: string;
   userReport: any;
   opponentReport: any;
+  onClose: () => void; // 모달 닫기 콜백 추가
 }
 
 const CHAMPION_IMG_BASE_URL = process.env.REACT_APP_CHAMPION_IMG_BASE_URL;
@@ -30,6 +31,7 @@ export default function ReportModal({
   championImgUrl,
   userReport,
   opponentReport,
+  onClose,
 }: ReportModalProps) {
   const roleMapping: { [key: string]: string } = {
     top: "탑",
@@ -189,6 +191,9 @@ export default function ReportModal({
 
   return (
     <div className="modal-container">
+      <button className="close-button" onClick={onClose}>
+        ✖
+      </button>
       <div
         style={{
           width: "50%",

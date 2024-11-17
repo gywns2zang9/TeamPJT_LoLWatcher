@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./GameList.css";
 import GameDetail from "./GameDetail";
 
@@ -53,9 +53,25 @@ export default function GameList({
   reports: gameReports
 }: GameListProps) {
   const [selectedInfoId, setSelectedInfoId] = useState<number | null>(null);
-
+  const [closingDetailId, setClosingDetailId] = useState<number | null>(null); // 닫히는 Detail ID
+  const [contentHeight, setContentHeight] = useState<number | null>(null);
+  const detailRef = useRef<HTMLDivElement | null>(null);
+  
   const handleClick = (id: number) => {
-    setSelectedInfoId(id === selectedInfoId ? null : id);
+    if (selectedInfoId === id) {
+      // 닫기
+      setContentHeight(detailRef.current?.scrollHeight || 0); // 현재 높이 설정
+      setTimeout(() => setContentHeight(0), 0); // 0으로 트랜지션
+      setTimeout(() => setSelectedInfoId(null), 500); // 트랜지션 후 닫기
+    } else {
+      // 열기
+      setSelectedInfoId(id); // ID 설정
+      setTimeout(() => {
+        if (detailRef.current) {
+          setContentHeight(detailRef.current.scrollHeight); // 콘텐츠 높이 계산
+        }
+      }, 0);
+    }
   };
 
   //게임 종료 시간
@@ -97,6 +113,20 @@ export default function GameList({
     const minutes = duration / 60;
     return (cs / minutes).toFixed(1);
   };
+
+  useEffect(() => {
+    if (selectedInfoId !== null) {
+      // 새로 열릴 때
+      setTimeout(() => {
+        if (detailRef.current) {
+          setContentHeight(detailRef.current.scrollHeight); // DOM 렌더링 후 높이 계산
+        }
+      }, 0);
+    } else {
+      // 닫힐 때
+      setContentHeight(0); // 높이를 0으로 설정
+    }
+  }, [selectedInfoId]);
 
   return (
     <div className="list-container">
@@ -197,8 +227,18 @@ export default function GameList({
             </div>
           </div>
           {selectedInfoId === info.id && (
+          <div
+            ref={detailRef}
+            className="game-detail"
+            style={{
+              height: contentHeight !== null ? `${contentHeight}px` : "0", // 높이를 동적으로 설정
+              overflow: "hidden",
+              transition: "height 0.5s ease-out",
+            }}
+          >
             <GameDetail users={info.users} report={gameReports[index]} />
-          )}
+          </div>
+        )}
         </React.Fragment>
       ))}
     </div>

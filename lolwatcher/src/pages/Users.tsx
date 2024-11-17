@@ -53,7 +53,7 @@ export default function Users() {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   // URL의 params에서 name과 tag를 가져오거나 기본값을 설정
-  const name = searchParams.get("name") || "로댕맨";
+  const name = searchParams.get("name") || "맛살씨";
   const tag = searchParams.get("tag") || "KR1";
 
   const [nickName, setNickName] = useState<string>("");
@@ -198,7 +198,7 @@ export default function Users() {
       </div>
 
       <div className="users-header">
-        <h1 className="header-title">유저 검색</h1>
+        <h1 className="header-title">소환사 검색</h1>
         <form className="header-form" onSubmit={handleSearch}>
           <input
             type="text"

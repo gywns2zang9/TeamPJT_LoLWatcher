@@ -1,15 +1,20 @@
 .users-container {
-  /* background-image: url("../assets/background.jpg");
-  background-size: cover;
-  background-position: center;
-  opacity: 1;
-  height: 100vh; */
   width: 100vw;
   display: flex;
   flex-direction: column;
   align-items: center;
   position: relative;
+  background: linear-gradient(to bottom, #0f172a, #0c1221 80%, #000000); /* 상단에서 하단으로 점점 어두워지는 남색 그라데이션 */
+  background-size: cover;
+  background-position: center;
+  color: white; /* 밝은 골드 색상으로 텍스트 색상 설정 */
+  box-shadow: inset 0 0 150px rgba(0, 0, 0, 0.8); /* 더 강렬한 내부 그림자 */
+  border: 1px solid rgba(255, 255, 255, 0.1); /* 부드러운 외곽선 */
+  padding: 20px; /* 내부 여백 */
 }
+
+
+
 
 .nav-link {
   position: absolute;
