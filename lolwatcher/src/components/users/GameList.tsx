@@ -5,36 +5,42 @@ import GameDetail from "./GameDetail";
 const CHAMPION_IMG_BASE_URL = process.env.REACT_APP_CHAMPION_IMG_BASE_URL;
 
 interface User {
-  championName: string; //"Hecarim"
+  championName: string; //"Garen"
   summonerName: string; //"카림sk"
   teamId: number; // 100 or 200
   kills: number;
   assists: number;
   deaths: number;
   totalMinionsKilled: number;
+  tier: string;
+  division: string;
+  puuid: string;
 }
 
 interface GameInfo {
   id: number;
   gameDuration: number; // 초단위
   gameEndStamp: number; // 밀리초 단위 유닉스 타임스탬프
-  win: boolean; // true or false
+  rank: string;
+  tier: string;
+  division: string;
+  winTeam: number;
   users: User[]; // Array(10)
   mainUser: User | null; // mainUser 추가
 }
 
-export interface ReportInfo{
+export interface ReportInfo {
   count: number;
   team_100: TeamReport;
   team_200: TeamReport;
 }
 
-interface TeamReport{
+interface TeamReport {
   top: any;
   jungle: any;
-  middle : any;
-  bottom : any;
-  utility : any;
+  middle: any;
+  bottom: any;
+  utility: any;
 }
 
 interface GameListProps {
@@ -42,7 +48,10 @@ interface GameListProps {
   reports: ReportInfo[];
 }
 
-export default function GameList({ gameInfos, reports: gameReports }: GameListProps) {
+export default function GameList({
+  gameInfos,
+  reports: gameReports
+}: GameListProps) {
   const [selectedInfoId, setSelectedInfoId] = useState<number | null>(null);
 
   const handleClick = (id: number) => {
@@ -64,6 +73,11 @@ export default function GameList({ gameInfos, reports: gameReports }: GameListPr
         })
         .replace(":", "시 ") + "분"
     );
+  };
+
+  // 승리 여부 판별 함수
+  const isWin = (winTeam: number, teamId: number | undefined) => {
+    return winTeam === teamId;
   };
 
   //게임 진행 시간
@@ -91,7 +105,9 @@ export default function GameList({ gameInfos, reports: gameReports }: GameListPr
         <React.Fragment key={info.id}>
           <div
             className={`list-item ${
-              info.win ? "win-background" : "lose-background"
+              isWin(info.winTeam, info.mainUser?.teamId)
+                ? "win-background"
+                : "lose-background"
             }`}
             onClick={() => handleClick(info.id)}
           >
@@ -101,8 +117,8 @@ export default function GameList({ gameInfos, reports: gameReports }: GameListPr
               </div>
               <div className="match-data">
                 <p>
-                  {info.win ? "승" : "패"}
-                  <span className="match-type">개인?자유?</span>
+                  {isWin(info.winTeam, info.mainUser?.teamId) ? "승" : "패"}
+                  <span className="match-type">{info.rank}</span>
                 </p>
               </div>
               <div className="match-play-time">
@@ -180,7 +196,9 @@ export default function GameList({ gameInfos, reports: gameReports }: GameListPr
               </div>
             </div>
           </div>
-          {selectedInfoId === info.id && <GameDetail users={info.users} report={gameReports[index]} />}
+          {selectedInfoId === info.id && (
+            <GameDetail users={info.users} report={gameReports[index]} />
+          )}
         </React.Fragment>
       ))}
     </div>
