@@ -152,6 +152,7 @@
   white-space: nowrap; /* 한 줄로 표시 */
   overflow: hidden; /* 넘치는 텍스트 숨기기 */
   text-overflow: ellipsis; /* 말줄임표(...) 추가 */
+  font-weight: bold;
 }
 
 .user-detail{
