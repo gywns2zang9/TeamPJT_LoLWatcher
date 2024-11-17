@@ -177,8 +177,6 @@ export default function GameDetail({ users, report }: GameDetailProps) {
           </div>
         </div>
 
-        <div className="rotated-line"></div>
-
         <div className="red-team-section">
           <div className="team-section">
             {teamRed.map((user, index) => (

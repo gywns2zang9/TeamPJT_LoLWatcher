@@ -48,7 +48,7 @@ export default function ReportModal({
 
   const fieldMapping: { [key: string]: string } = {
     soloKills: "솔로킬",
-    turretTakedowns: "포탑 기여도",
+    turretTakedowns: "포탑 철거 기여도",
     totalDamageTaken: "받은 피해량",
     killParticipation: "킬 관여율",
     impactScore: "영향도",
@@ -256,7 +256,7 @@ export default function ReportModal({
                 }}
                 
               >
-                {isComparisonActive ? "비교 종료" : "상대와의 비교"}
+                {isComparisonActive ? "내 점수 보기" : "상대와의 비교"}
               </div>
             </div>
   

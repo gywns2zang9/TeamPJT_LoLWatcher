@@ -53,7 +53,7 @@ export default function Users() {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   // URL의 params에서 name과 tag를 가져오거나 기본값을 설정
-  const name = searchParams.get("name") || "카림sk";
+  const name = searchParams.get("name") || "S2xSense";
   const tag = searchParams.get("tag") || "KR1";
 
   const [nickName, setNickName] = useState<string>("");
@@ -68,16 +68,79 @@ export default function Users() {
   const [endTime, setEndTime] = useState<number | null>(null);
   const handleRecordButtonClick = async () => {
     try {
-      const response = await axios.post(`${API_URL}/riot/info`, null, {
-        params: { name, tag }
-      });
-
-      const remainingSeconds = response.data.remainingSeconds;
-      setEndTime(Date.now() + remainingSeconds * 1000);
-      setIsButtonDisabled(true); // 버튼 비활성화
+      await fetchData(); // fetchData 호출로 모든 데이터를 갱신
     } catch (error) {
       alert("잠시 후 다시 시도해주세요.");
       window.location.reload(); // 페이지 새로고침
+    }
+  };
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const accessToken = localStorage.getItem("accessToken");
+      const response = await axios.get(`${API_URL}/riot/info`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        params: { name, tag },
+      });
+      const data = response.data;
+  
+      setUserInfo(data.recordDto.userInfo);
+      setSummoner(data.recordDto.summoner);
+  
+      const remainingSeconds = response.data.remainTime;
+      setEndTime(Date.now() + remainingSeconds * 1000);
+      setIsButtonDisabled(remainingSeconds > 0); // 남은 시간이 있으면 버튼을 비활성화
+  
+      const formattedInfos = data.recordDto.matches.map(
+        (item: any, index: number) => {
+          const users = item.match.users.map((user: any) => ({
+            championName: user.championName,
+            summonerName: user.summonerName,
+            teamId: user.teamId,
+            kills: user.kills,
+            assists: user.assists,
+            deaths: user.deaths,
+            totalMinionsKilled: user.totalMinionsKilled,
+            tier: user.tier,
+            division: user.division,
+            puuid: user.puuid,
+          }));
+          const mainUser: User | null =
+            users.find(
+              (user: User) => user.puuid === data.recordDto.summoner.puuid
+            ) || null;
+  
+          return {
+            id: index + 1,
+            gameDuration: item.match.info.gameDuration,
+            gameEndStamp: item.match.info.gameEndStamp,
+            rank: item.match.info.rank,
+            tier: item.match.info.tier,
+            division: item.match.info.division,
+            winTeam: item.match.info.winTeam,
+            users: users,
+            mainUser: mainUser,
+          };
+        }
+      );
+  
+      setGameInfos(formattedInfos);
+  
+      const formattedReports = data.recordDto.matches.map(
+        (item: any, index: number) => ({
+          id: index + 1, // matches와 동일한 순서를 유지
+          ...item.report, // 기존 report 데이터를 모두 포함
+        })
+      );
+  
+      setGameReports(formattedReports);
+    } catch (error) {
+      console.error("데이터 가져오기 실패:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -106,76 +169,6 @@ export default function Users() {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const accessToken = localStorage.getItem("accessToken");
-        const response = await axios.get(`${API_URL}/riot/info`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`
-          },
-          params: { name, tag }
-        });
-        const data = response.data;
-        console.log(data);
-
-        setUserInfo(data.recordDto.userInfo);
-        setSummoner(data.recordDto.summoner);
-
-        const remainingSeconds = response.data.remainTime;
-        setEndTime(Date.now() + remainingSeconds * 1000);
-        setIsButtonDisabled(remainingSeconds > 0); // 남은 시간이 있으면 버튼을 비활성화
-
-        const formattedInfos = data.recordDto.matches.map(
-          (item: any, index: number) => {
-            const users = item.match.users.map((user: any) => ({
-              championName: user.championName,
-              summonerName: user.summonerName,
-              teamId: user.teamId,
-              kills: user.kills,
-              assists: user.assists,
-              deaths: user.deaths,
-              totalMinionsKilled: user.totalMinionsKilled,
-              tier: user.tier,
-              division: user.division,
-              puuid: user.puuid
-            }));
-            const mainUser: User | null =
-              users.find(
-                (user: User) => user.puuid === data.recordDto.summoner.puuid
-              ) || null;
-
-            return {
-              id: index + 1,
-              gameDuration: item.match.info.gameDuration,
-              gameEndStamp: item.match.info.gameEndStamp,
-              rank: item.match.info.rank,
-              tier: item.match.info.tier,
-              division: item.match.info.division,
-              winTeam: item.match.info.winTeam,
-              users: users,
-              mainUser: mainUser
-            };
-          }
-        );
-
-        setGameInfos(formattedInfos);
-
-        const formattedReports = data.recordDto.matches.map(
-          (item: any, index: number) => ({
-            id: index + 1, // matches와 동일한 순서를 유지
-            ...item.report // 기존 report 데이터를 모두 포함
-          })
-        );
-
-        setGameReports(formattedReports);
-      } catch (error) {
-        console.error("데이터 가져오기 실패:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchData();
   }, [name, tag]);
 
