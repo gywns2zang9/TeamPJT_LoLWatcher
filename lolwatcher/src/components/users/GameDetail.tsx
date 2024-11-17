@@ -4,6 +4,12 @@ import ReportModal from "./ReportModal";
 import { NavLink } from "react-router-dom";
 import { ReportInfo } from "./GameList";
 
+import TopIcon from "../../assets/positions/top.png";
+import JugIcon from "../../assets/positions/jug.png";
+import MidIcon from "../../assets/positions/mid.png";
+import AdcIcon from "../../assets/positions/adc.png";
+import SupIcon from "../../assets/positions/sup.png";
+
 const CHAMPION_IMG_BASE_URL = process.env.REACT_APP_CHAMPION_IMG_BASE_URL;
 
 interface User {
@@ -24,15 +30,21 @@ interface GameDetailProps {
 // 포지션 표시
 const PositionSection = () => (
   <div className="main-position-section">
-    {["top", "jug", "mid", "adc", "sup"].map((position) => (
-      <div key={position} className="position-box">
-        <img
-          className="position-img"
-          src={`${process.env.PUBLIC_URL}/positions/${position}.png`}
-          alt={position}
-        />
-      </div>
-    ))}
+    <div className="position-box">
+      <img className="position-img" src={TopIcon} alt="top" />
+    </div>
+    <div className="position-box">
+      <img className="position-img" src={JugIcon} alt="jug" />
+    </div>
+    <div className="position-box">
+      <img className="position-img" src={MidIcon} alt="mid" />
+    </div>
+    <div className="position-box">
+      <img className="position-img" src={AdcIcon} alt="adc" />
+    </div>
+    <div className="position-box">
+      <img className="position-img" src={SupIcon} alt="sup" />
+    </div>
   </div>
 );
 
