@@ -1,8 +1,15 @@
 import React, { useState } from "react";
-import { getUserProfile } from "../../api/gameApi";
 import "./Profile.css";
 
 const CHAMPION_IMG_BASE_URL = process.env.REACT_APP_CHAMPION_IMG_BASE_URL;
+
+interface Summoner {
+  profileIcon: number;
+  puuid: string;
+  summonerLevel: number;
+  summonerName: string;
+  tag: string;
+}
 
 interface UserInfo {
   division: string;
@@ -14,34 +21,22 @@ interface UserInfo {
 }
 
 interface ProfileProps {
-  name: string; //카림sk
-  tag: string; //kr1
+  summoner: Summoner | null;
   userInfo: UserInfo[];
 }
 
-export default function Profile({ name, tag, userInfo }: ProfileProps) {
+export default function Profile({ summoner, userInfo }: ProfileProps) {
   return (
     <div className="profile-container">
       <div className="profile-info">
-        <p className="profile-nickname">
-          {name} <span>#{tag}</span>
-        </p>
-        {/* <div className="profile-most3">
-          <img
-            src={`${CHAMPION_IMG_BASE_URL}${profile.most1}.png`}
-            alt="모스트1"
-          />
-          <img
-            src={`${CHAMPION_IMG_BASE_URL}${profile.most2}.png`}
-            alt="모스트2"
-          />
-          <img
-            src={`${CHAMPION_IMG_BASE_URL}${profile.most3}.png`}
-            alt="모스트3"
-          />
-        </div> */}
+        {summoner && (
+          <>
+            <p className="profile-nickname">
+              {summoner.summonerName} <span>#{summoner.tag}</span>
+            </p>
+          </>
+        )}
       </div>
-
       <div className="rank-info">
         {userInfo.map((info, index) => (
           <div key={index} className="rank-box">
@@ -51,7 +46,7 @@ export default function Profile({ name, tag, userInfo }: ProfileProps) {
                 : "자유 랭크"}
             </p>
             <div className="rank-tier">
-              <img src={`/tiers/Rank=${info.tier}.png`} alt="티어" />
+              <img src={`/tiers/${info.tier}.png`} alt="티어" />
             </div>
             <p className="rank-record">
               {info.tier} {info.division} - {info.leaguePoint}점 ({info.wins}승{" "}
