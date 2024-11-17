@@ -78,6 +78,15 @@ export default function GameDetail({ users, report }: GameDetailProps) {
     return parseFloat((totalScore / fields.length).toFixed(1));
   };
 
+  const calculateTeamScore = (teamKey: "team_100" | "team_200"): number => {
+    const totalTeamScore = roles.reduce((sum, role) => {
+      return sum + calculateScore(teamKey, role);
+    }, 0);
+
+    // 팀 점수 평균 반환
+    return parseFloat((totalTeamScore / roles.length).toFixed(1));
+  };
+
   const handleUserClick = (
     team: "team_100" | "team_200",
     role: keyof ReportInfo["team_100"],
@@ -114,16 +123,19 @@ export default function GameDetail({ users, report }: GameDetailProps) {
   const teamBlue = users.filter((user) => user.teamId === 100);
   const teamRed = users.filter((user) => user.teamId === 200);
 
+  const teamBlueScore = calculateTeamScore("team_100");
+  const teamRedScore = calculateTeamScore("team_200");
+
   return (
     <div className="detail-container">
       <div className="container-header">
         <div className="header-title">
           <div className="blue-team-score">
-            Team Blue
+            {teamBlueScore} 점
           </div>
           <span> vs </span>
           <div className="red-team-score">
-            Team Red
+            {teamRedScore} 점
           </div>
         </div>
         <div className="header-link">

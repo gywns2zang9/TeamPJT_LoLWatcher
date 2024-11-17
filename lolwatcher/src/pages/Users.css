@@ -10,7 +10,6 @@
   flex-direction: column;
   align-items: center;
   position: relative;
-  background: linear-gradient(to bottom, #0f172a, #0c1221 80%, #000000); /* 상단에서 하단으로 점점 어두워지는 남색 그라데이션 */
   background-size: cover;
   background-position: center;
   color: white; /* 밝은 골드 색상으로 텍스트 색상 설정 */

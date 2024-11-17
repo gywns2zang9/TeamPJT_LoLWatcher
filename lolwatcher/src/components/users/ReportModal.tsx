@@ -243,27 +243,21 @@ export default function ReportModal({
               플레이 역할 : {translatedRole}
             </div>
             <div
-              className="score-item"
+              className={`comparison-button ${isComparisonActive ? "selected" : ""}`} 
               style={{
                 marginTop: "10px",
                 textAlign: "center", // 중앙 정렬
               }}
             >
-              <button
-                onClick={() => setIsComparisonActive(!isComparisonActive)}
-                style={{
-                  fontWeight: "bold",
-                  fontSize: "20px",
-                  backgroundColor: "#1f1f1f",
-                  border: "none",
-                  borderRadius: "5px",
-                  cursor: "pointer",
-                  padding: "10px 20px",
-                  color:'white'
+              <div
+                onClick={() => {
+                  setIsComparisonActive(!isComparisonActive);
+                  setSelectedField(null);
                 }}
+                
               >
                 {isComparisonActive ? "비교 종료" : "상대와의 비교"}
-              </button>
+              </div>
             </div>
   
             {fields.map((field, index) => {
@@ -279,7 +273,9 @@ export default function ReportModal({
   
               return (
                 <div
-                  className="score-item"
+                  className={`score-item ${
+                    selectedField === field && !isComparisonActive ? "selected" : ""
+                  }`} // 선택된 필드에 `selected` 클래스 추가`}
                   key={index}
                   onClick={() => {
                     setSelectedField(field);

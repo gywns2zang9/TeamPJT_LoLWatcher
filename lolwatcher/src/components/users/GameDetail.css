@@ -8,7 +8,7 @@
   margin-top: 10px;
   border-radius: 10px;
   flex-direction: column;
-  background: white;
+  background: #e9e9e9;
   color: black;
 
   box-sizing: border-box;
@@ -29,7 +29,7 @@
   justify-content: center;
   font-size: 30px;
   font-weight: 600;
-  position: relative;
+  padding-top: 5px;
 }
 
 .blue-team-score {
