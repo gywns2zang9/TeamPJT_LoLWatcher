@@ -10,7 +10,7 @@
 }
 
 .list-container-title {
-  margin: 10px 0;
+  margin: 10px;
   color: #fff;
 }
 
@@ -158,4 +158,18 @@
 
 .user-detail {
   font-size: 30px;
+}
+
+.game-detail {
+  width: 100%;
+  overflow: hidden;
+  transition: height 0.5s ease-out; /* 열리고 닫히는 애니메이션 */
+}
+
+.game-detail.opening {
+  height: auto;
+}
+
+.game-detail.closing {
+  height: 0;
 }

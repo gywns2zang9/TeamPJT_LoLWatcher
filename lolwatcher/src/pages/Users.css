@@ -10,7 +10,16 @@
   flex-direction: column;
   align-items: center;
   position: relative;
+  background-size: cover;
+  background-position: center;
+  color: white; /* 밝은 골드 색상으로 텍스트 색상 설정 */
+  box-shadow: inset 0 0 150px rgba(0, 0, 0, 0.8); /* 더 강렬한 내부 그림자 */
+  border: 1px solid rgba(255, 255, 255, 0.1); /* 부드러운 외곽선 */
+  padding: 20px; /* 내부 여백 */
 }
+
+
+
 
 .nav-link {
   position: absolute;

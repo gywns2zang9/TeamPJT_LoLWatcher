@@ -19,7 +19,10 @@ interface ReportModalProps {
   userName: string;
   championImgUrl: string;
   userReport: any;
+  opponentName: string;
+  opponentChampionImgUrl: string;
   opponentReport: any;
+  onClose: () => void; // 모달 닫기 콜백 추가
 }
 
 const CHAMPION_IMG_BASE_URL = process.env.REACT_APP_CHAMPION_IMG_BASE_URL;
@@ -29,8 +32,12 @@ export default function ReportModal({
   userName,
   championImgUrl,
   userReport,
+  opponentName,
+  opponentChampionImgUrl,
   opponentReport,
+  onClose,
 }: ReportModalProps) {
+  
   const roleMapping: { [key: string]: string } = {
     top: "탑",
     jungle: "정글",
@@ -41,7 +48,7 @@ export default function ReportModal({
 
   const fieldMapping: { [key: string]: string } = {
     soloKills: "솔로킬",
-    turretTakedowns: "포탑 기여도",
+    turretTakedowns: "포탑 철거 기여도",
     totalDamageTaken: "받은 피해량",
     killParticipation: "킬 관여율",
     impactScore: "영향도",
@@ -62,7 +69,8 @@ export default function ReportModal({
   };
 
   const fields = Object.keys(userReport || {}).slice(0, 5); // 필드 5개만 선택
-
+  const opponentFields = Object.keys(opponentReport || {}).slice(0,5);
+  const [isComparisonActive, setIsComparisonActive] = useState(false); // 비교 활성 상태
   const [selectedField, setSelectedField] = useState<string | null>(null);
 
   const erf = (x: number): number => {
@@ -118,7 +126,11 @@ export default function ReportModal({
     return score;
   };
 
+  
+
   const getChartData = () => {
+    const report = isComparisonActive ? opponentReport : userReport; // 현재 활성 상태에 따라 데이터 소스 선택
+  
     if (!selectedField || !userReport[selectedField]) return null;
 
     const mean = userReport[selectedField].avg || 0; // 평균
@@ -189,124 +201,264 @@ export default function ReportModal({
 
   return (
     <div className="modal-container">
+      <button className="close-button" onClick={onClose}>
+        ✖
+      </button>
       <div
         style={{
-          width: "50%",
+          display: "flex",
+          flexDirection: "row", // 좌우 레이아웃
+          width: "100%",
           height: "100%",
-          flexDirection: "column",
-          textAlign: "center",
         }}
       >
-        <div className="position-point">
-          <div className="champion-profile-detail" style={{
-                    backgroundImage: `url(${CHAMPION_IMG_BASE_URL}${championImgUrl})`,
-                  }}></div>
-          <div className="champion-name">{userName}</div>
-          <div
-            style={{
-              fontWeight: "bold",
-              color: "gray",
-              fontSize: "17px",
-              marginBottom:'30px',
-              marginTop:'15px'
-            }}
-          >
-            플레이 역할 : {translatedRole}
-          </div>
-          <div
-            className="score-item"
-            style={{ marginTop: "10px" }}
-          >
-            <div style={{ fontWeight: "bold", fontSize: "20px" }}>상대와의 비교</div>
-          </div>
-
-          {fields.map((field, index) => {
-            const zScore = userReport[field]?.z_score || 0; // 해당 필드의 z-score
-            const score = getScore(field, zScore); // z-score를 기반으로 점수 계산
-
-            // 점수에 따라 CSS 클래스 설정
-            const scoreClass =
-              score <= 30
-                ? "low-score"
-                : score <= 75
-                ? "common-score"
-                : "great-score";
-
-            return (
+        {/* 좌측 영역 */}
+        <div
+          style={{
+            width: isComparisonActive ? "50%" : "35%", // 상태에 따라 너비 변경
+            height: "100%",
+            flexDirection: "column",
+            textAlign: "center",
+            transition: "width 0.3s ease", // 부드러운 전환 효과 추가
+          }}
+        >
+          {/* 사용자 데이터 */}
+          <div className="position-point">
+            <div
+              className="champion-profile-detail"
+              style={{
+                backgroundImage: `url(${CHAMPION_IMG_BASE_URL}${championImgUrl})`,
+              }}
+            ></div>
+            <div className="champion-name">{userName}</div>
+            <div
+              style={{
+                fontWeight: "bold",
+                color: "gray",
+                fontSize: "17px",
+                marginBottom: "30px",
+                marginTop: "15px",
+              }}
+            >
+              플레이 역할 : {translatedRole}
+            </div>
+            <div
+              className={`comparison-button ${isComparisonActive ? "selected" : ""}`} 
+              style={{
+                marginTop: "10px",
+                textAlign: "center", // 중앙 정렬
+              }}
+            >
               <div
-                className="score-item"
-                key={index}
                 onClick={() => {
-                  setSelectedField(field);
+                  setIsComparisonActive(!isComparisonActive);
+                  setSelectedField(null);
                 }}
-                style={{ display:"flex" }}
+                
               >
-                <div style={{ fontWeight: "bold", fontSize: "20px" }}>{getTranslatedField(field)}</div>
-                <div className={scoreClass}>{score}</div> {/* 동적 클래스 적용 */}
+                {isComparisonActive ? "내 점수 보기" : "상대와의 비교"}
               </div>
-            );
-          })}
-
+            </div>
+  
+            {fields.map((field, index) => {
+              const zScore = userReport[field]?.z_score || 0;
+              const score = getScore(field, zScore);
+  
+              const scoreClass =
+                score <= 30
+                  ? "low-score"
+                  : score <= 75
+                  ? "common-score"
+                  : "great-score";
+  
+              return (
+                <div
+                  className={`score-item ${
+                    selectedField === field && !isComparisonActive ? "selected" : ""
+                  }`} // 선택된 필드에 `selected` 클래스 추가`}
+                  key={index}
+                  onClick={() => {
+                    setSelectedField(field);
+                    setIsComparisonActive(false);
+                  }}
+                  style={{ display: "flex" }}
+                >
+                  <div
+                    style={{
+                      fontWeight: "bold",
+                      fontSize: "20px",
+                      wordBreak: "break-word", // 텍스트가 단어 중간에서라도 줄바꿈 되도록 설정
+                      whiteSpace: "normal", // 텍스트 줄바꿈 허용
+                    }}
+                  >
+                    {getTranslatedField(field)}
+                  </div>
+                  <div className={scoreClass}>{score}</div>
+                </div>
+              );
+            })}
+          </div>
         </div>
-      </div>
-      <div className="report-graph">
-        {chartData ? (
-          <>
-            <Line
-              data={chartData}
-              options={{
-                scales: {
-                  y: {
-                    min: 0,
-                    max: chartData
-                      ? Math.max(...(chartData.datasets[0].data as number[])) * 1.1
-                      : undefined,
+  
+        {/* 우측 영역 */}
+        <div
+          className="report-graph"
+          style={{
+            width: isComparisonActive ? "50%" : "65%", // 상태에 따라 너비 변경
+            height: "100%",
+            textAlign: "center",
+            transition: "width 0.3s ease", // 부드러운 전환 효과 추가
+          }}
+        >
+          {isComparisonActive ? (
+            <>
+              <div className="position-point">
+              <div
+                className="champion-profile-detail"
+                style={{
+                  backgroundImage: `url(${CHAMPION_IMG_BASE_URL}${opponentChampionImgUrl})`,
+                }}
+              ></div>
+              <div className="champion-name">{opponentName}</div>
+              <div
+                style={{
+                  fontWeight: "bold",
+                  color: "gray",
+                  fontSize: "17px",
+                  marginBottom: "30px",
+                  marginTop: "15px",
+                }}
+              >
+                플레이 역할 : {translatedRole}
+              </div>
+              <button
+                style={{
+                  fontWeight: "bold",
+                  fontSize: "20px",
+                  backgroundColor: "#1f1f1f",
+                  border: "none",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+                  padding: "10px 20px",
+                  color:'white',
+                  visibility:'hidden'
+                }}
+              >
+                {isComparisonActive ? "비교 종료" : "상대와의 비교"}
+              </button>
+              {opponentFields.map((field, index) => {
+                const zScore = opponentReport[field]?.z_score || 0;
+                const score = getScore(field, zScore);
+
+                const scoreClass =
+                  score <= 30
+                    ? "low-score"
+                    : score <= 75
+                    ? "common-score"
+                    : "great-score";
+
+                return (
+                  <div
+                    className="score-item"
+                    key={index}
+                    onClick={() => {
+                      console.log("Clicked Opponent Field:", field); // 디버깅 로그
+                      setSelectedField(field); // 상태 업데이트
+                    }}
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      cursor: "pointer", // 클릭 가능 표시
+                    }}
+                  >
+                    <div style={{ fontWeight: "bold", fontSize: "20px" }}>
+                      {getTranslatedField(field)}
+                    </div>
+                    <div className={scoreClass}>{score}</div>
+                  </div>
+                );
+              })}
+              </div>
+
+              {/* 상대방 데이터 출력 */}
+              
+            </>
+          ) : chartData ? (
+            <>
+              <Line
+                data={chartData}
+                options={{
+                  scales: {
+                    y: {
+                      min: 0,
+                      max: chartData
+                        ? Math.max(...(chartData.datasets[0].data as number[])) *
+                          1.1
+                        : undefined,
                       ticks: {
                         display: false,
                       },
-                  },
-                },
-                plugins: {
-                  legend: {
-                    position: "top",
-                    display: false
-                  },
-                  title: {
-                    display: true,
-                    text: `${getTranslatedField(selectedField!)} 정규분포 그래프`,
-                    font: {
-                      size: 25, // 글자 크기를 30으로 설정
                     },
-                    padding:{
-                      top:10,
-                      bottom:20,
-                    }
                   },
-                },
-              }}
-            />
-            {selectedField && (
-              <p
+                  plugins: {
+                    legend: {
+                      position: "top",
+                      display: false,
+                    },
+                    title: {
+                      display: true,
+                      text: `${getTranslatedField(
+                        selectedField!
+                      )} 정규분포 그래프`,
+                      font: {
+                        size: 25,
+                      },
+                      padding: {
+                        top: 10,
+                        bottom: 20,
+                      },
+                    },
+                  },
+                }}
+              />
+              {selectedField && (
+                <p
+                  style={{
+                    marginTop: "20px",
+                    fontSize: "25px",
+                    fontWeight: "bold",
+                    textAlign: "center",
+                    color: "darksalmon",
+                  }}
+                >
+                  {userName} 님은{" "}
+                  {getTranslatedField(selectedField)} 점수에서{" "}
+                  <br />
+                  {getPercentileText(
+                    selectedField,
+                    userReport[selectedField]?.z_score || 0
+                  )}
+                  에 위치하고 있어요.
+                </p>
+              )}
+            </>
+          ) : (
+            <p
               style={{
+                textAlign: "center",
                 marginTop: "20px",
                 fontSize: "25px",
                 fontWeight: "bold",
-                textAlign: "center",
-                color: "darksalmon",
+                color: "gray",
               }}
             >
-              {userName} 님은 {getTranslatedField(selectedField)} 점수에서{" "} <br/>
-              {getPercentileText(selectedField, userReport[selectedField]?.z_score || 0)}에
-              위치하고 있어요.
+              점수를 클릭해서 통계를 확인해보세요!
             </p>
-            )}
-          </>
-        ) : (
-          <p style={{ textAlign: "center", marginTop: "20px" }}>
-            필드를 클릭하여 정규분포를 확인하세요.
-          </p>
-        )}
+          )}
+        </div>
       </div>
+      
     </div>
   );
+  
 }
