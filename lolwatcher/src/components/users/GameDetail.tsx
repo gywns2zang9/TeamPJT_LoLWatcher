@@ -101,6 +101,7 @@ export default function GameDetail({ users, report }: GameDetailProps) {
   const [selectedReport, setSelectedReport] = useState<{
     role: string;
     userName: string;
+    championImgUrl: string;
     userReport: any;
     opponentReport: any;
   } | null>(null);
@@ -112,11 +113,8 @@ export default function GameDetail({ users, report }: GameDetailProps) {
   const teamBluePoints = teamBlue.reduce((total, user) => total + 20, 0);
   const teamRedPoints = teamRed.reduce((total, user) => total + 20, 0);
 
-  const handleUserClick = (
-    team: "team_100" | "team_200",
-    role: keyof ReportInfo["team_100"],
-    userName: string
-  ) => {
+  const handleUserClick = (team: "team_100" | "team_200", role: keyof ReportInfo["team_100"], userName: string, championImgUrl: string) => {
+
     const userReport = report[team][role]; // 클릭한 유저의 report
     const opponentTeam = team === "team_100" ? "team_200" : "team_100"; // 상대 팀 계산
     const opponentReport = report[opponentTeam][role]; // 상대 팀의 동일 역할 report
@@ -125,6 +123,7 @@ export default function GameDetail({ users, report }: GameDetailProps) {
     setSelectedReport({
       role,
       userName,
+      championImgUrl,
       userReport,
       opponentReport
     });
@@ -172,9 +171,8 @@ export default function GameDetail({ users, report }: GameDetailProps) {
               <div
                 key={index}
                 className="team-item"
-                onClick={() =>
-                  handleUserClick("team_100", roles[index], user.summonerName)
-                }
+                onClick={() => handleUserClick("team_100", roles[index], user.summonerName, `${user.championName}.png`)}
+
               >
                 <div
                   className="champion-img"
@@ -200,9 +198,8 @@ export default function GameDetail({ users, report }: GameDetailProps) {
               <div
                 key={index}
                 className="team-item"
-                onClick={() =>
-                  handleUserClick("team_200", roles[index], user.summonerName)
-                }
+                onClick={() => handleUserClick("team_200", roles[index], user.summonerName, `${user.championName}.png`)}
+
               >
                 <div
                   className="champion-img"
@@ -226,6 +223,7 @@ export default function GameDetail({ users, report }: GameDetailProps) {
             <ReportModal
               role={selectedReport.role}
               userName={selectedReport.userName}
+              championImgUrl={selectedReport.championImgUrl}
               userReport={selectedReport.userReport}
               opponentReport={selectedReport.opponentReport}
             />
