@@ -9,46 +9,87 @@
   align-items: center;
 }
 
-.tier-selection {
-  display: flex;
-  gap: 10px;
-  margin: 20px 0;
+.statistics-container-title {
+  color: white;
+  text-align: center;
+  margin-top: 80px;
 }
 
-.tier-icon {
+.statistics-header {
+  margin-top: 12px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* tier section */
+.statistics-header-tier {
+  width: 80%;
+  max-width: 1200px;
+  min-width: 1000px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.statistics-header-tier div {
+  flex-grow: 1;
+}
+.header-tier-icon {
   width: 100px;
   height: 100px;
-  cursor: pointer;
+  cursor: url("../assets/cursor/hover-cursor.png"), pointer;
+  filter: grayscale(100%);
+}
+.header-tier-icon.selected {
+  filter: grayscale(0%);
+}
+.header-tier-icon:hover {
+  filter: grayscale(0%);
 }
 
-.tier-icon.selected {
-  border: 2px solid #ffffff;
-  opacity: 1;
-}
-
-.division-selection {
+/* divison section */
+.statistics-header-division {
   display: flex;
-  gap: 10px;
+  width: 480px;
+  justify-content: center;
+  gap: 20px;
 }
 
-.division-button {
+.header-division-btn {
   width: 50px;
   height: 50px;
-  border-radius: 50%;
-  background-color: #f1f1f1;
-  cursor: pointer;
+  background-color: white;
+  cursor: url("../assets/cursor/hover-cursor.png"), pointer;
 }
-
-.division-button.selected {
-  background-color: #70b6f7;
+.header-division-btn.selected {
+  background-color: #99cbfa;
+  color: white;
+}
+.header-division-btn:hover {
+  background-color: #99cbfa;
   color: white;
 }
 
+/* msg section */
+.statistics-header-msg {
+  color: white;
+  font-size: 30px;
+  font-weight: 600;
+  margin: 0 auto 12px;
+}
+
 .champions-table {
-  width: 100%;
+  width: 70%;
   max-width: 800px;
   border-collapse: collapse;
   margin-top: 20px;
+  border: 1px solid #333;
+  border-radius: 12px;
+  align-items: center;
+  background-color: #1f1f1f;
+  color: #fff;
 }
 
 .champions-table th,
@@ -60,12 +101,85 @@
 
 .champions-table th {
   cursor: pointer;
-  background-color: #f5f5f5;
+}
+.champions-table td {
+  background: #2c2c2c;
 }
 
-.champion-icon {
-  width: 30px;
-  height: 30px;
-  margin-right: 10px;
-  vertical-align: middle;
+.table-champion-info {
+  color: white;
+  display: flex;
+  align-items: center;
+}
+
+.table-champion-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid gold;
+}
+
+.table-champion-name {
+  margin-left: 8px;
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.statistics-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 99;
+}
+.statistics-modal-content {
+  border-radius: 10px;
+  position: relative;
+  width: 50%;
+  height: auto;
+  padding: 20px;
+  display: flex;
+  transform: translateY(100%); /* 시작 위치 */
+  opacity: 0; /* 시작 투명도 */
+  transition: transform 1s ease, opacity 1s ease;
+  background-color: #1f1f1f;
+  border: 2px solid goldenrod;
+  color: #508fe2;
+}
+
+.statistics-modal-content.open {
+  animation: slideUp 0.7s ease forwards; /* 슬라이드 업 애니메이션 */
+}
+
+/* Statistics.css */
+.search-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.search-input {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  width: 200px;
+}
+
+.search-button {
+  padding: 8px 16px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.search-button:hover {
+  background-color: #45a049;
 }

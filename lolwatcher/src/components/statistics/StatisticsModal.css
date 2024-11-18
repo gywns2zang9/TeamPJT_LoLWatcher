@@ -1,0 +1,20 @@
+.statistics-modal-container {
+  width: 100%;
+  display: flex;
+  z-index: 999;
+}
+
+.statistics-modal-content {
+}
+
+.statistics-modal-title {
+}
+
+.radar-chart-container {
+}
+
+.close-button {
+}
+
+.close-button:hover {
+}
