@@ -86,10 +86,12 @@ public class RiotApiService {
             records.add(new Record(nonExistsMatchId, new HashMap<>()));
         }
         List<RecordMatchDto> list = new ArrayList<>();
+        List<String> findRankedIds = new ArrayList<>();
         int i = 0;
         for(String nonExistsMatchId : ids) {
             MatchDto matchDto = riotAsiaApiClient.getMatchData(nonExistsMatchId);
             if(matchDto.info().queueId() != 420 && matchDto.info().queueId() != 440) { continue; }
+            findRankedIds.add(nonExistsMatchId);
             Record record = new Record(nonExistsMatchId, new HashMap<>());
             List<RecordUserDto> users = new ArrayList<>();
             for(ParticipantDto participant : matchDto.info().participants()) {
@@ -157,7 +159,7 @@ public class RiotApiService {
             }
         }
         recordRepository.saveAll(records);
-        return pythonApiClient.postMatchData(ids);
+        return pythonApiClient.postMatchData(findRankedIds);
     }
 
     public int customCompareTo(Tier tier1, Division division1, Tier tier2, Division division2) {
