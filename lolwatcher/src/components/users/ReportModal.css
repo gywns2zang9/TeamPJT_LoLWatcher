@@ -49,6 +49,9 @@
   white-space: nowrap; /* 텍스트를 한 줄로 유지 */
   overflow: hidden; /* 넘치는 텍스트를 숨김 */
   text-overflow: ellipsis; /* 숨겨진 텍스트를 줄임표로 표시 */
+
+  max-width: 100%; /* 최대 너비를 컨테이너에 맞춤 */
+  box-sizing: border-box; /* 패딩 포함 너비 계산 */
 }
 
 .score-item:hover {

@@ -139,6 +139,11 @@
   font-weight: bold;
 }
 
+.autocomplete-item:hover,
+.autocomplete-item.highlighted {
+  background-color: #007bff; /* 하이라이트 색상 */
+}
+
 .autocomplete-item:hover {
-  background: #f0f0f0;
+  background: #007bff;
 }

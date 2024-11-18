@@ -64,6 +64,7 @@ export default function Users() {
   const [userInfo, setUserInfo] = useState<UserInfo[]>([]);
   const [summoner, setSummoner] = useState<Summoner | null>(null);
   const [showAutocomplete, setShowAutocomplete] = useState<boolean>(false);
+  const [highlighted, setHighlighted] = useState<boolean>(false); // 추천 항목 하이라이트 상태 추가
   const [loading, setLoading] = useState(true);
   const [remainingTime, setRemainingTime] = useState<number | null>(null);
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
@@ -173,20 +174,41 @@ export default function Users() {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
 
-    // # 입력 시 자동 완성 표시
-    if (inputValue.includes('#')) {
+    // # 뒤에 입력된 값을 확인
+    const [baseName, tagPart] = inputValue.split('#');
+
+    if (tagPart === undefined) {
+      // #가 입력되지 않은 경우 추천 창 숨김
+      setShowAutocomplete(false);
+    } else if (tagPart === '' || ['K', 'KR', 'KR1'].includes(tagPart)) {
+      // #만 입력되었거나 # 뒤에 K, KR, KR1 중 하나일 경우 추천 창 표시
       setShowAutocomplete(true);
     } else {
+      // # 뒤에 허용되지 않은 문자가 있으면 추천 창 숨김
       setShowAutocomplete(false);
     }
 
     setNickName(inputValue);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (showAutocomplete && e.key === 'ArrowDown') {
+      e.preventDefault(); // 기본 동작 방지
+      setHighlighted(true); // 추천 항목 하이라이트
+    }
+    if (highlighted && e.key === 'Enter') {
+      e.preventDefault(); // 기본 동작 방지
+      setNickName((prev) => `${prev.split('#')[0]}#KR1`); // 자동 완성 적용
+      setShowAutocomplete(false); // 추천 창 닫기
+      setHighlighted(false); // 하이라이트 초기화
+    }
+  };
+
+  // 자동 완성 클릭 처리
   const handleAutocompleteClick = () => {
-    // 자동 완성을 클릭하면 값 설정
     setNickName((prev) => `${prev.split('#')[0]}#KR1`);
-    setShowAutocomplete(false); // 자동 완성 닫기
+    setShowAutocomplete(false);
+    setHighlighted(false);
   };
 
   const handleSearch = (e: React.FormEvent) => {
@@ -217,6 +239,7 @@ export default function Users() {
               type='text'
               value={nickName}
               onChange={handleInputChange}
+              onKeyDown={handleKeyDown}
               placeholder='Hide on bush#KR1'
               maxLength={30}
               className='header-input'
@@ -224,10 +247,10 @@ export default function Users() {
             {/* 자동 완성 추천 표시 */}
             {showAutocomplete && (
               <div
-                className='autocomplete-item'
+                className={`autocomplete-item ${highlighted ? 'highlighted' : ''}`} // 하이라이트 클래스 추가
                 onClick={handleAutocompleteClick}
               >
-                {nickName}KR1
+                {nickName.split('#')[0]}#KR1 {/* 항상 #KR1 고정 */}
               </div>
             )}
           </div>
