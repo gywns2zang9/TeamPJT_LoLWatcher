@@ -48,7 +48,7 @@
   border-radius: 15px;
   transition: background-color 0.3s ease; /* 부드러운 전환 효과 */
   border-radius: 15px 0px 0px 15px;
-  cursor: url('../../assets/cursor/hover-cursor.png'), pointer;
+  cursor: url("../../assets/cursor/hover-cursor.png"), pointer;
   white-space: nowrap; /* 텍스트를 한 줄로 유지 */
   overflow: hidden; /* 넘치는 텍스트를 숨김 */
   text-overflow: ellipsis; /* 숨겨진 텍스트를 줄임표로 표시 */
@@ -107,7 +107,7 @@
   border: none;
   background: none;
   font-size: 20px;
-  cursor: pointer;
+  cursor: url("../../assets/cursor/hover-cursor.png"), pointer;
   margin-right: 10px;
   color: white;
 }
@@ -120,14 +120,14 @@
   font-weight: bold;
   font-size: 20px;
   border: none;
-  cursor: pointer;
+  cursor: url("../../assets/cursor/hover-cursor.png"), pointer;
   color: white;
   transition: background-color 0.3s ease; /* 부드러운 전환 효과 */
   padding-inline: 20px;
   padding-block: 7px;
   border-radius: 15px 0px 0px 15px;
   margin-bottom: 20px;
-  cursor: url('../../assets/cursor/hover-cursor.png'), pointer;
+  cursor: url("../../assets/cursor/hover-cursor.png"), pointer;
 }
 
 .comparison-button:hover {

@@ -123,7 +123,7 @@
   background: #fff;
   border: 1.5px solid #ccc;
   padding: 5px 10px;
-  cursor: pointer;
+  cursor: url("../assets/cursor/hover-cursor.png"), pointer;
   z-index: 10;
   width: 92%; /* input 너비에 맞추기 */
   color: black;

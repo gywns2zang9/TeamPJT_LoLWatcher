@@ -96,29 +96,34 @@
 }
 
 .search-input {
-  padding: 8px;
+  padding: 10px;
+  font-size: 16px;
+  font-weight: bold;
   border-radius: 4px;
   border: 1px solid #ccc;
   width: 200px;
 }
 
 .search-button {
-  padding: 8px 16px;
-  background-color: #4caf50;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+  background-color: #007bff;
   color: white;
   border: none;
   border-radius: 4px;
-  cursor: pointer;
+  cursor: url("../assets/cursor/hover-cursor.png"), pointer;
+  width: 100px;
+  padding: 10px;
 }
 
 .search-button:hover {
-  background-color: #45a049;
+  background-color: #0056b3;
 }
 
 /* Table Section */
 .champions-table {
   width: 70%;
-  max-width: 800px;
   border-collapse: collapse;
   margin-top: 20px;
   border: 1px solid #333;
@@ -130,13 +135,14 @@
 
 .champions-table th,
 .champions-table td {
+  flex-grow: 1;
   padding: 10px;
   text-align: center;
   border-bottom: 1px solid #ddd;
 }
 
 .champions-table th {
-  cursor: pointer;
+  cursor: url("../assets/cursor/hover-cursor.png"), pointer;
 }
 
 .table-champion-info {
@@ -146,6 +152,8 @@
 }
 
 .table-champion-icon {
+  margin-left: 50px;
+
   width: 36px;
   height: 36px;
   border-radius: 50%;
@@ -153,7 +161,7 @@
 }
 
 .table-champion-name {
-  margin-left: 8px;
+  margin-left: 18px;
   font-weight: 600;
   font-size: 18px;
 }

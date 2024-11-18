@@ -5,6 +5,9 @@ import { functionAccessToken } from "../api/authApi";
 import "./Statistics.css";
 import StatisticsModal from "../components/statistics/StatisticsModal";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
+
 import BRONZE from "../assets/tiers/bronze.png";
 import CHALLENGER from "../assets/tiers/challenger.png";
 import DIAMOND from "../assets/tiers/diamond.png";
@@ -279,14 +282,14 @@ export default function Statistics() {
         <div className="search-container">
           <input
             type="text"
-            placeholder="챔피언 이름 검색"
+            placeholder="챔피언 검색"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             onKeyDown={handleKeyDown}
             className="search-input"
           />
           <button onClick={handleSearch} className="search-button">
-            검색
+            <FontAwesomeIcon icon={faSearch} /> <b>검색</b>
           </button>
         </div>
       </div>
@@ -357,10 +360,16 @@ export default function Statistics() {
               onClose={closeModal}
               championStats={selectedChampion}
               championName={
-                champions.find((champ) => champ.key === selectedChampion?.championId.toString())?.name
+                champions.find(
+                  (champ) =>
+                    champ.key === selectedChampion?.championId.toString()
+                )?.name
               }
               championImgUrl={
-                champions.find((champ) => champ.key === selectedChampion?.championId.toString())?.id
+                champions.find(
+                  (champ) =>
+                    champ.key === selectedChampion?.championId.toString()
+                )?.id
               }
             />
           </div>
