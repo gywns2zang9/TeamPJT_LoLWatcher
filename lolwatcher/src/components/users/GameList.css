@@ -127,11 +127,8 @@
   align-items: center;
   justify-content: center; /* 수직으로도 중앙 정렬 */
   text-align: center;
-  background-color: #ffffff;
-  border-radius: 50%;
-  border: 2px solid gold;
-  font-size: 16px; /* 폰트 크기와 두께는 여기서 지정 */
   font-weight: 600;
+  border-radius: 50%;
   cursor: url("../../assets/cursor/hover-cursor.png"), pointer;
 }
 
@@ -142,11 +139,20 @@
 }
 
 .point-section:hover {
-  background-color: #f0f0f0; /* 호버 시 배경색 */
 }
 
 .point-section.open {
 }
+
+.icon {
+  color: rgba(255, 255, 255, 0.808); /* 기본 색상 */
+  transition: color 0.3s ease; /* 색상 전환 부드럽게 */
+}
+
+.icon:hover{
+  color: black;
+}
+
 
 .item-team-section {
   width: 36%;
