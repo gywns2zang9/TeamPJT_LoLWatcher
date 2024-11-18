@@ -16,8 +16,8 @@ public interface RiotKrApiClient {
     @RequestMapping(method = RequestMethod.GET, value = "/lol/summoner/v4/summoners/by-puuid/{encryptedPUUID}")
     SummonerDTO getSummoner(@PathVariable String encryptedPUUID);
 
-    @RequestMapping(method = RequestMethod.GET, value = "/lol/league/v4/entries/by-summoner/{encryptedSummonerId}")
-    Set<LeagueEntryDTO> getLeagueInfo(@PathVariable String encryptedSummonerId);
+    @RequestMapping(method = RequestMethod.GET, value = "/lol/league/v4/entries/by-summoner/{summonerId}")
+    Set<LeagueEntryDTO> getLeagueInfo(@PathVariable String summonerId);
 
 
 }
