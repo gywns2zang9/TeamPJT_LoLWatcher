@@ -1,6 +1,7 @@
 package com.lolwatcher.event.controller;
 
 import com.lolwatcher.event.dto.AccountDto;
+import com.lolwatcher.event.dto.ChampionStatistics;
 import com.lolwatcher.event.dto.RecordResponse;
 import com.lolwatcher.event.dto.match.MatchDto;
 import com.lolwatcher.event.dto.match.info.InfoDto;
@@ -39,6 +40,11 @@ public class RiotApiController {
         log.info("info : 전적 조회 \n puuid : " + puuid);
         AccountDto accountDto = (AccountDto) request.getAttribute("account");
         return new RecordResponse(120, riotApiService.getMatchDataBySummoner(accountDto));
+    }
+
+    @GetMapping("/champion")
+    public List<ChampionStatistics> getChampionStatistics(@RequestParam("tier") String collectionName) {
+        return riotApiService.getChampionStatistics(collectionName);
     }
 
     // Todo : 제대로 동작하는지 확인

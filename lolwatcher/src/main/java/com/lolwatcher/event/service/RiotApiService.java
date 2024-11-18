@@ -5,6 +5,7 @@ import com.lolwatcher.event.client.RiotAsiaApiClient;
 import com.lolwatcher.event.client.RiotKrApiClient;
 import com.lolwatcher.event.document.Record;
 import com.lolwatcher.event.dto.AccountDto;
+import com.lolwatcher.event.dto.ChampionStatistics;
 import com.lolwatcher.event.dto.LeagueEntryDTO;
 import com.lolwatcher.event.dto.SummonerDTO;
 import com.lolwatcher.event.dto.match.MatchDto;
@@ -14,6 +15,7 @@ import com.lolwatcher.event.dto.record.*;
 import com.lolwatcher.event.dto.timeline.TimelineDto;
 import com.lolwatcher.event.enumeration.Division;
 import com.lolwatcher.event.enumeration.Tier;
+import com.lolwatcher.event.repository.ChampionStatRepository;
 import com.lolwatcher.event.repository.RecordRepository;
 import com.lolwatcher.event.util.RecordRequestRedisUtil;
 import feign.Response;
@@ -34,6 +36,7 @@ public class RiotApiService {
     private final RiotAsiaApiClient riotAsiaApiClient;
     private final RiotKrApiClient riotKrApiClient;
     private final PythonApiClient pythonApiClient;
+    private final ChampionStatRepository cStatRepository;
     private final RecordRepository recordRepository;
     private final RecordRequestRedisUtil recordRequestRedisUtil;
 
@@ -176,6 +179,10 @@ public class RiotApiService {
             return Pair.of(Tier.fromOrdinal(avg/4), Division.I);
         }
         return Pair.of(Tier.fromOrdinal(avg/4), Division.fromOrdinal(avg%4));
+    }
+
+    public List<ChampionStatistics> getChampionStatistics(String collectionName) {
+        return cStatRepository.getChampionStatisticsByObjectId(collectionName);
     }
 
     // Todo : 제대로 동작하는지 확인
