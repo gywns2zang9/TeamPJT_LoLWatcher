@@ -23,7 +23,7 @@ public class ChampionStatRepository {
     public List<ChampionStatistics> getChampionStatisticsByObjectId(String collectionName) {
         String objectId = "673ab72aa8d7df664d13b49d";
         Query query = new Query(Criteria.where("_id").is(new ObjectId(objectId)));
-        ChampionStatAnalysis championStatistics = mongoTemplate.findOne(query, ChampionStatAnalysis.class, "analytic");
+        ChampionStatAnalysis championStatistics = mongoTemplate.findOne(query, ChampionStatAnalysis.class, "analytics");
 
         return Objects.requireNonNull(championStatistics).getData().get(collectionName);
     }
