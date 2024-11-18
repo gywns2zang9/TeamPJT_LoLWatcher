@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { postLoginAPI } from "../../api/authApi";
 import "./AuthForm.css";
@@ -30,15 +30,6 @@ export default function LoginForm({ toggleForm }: LoginFormProps) {
       window.alert("아이디와 비밀번호를 확인해주세요.");
     }
   };
-
-  useEffect(()=>{
-    const token = localStorage.getItem("accessToken");
-    console.log("hello")
-      console.log("Access Token:", token);
-      if (token) {
-        navigate("/users");
-      }
-  },[])
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
