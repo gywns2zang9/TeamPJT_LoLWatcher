@@ -356,6 +356,12 @@ export default function Statistics() {
               isOpen={isModalOpen}
               onClose={closeModal}
               championStats={selectedChampion}
+              championName={
+                champions.find((champ) => champ.key === selectedChampion?.championId.toString())?.name
+              }
+              championImgUrl={
+                champions.find((champ) => champ.key === selectedChampion?.championId.toString())?.id
+              }
             />
           </div>
         </div>
