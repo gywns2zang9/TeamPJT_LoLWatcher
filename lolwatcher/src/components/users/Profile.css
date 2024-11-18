@@ -39,6 +39,7 @@
   font-size: 24px;
   font-weight: bold;
   margin: auto;
+  width: 100%;
 }
 
 .profile-nickname span {
@@ -89,4 +90,29 @@
 .rank-record {
   font-size: 16px;
   font-weight: 500;
+}
+
+.refresh-button {
+  margin: 11px 0 auto;
+  background-color: #1f1f1f;
+  color: white;
+  font-weight: bold;
+  font-family: 'Arial', sans-serif; /* 숫자와 텍스트에 동일한 글꼴 지정 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin-left: 20px;
+  margin-bottom: 5px;
+  cursor: url('../../assets/cursor/hover-cursor.png'), pointer;
+}
+
+.refresh-button:hover {
+  background-color: #616060;
+}
+
+.refresh-button:disabled {
+  background-color: #616060; /* hover 상태에서도 배경색 유지 */
+  font-size: inherit; /* 부모 스타일 유지 */
+  font-weight: inherit;
 }

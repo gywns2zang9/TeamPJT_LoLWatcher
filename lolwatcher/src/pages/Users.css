@@ -1,5 +1,5 @@
 .users-container {
-  background-image: url("../assets/background.jpg");
+  background-image: url('../assets/background.jpg');
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
@@ -17,9 +17,6 @@
   border: 1px solid rgba(255, 255, 255, 0.1); /* 부드러운 외곽선 */
   padding: 20px; /* 내부 여백 */
 }
-
-
-
 
 .nav-link {
   position: absolute;
@@ -65,7 +62,7 @@
   background-color: #007bff;
   color: white;
   border: none;
-  cursor: url("../assets/cursor/hover-cursor.png"), pointer;
+  cursor: url('../assets/cursor/hover-cursor.png'), pointer;
 }
 
 .header-btn:hover {
