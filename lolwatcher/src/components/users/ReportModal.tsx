@@ -96,22 +96,22 @@ export default function ReportModal({
     return sign * y;
   };
 
-  const generateNormalDistribution = (mean: number, stdDev: number) => {
+  const generateNormalDistribution = (mean: number, stdDev: number, minRange?: number, maxRange?: number) => {
     const xValues: string[] = [];
     const yValues: number[] = [];
-
-    const numPoints = 1000; // 데이터 포인트 수
-    const step = (6 * stdDev) / numPoints; // 평균과 표준편차를 기반으로 한 step 계산
-
-    const minRange = mean - 3 * stdDev; // 제한 없이 설정
-    const maxRange = mean + 3 * stdDev;
-
-    for (let x = minRange; x <= maxRange; x += step) {
+  
+    const numPoints = 1000;
+    const step = (6 * stdDev) / numPoints;
+  
+    const start = minRange || mean - 3 * stdDev;
+    const end = maxRange || mean + 3 * stdDev;
+  
+    for (let x = start; x <= end; x += step) {
       const y = (1 / (stdDev * Math.sqrt(2 * Math.PI))) * Math.exp(-0.5 * Math.pow((x - mean) / stdDev, 2));
-      xValues.push(x.toFixed(2)); // 소수점 두 자리까지 X축 값
-      yValues.push(y); // Y축 값
+      xValues.push(x.toFixed(2));
+      yValues.push(y);
     }
-
+  
     return { xValues, yValues };
   };
 
@@ -138,7 +138,8 @@ export default function ReportModal({
     const mean = userReport[selectedField].avg || 0; // 평균
     const stdDev = userReport[selectedField].std_dev || 1; // 표준편차
     const zScore = userReport[selectedField].z_score || 0; // Z-Score
-
+    console.log('Selected Field:', selectedField);
+console.log('Mean:', mean, 'StdDev:', stdDev, 'Z-Score:', zScore);
     const { xValues, yValues } = generateNormalDistribution(mean, stdDev);
 
     let zScoreX = zScore * stdDev + mean; // zScore를 기반으로 X 값 계산
@@ -162,7 +163,6 @@ export default function ReportModal({
       labels: xValues, // X축 값
       datasets: [
         {
-          label: `${selectedField}의 정규분포`,
           data: yValues,
           borderColor: 'rgba(75, 192, 192, 1)', // 선 색상
           backgroundColor: 'rgba(75, 192, 192, 0.2)', // 선 아래 채우기 색상
@@ -171,7 +171,7 @@ export default function ReportModal({
           pointHoverRadius: 7, // 호버 시 데이터 포인트 숨기기
         },
         {
-          label: `${userName}님의 점수`,
+          label: `${getTranslatedField(selectedField)}`,
           data: zScoreData, // z-score 위치에만 값 설정
           borderColor: 'rgba(255, 99, 132, 1)', // z-score 표시 색상
           backgroundColor: 'rgba(255, 99, 132, 0.2)', // z-score 점 색상
@@ -421,7 +421,7 @@ export default function ReportModal({
                     color: 'darkturquoise',
                   }}
                 >
-                  비슷한 평균 실력대의 <br /> <span style={{ color: '#6c23e0' }}> {count}</span> 개 경기를 비교했어요{' '}
+                  평균 실력대의 <br /> <span style={{ color: '#6c23e0' }}> {count}</span> 개 경기를 비교했어요{' '}
                 </p>
               )}
             </>
