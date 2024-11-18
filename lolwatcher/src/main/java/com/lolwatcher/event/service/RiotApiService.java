@@ -86,9 +86,11 @@ public class RiotApiService {
             records.add(new Record(nonExistsMatchId, new HashMap<>()));
         }
         List<RecordMatchDto> list = new ArrayList<>();
-        for(Record record : records) {
-            MatchDto matchDto = riotAsiaApiClient.getMatchData(record.getMatchId());
-            TimelineDto timelineDto = riotAsiaApiClient.getTimeLineData(record.getMatchId());
+        int i = 0;
+        for(String nonExistsMatchId : ids) {
+            MatchDto matchDto = riotAsiaApiClient.getMatchData(nonExistsMatchId);
+            if(matchDto.info().queueId() != 420 && matchDto.info().queueId() != 440) { continue; }
+            Record record = new Record(nonExistsMatchId, new HashMap<>());
             List<RecordUserDto> users = new ArrayList<>();
             for(ParticipantDto participant : matchDto.info().participants()) {
                 SummonerDTO summoner = riotKrApiClient.getSummoner(participant.puuid());
@@ -149,7 +151,10 @@ public class RiotApiService {
                     matchDto.info().gameDuration());
             record.getData().put("matchResult", new RecordMatchDto(avgRank.getFirst(), avgRank.getSecond(), users, info));
             record.getData().put("matchDto", matchDto);
-            record.getData().put("timelineDto", timelineDto);
+            records.add(record);
+            if(++i >= 10) {
+                break;
+            }
         }
         recordRepository.saveAll(records);
         return pythonApiClient.postMatchData(ids);
