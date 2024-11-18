@@ -16,6 +16,7 @@ import com.lolwatcher.event.enumeration.Division;
 import com.lolwatcher.event.enumeration.Tier;
 import com.lolwatcher.event.repository.RecordRepository;
 import com.lolwatcher.event.util.RecordRequestRedisUtil;
+import feign.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.util.Pair;
@@ -47,8 +48,9 @@ public class RiotApiService {
         List<String> matchIds = riotAsiaApiClient.getMatchIds(accountDto.puuid());
         List<String> nonExistsMatchIds = recordRepository.findNonExistingIds(matchIds);
         if(!nonExistsMatchIds.isEmpty()) {
-            HttpStatus httpStatus = matchDtoToRecordDtoAndSave(nonExistsMatchIds);
-            if(httpStatus != HttpStatus.OK) {
+            Response res = matchDtoToRecordDtoAndSave(nonExistsMatchIds);
+            log.info("data analytic response: {}", res);
+            if(res.status() != 200 && res.status() != 404 ) {
                 throw new RuntimeException("Error saving record");
             }
         }
@@ -57,15 +59,11 @@ public class RiotApiService {
                 recordList
                         .stream()
                         .map(record -> {
-                            return (RecordMatchDto) record.getData().get("matchResult");
+                            return new RecordResultDto((RecordMatchDto) record.getData().get("matchResult"), (Map<String, Object>) record.getData().get("matchReport"));
                         })
-                        .toList(),
-                recordList
-                        .stream()
-                        .map(record -> {
-                            return (RecordReportDto) record.getData().get("matchReport");
-                        })
-                        .toList(),
+                        .sorted(Comparator.comparingLong((RecordResultDto o) -> o.match().info().gameEndStamp()).reversed())
+                        .toList()
+                ,
                 userInfo,
                 new RecordSummonerDto(accountDto.gameName(),
                         accountDto.tagLine(),
@@ -76,7 +74,7 @@ public class RiotApiService {
         return recordDto;
     }
 
-    private HttpStatus matchDtoToRecordDtoAndSave(List<String> ids) {
+    private Response matchDtoToRecordDtoAndSave(List<String> ids) {
 
         List<Record> records = new ArrayList<>();
 
@@ -91,7 +89,7 @@ public class RiotApiService {
             for(ParticipantDto participant : matchDto.info().participants()) {
                 SummonerDTO summoner = riotKrApiClient.getSummoner(participant.puuid());
                 Set<LeagueEntryDTO> summonerInfo = riotKrApiClient.getLeagueInfo(summoner.id());
-                Tier tier = null; Division division = null;
+                Tier tier = Tier.UNRANKED; Division division = Division.I;
                 if(matchDto.info().queueId() == 420) {
                     for(LeagueEntryDTO leagueEntryDTO : summonerInfo) {
                         if(leagueEntryDTO.queueType().equals("RANKED_SOLO_5x5")) {
@@ -107,10 +105,7 @@ public class RiotApiService {
                         }
                     }
                 } else {
-                    if(summonerInfo == null || summonerInfo.isEmpty()) {
-                        tier = Tier.UNRANKED;
-                        division = Division.I;
-                    } else {
+                    if(summonerInfo != null && !summonerInfo.isEmpty()) {
                         Tier tier1 = Tier.UNRANKED;
                         Division division1 = Division.I;
 
@@ -128,13 +123,24 @@ public class RiotApiService {
                     }
                 }
 
-                users.add(new RecordUserDto(participant.championName(), participant.riotIdGameName(), participant.puuid(), tier, division, participant.teamId(), participant.kills(), participant.assists(), participant.deaths(), participant.totalMinionsKilled()));
+                users.add(new RecordUserDto(participant.championName(), participant.riotIdGameName(), participant.puuid(), tier, division, participant.teamId(), participant.kills(), participant.assists(), participant.deaths(), participant.totalMinionsKilled() + participant.neutralMinionsKilled()));
             }
             Pair<Tier, Division> avgRank = fetchAvgTierAndDivision(users);
+            String rank = switch (matchDto.info().queueId()) {
+                case 420 -> "개인/2인";
+                case 440 -> "자유";
+                default -> {
+                    log.warn("Unchecked Queue Id {}", matchDto.info().queueId());
+                    yield "오류";
+                }
+            };
+            int winTeam = (matchDto.info().teams().get(0).win() ? matchDto.info().teams().get(0).teamId() : matchDto.info().teams().get(1).teamId());
+            log.info("tier : {} \ndivision : {}\nwinTeam: {}", avgRank.getFirst(), avgRank.getSecond(), winTeam);
             RecordGameInfoDto info = new RecordGameInfoDto(
                     avgRank.getFirst(),
                     avgRank.getSecond(),
-                    matchDto.info().teams().get(0).win() ? matchDto.info().teams().get(0).teamId() : matchDto.info().teams().get(1).teamId(),
+                    rank,
+                    winTeam,
                     matchDto.info().gameEndTimestamp(),
                     matchDto.info().gameDuration());
             record.getData().put("matchResult", new RecordMatchDto(avgRank.getFirst(), avgRank.getSecond(), users, info));

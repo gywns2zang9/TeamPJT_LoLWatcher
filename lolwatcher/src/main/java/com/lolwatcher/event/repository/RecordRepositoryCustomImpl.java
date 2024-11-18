@@ -19,8 +19,10 @@ public class RecordRepositoryCustomImpl implements RecordRepositoryCustom {
     @Override
     public List<String> findNonExistingIds(List<String> ids) {
         Query query = new Query(Criteria.where("matchId").in(ids));
-        List<String> existingIds = mongoTemplate.find(query, Record.class)
-                .stream()
+        List<Record> existingRecords = mongoTemplate.find(query, Record.class);
+
+        List<String> existingIds = existingRecords.stream()
+                .filter(record -> record.getData() != null && record.getData().containsKey("matchReport"))
                 .map(Record::getMatchId)
                 .toList();
 
