@@ -138,6 +138,12 @@
   align-items: center;
 }
 
+.point-section:hover {
+}
+
+.point-section.open {
+}
+
 .icon {
   color: rgba(255, 255, 255, 0.808); /* 기본 색상 */
   transition: color 0.3s ease; /* 색상 전환 부드럽게 */
