@@ -85,9 +85,6 @@ public class RiotApiService {
 
         List<Record> records = new ArrayList<>();
 
-        for (String nonExistsMatchId : ids) {
-            records.add(new Record(nonExistsMatchId, new HashMap<>()));
-        }
         List<RecordMatchDto> list = new ArrayList<>();
         List<String> findRankedIds = new ArrayList<>();
         int i = 0;
