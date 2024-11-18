@@ -79,23 +79,23 @@ export default function Users() {
     setLoading(true);
     try {
       const accessToken = localStorage.getItem("accessToken");
-      const response = await axios.get(`${API_URL}/riot/info`, {
+      const response = await axios.get(`${API_URL}/riot/info/by-name`, {
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${accessToken}`
         },
-        params: { name, tag },
+        params: { name, tag }
       });
       const data = response.data;
-  
+
       setUserInfo(data.recordDto.userInfo);
       setSummoner(data.recordDto.summoner);
 
-      console.log(data)
-  
+      console.log(data);
+
       const remainingSeconds = response.data.remainTime;
       setEndTime(Date.now() + remainingSeconds * 1000);
       setIsButtonDisabled(remainingSeconds > 0); // 남은 시간이 있으면 버튼을 비활성화
-  
+
       const formattedInfos = data.recordDto.matches.map(
         (item: any, index: number) => {
           const users = item.match.users.map((user: any) => ({
@@ -108,13 +108,13 @@ export default function Users() {
             totalMinionsKilled: user.totalMinionsKilled,
             tier: user.tier,
             division: user.division,
-            puuid: user.puuid,
+            puuid: user.puuid
           }));
           const mainUser: User | null =
             users.find(
               (user: User) => user.puuid === data.recordDto.summoner.puuid
             ) || null;
-  
+
           return {
             id: index + 1,
             gameDuration: item.match.info.gameDuration,
@@ -124,23 +124,24 @@ export default function Users() {
             division: item.match.info.division,
             winTeam: item.match.info.winTeam,
             users: users,
-            mainUser: mainUser,
+            mainUser: mainUser
           };
         }
       );
-  
+
       setGameInfos(formattedInfos);
-  
+
       const formattedReports = data.recordDto.matches.map(
         (item: any, index: number) => ({
           id: index + 1, // matches와 동일한 순서를 유지
-          ...item.report, // 기존 report 데이터를 모두 포함
+          ...item.report // 기존 report 데이터를 모두 포함
         })
       );
-  
+
       setGameReports(formattedReports);
     } catch (error) {
       console.error("데이터 가져오기 실패:", error);
+      window.alert("닉네임과 태그를 확인해주세요.");
     } finally {
       setLoading(false);
     }

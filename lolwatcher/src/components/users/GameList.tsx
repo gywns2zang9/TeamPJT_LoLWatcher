@@ -246,7 +246,11 @@ export default function GameList({
                 transition: "height 0.5s ease-out"
               }}
             >
-              <GameDetail users={info.users} report={gameReports[index]} />
+              <GameDetail
+                users={info.users}
+                report={gameReports[index]}
+                winTeam={info.winTeam} // winTeam을 전달
+              />
             </div>
           )}
         </React.Fragment>
