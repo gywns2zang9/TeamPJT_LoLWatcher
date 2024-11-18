@@ -36,7 +36,7 @@ public class RiotApiService {
     private final RecordRepository recordRepository;
     private final RecordRequestRedisUtil recordRequestRedisUtil;
 
-    public RecordDto getMatchDataBySummoner(String name, String tag, AccountDto accountDto) {
+    public RecordDto getMatchDataBySummoner(AccountDto accountDto) {
         log.info("puuid: {}", accountDto.puuid());
         SummonerDTO summoner = riotKrApiClient.getSummoner(accountDto.puuid());
         Set<LeagueEntryDTO> summonerInfo = riotKrApiClient.getLeagueInfo(summoner.id());

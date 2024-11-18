@@ -6,7 +6,6 @@ import com.lolwatcher.event.dto.AccountDto;
 import com.lolwatcher.event.dto.RecordResponse;
 import com.lolwatcher.event.dto.record.RecordDto;
 import com.lolwatcher.event.util.RecordRequestRedisUtil;
-import com.lolwatcher.records.custom.TooManyReqeustsException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,28 +32,33 @@ public class RecordUpdateRequestFilter extends OncePerRequestFilter {
 
         String name = request.getParameter("name");
         String tag = request.getParameter("tag");
+        String puuid = request.getParameter("puuid");
+
+        AccountDto accountDto = null;
 
         if (name != null && tag != null) {
             log.info("RecordUpdateRequestFilter: name={}, tag={}", name, tag);
+            accountDto = riotAsiaApiClient.getSummonerRequest(name, tag);
+        } else if (puuid != null) {
+            log.info("RecordUpdateRequestFilter: puuid={}", puuid);
+            accountDto = riotAsiaApiClient.getSummonerRequestByPuuid(puuid);
+        }
 
-            AccountDto accountDto = riotAsiaApiClient.getSummonerRequest(name, tag);
-
-            if (accountDto != null) {
-                request.setAttribute("account", accountDto);
-                int remainTime = recordRequestRedisUtil.fetchRemainingTime(accountDto.puuid());
-                if(remainTime > 0) {
-                    RecordDto recordDto = recordRequestRedisUtil.fetchRecordDtoByPuuid(accountDto.puuid());
-                    RecordResponse recordResponse = new RecordResponse(remainTime, recordDto);
-                    response.setContentType("application/json");
-                    response.setCharacterEncoding("UTF-8");
-                    String jsonResponse = objectMapper.writeValueAsString(recordResponse);
-                    response.getWriter().write(jsonResponse);
-                    response.setStatus(HttpServletResponse.SC_OK);
-                    return;
-                }
-            } else {
-                throw new IllegalArgumentException("Account not found");
+        if (accountDto != null) {
+            request.setAttribute("account", accountDto);
+            int remainTime = recordRequestRedisUtil.fetchRemainingTime(accountDto.puuid());
+            if (remainTime > 0) {
+                RecordDto recordDto = recordRequestRedisUtil.fetchRecordDtoByPuuid(accountDto.puuid());
+                RecordResponse recordResponse = new RecordResponse(remainTime, recordDto);
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                String jsonResponse = objectMapper.writeValueAsString(recordResponse);
+                response.getWriter().write(jsonResponse);
+                response.setStatus(HttpServletResponse.SC_OK);
+                return;
             }
+        } else {
+            throw new IllegalArgumentException("Account not found");
         }
 
         filterChain.doFilter(request, response);

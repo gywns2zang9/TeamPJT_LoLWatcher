@@ -26,12 +26,19 @@ public class RiotApiController {
 
     private final RiotApiService riotApiService;
 
-    @GetMapping("/info")
+    @GetMapping("/info/by-name")
     public RecordResponse getMatchBySummoner(@RequestParam("name") String name, @RequestParam("tag") String tag, HttpServletRequest request) {
         log.info("info : 전적 조회 \n name:{} tag:{}", name, tag);
         System.out.println("info : 전적 조회 \n name : " + name + " tag : " + tag);
         AccountDto accountDto = (AccountDto) request.getAttribute("account");
-        return new RecordResponse(120, riotApiService.getMatchDataBySummoner(name, tag, accountDto));
+        return new RecordResponse(120, riotApiService.getMatchDataBySummoner(accountDto));
+    }
+
+    @GetMapping("/info/by-puuid")
+    public RecordResponse getMatchByAccount(@RequestParam("puuid") String puuid, HttpServletRequest request) {
+        log.info("info : 전적 조회 \n puuid : " + puuid);
+        AccountDto accountDto = (AccountDto) request.getAttribute("account");
+        return new RecordResponse(120, riotApiService.getMatchDataBySummoner(accountDto));
     }
 
     // Todo : 제대로 동작하는지 확인
