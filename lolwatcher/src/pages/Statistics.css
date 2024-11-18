@@ -1,3 +1,4 @@
+/* General Container Styling */
 .statistics-container {
   background-image: url("../assets/background.jpg");
   background-size: cover;
@@ -15,6 +16,7 @@
   margin-top: 80px;
 }
 
+/* Header Section */
 .statistics-header {
   margin-top: 12px;
   width: 100%;
@@ -24,7 +26,7 @@
   align-items: center;
 }
 
-/* tier section */
+/* Tier Selection Section */
 .statistics-header-tier {
   width: 80%;
   max-width: 1200px;
@@ -33,23 +35,27 @@
   justify-content: center;
   align-items: center;
 }
+
 .statistics-header-tier div {
   flex-grow: 1;
 }
+
 .header-tier-icon {
   width: 100px;
   height: 100px;
   cursor: url("../assets/cursor/hover-cursor.png"), pointer;
   filter: grayscale(100%);
 }
+
 .header-tier-icon.selected {
   filter: grayscale(0%);
 }
+
 .header-tier-icon:hover {
   filter: grayscale(0%);
 }
 
-/* divison section */
+/* Division Button Section */
 .statistics-header-division {
   display: flex;
   width: 480px;
@@ -63,16 +69,14 @@
   background-color: white;
   cursor: url("../assets/cursor/hover-cursor.png"), pointer;
 }
-.header-division-btn.selected {
-  background-color: #99cbfa;
-  color: white;
-}
+
+.header-division-btn.selected,
 .header-division-btn:hover {
   background-color: #99cbfa;
   color: white;
 }
 
-/* msg section */
+/* Message Section */
 .statistics-header-msg {
   color: white;
   font-size: 30px;
@@ -80,82 +84,7 @@
   margin: 0 auto 12px;
 }
 
-.champions-table {
-  width: 70%;
-  max-width: 800px;
-  border-collapse: collapse;
-  margin-top: 20px;
-  border: 1px solid #333;
-  border-radius: 12px;
-  align-items: center;
-  background-color: #1f1f1f;
-  color: #fff;
-}
-
-.champions-table th,
-.champions-table td {
-  padding: 10px;
-  text-align: center;
-  border-bottom: 1px solid #ddd;
-}
-
-.champions-table th {
-  cursor: pointer;
-}
-.champions-table td {
-}
-
-.table-champion-info {
-  color: white;
-  display: flex;
-  align-items: center;
-}
-
-.table-champion-icon {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: 1px solid gold;
-}
-
-.table-champion-name {
-  margin-left: 8px;
-  font-weight: 600;
-  font-size: 18px;
-}
-
-.statistics-modal-backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 99;
-}
-.statistics-modal-content {
-  border-radius: 10px;
-  position: relative;
-  width: 50%;
-  height: auto;
-  padding: 20px;
-  display: flex;
-  transform: translateY(100%); /* 시작 위치 */
-  opacity: 0; /* 시작 투명도 */
-  transition: transform 1s ease, opacity 1s ease;
-  background-color: #1f1f1f;
-  border: 2px solid goldenrod;
-  color: #508fe2;
-}
-
-.statistics-modal-content.open {
-  animation: slideUp 0.7s ease forwards; /* 슬라이드 업 애니메이션 */
-}
-
-/* Statistics.css */
+/* Search Section */
 .search-container {
   display: flex;
   align-items: center;
@@ -183,6 +112,82 @@
   background-color: #45a049;
 }
 
+/* Table Section */
+.champions-table {
+  width: 70%;
+  max-width: 800px;
+  border-collapse: collapse;
+  margin-top: 20px;
+  border: 1px solid #333;
+  border-radius: 12px;
+  align-items: center;
+  background-color: #1f1f1f;
+  color: #fff;
+}
+
+.champions-table th,
+.champions-table td {
+  padding: 10px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+}
+
+.champions-table th {
+  cursor: pointer;
+}
+
+.table-champion-info {
+  color: white;
+  display: flex;
+  align-items: center;
+}
+
+.table-champion-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid gold;
+}
+
+.table-champion-name {
+  margin-left: 8px;
+  font-weight: 600;
+  font-size: 18px;
+}
+
 .highlighted-row {
   background-color: #f99fd0;
+}
+
+/* Modal Section */
+.statistics-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 99;
+}
+
+.statistics-modal-content {
+  border-radius: 10px;
+  position: relative;
+  width: 50%;
+  height: auto;
+  padding: 20px;
+  display: flex;
+  transform: translateY(100%);
+  opacity: 0;
+  transition: transform 1s ease, opacity 1s ease;
+  background-color: #1f1f1f;
+  border: 2px solid goldenrod;
+  color: #508fe2;
+}
+
+.statistics-modal-content.open {
+  animation: slideUp 0.7s ease forwards;
 }

@@ -139,6 +139,7 @@ export default function Statistics() {
       direction = "asc";
     }
     setSortConfig({ key, direction });
+    setSearchedChampionIndex(null);
   };
 
   const sortedData = React.useMemo(() => {
@@ -152,6 +153,12 @@ export default function Statistics() {
     });
     return sorted;
   }, [mergedData, sortConfig]);
+
+  useEffect(() => {
+    if (tableRef.current) {
+      tableRef.current.scrollTop = 0;
+    }
+  }, [sortedData]);
 
   const openModal = (championStats: ChampionStats) => {
     setSelectedChampion(championStats);
@@ -211,7 +218,10 @@ export default function Statistics() {
               <img
                 src={tierImages[tierKey]}
                 alt={tierKey}
-                onClick={() => setTier(tierKey)}
+                onClick={() => {
+                  setTier(tierKey);
+                  setSearchedChampionIndex(null);
+                }}
                 className={`header-tier-icon ${
                   tier === tierKey ? "selected" : ""
                 }`}
@@ -223,40 +233,43 @@ export default function Statistics() {
         <div className="statistics-header-msg">
           <span>
             {tier.toUpperCase()}{" "}
-            {!["master", "grandmaster", "challenger"].includes(tier) &&
-              division.toUpperCase()}
-            의 {totalGamesPlayed} 게임 자료입니다.
+            {!["master", "grandmaster", "challenger"].includes(tier) && (
+              <div className="statistics-header-division">
+                {["iv", "iii", "ii", "i"].map((divisionKey) => (
+                  <button
+                    key={divisionKey}
+                    onClick={() => {
+                      setDivision(divisionKey);
+                      setSearchedChampionIndex(null);
+                    }}
+                    className={`header-division-btn ${
+                      division === divisionKey ? "selected" : ""
+                    }`}
+                    disabled={["master", "grandmaster", "challenger"].includes(
+                      tier
+                    )}
+                  >
+                    {divisionKey.toUpperCase()}
+                  </button>
+                ))}
+              </div>
+            )}
+            구간 {totalGamesPlayed} 게임 통계입니다.
           </span>
         </div>
-
-        <div className="statistics-header-division">
-          {["iv", "iii", "ii", "i"].map((divisionKey) => (
-            <button
-              key={divisionKey}
-              onClick={() => setDivision(divisionKey)}
-              className={`header-division-btn ${
-                division === divisionKey ? "selected" : ""
-              }`}
-              disabled={["master", "grandmaster", "challenger"].includes(tier)}
-            >
-              {divisionKey.toUpperCase()}
-            </button>
-          ))}
+        <div className="search-container">
+          <input
+            type="text"
+            placeholder="챔피언 이름 검색"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            onKeyDown={handleKeyDown}
+            className="search-input"
+          />
+          <button onClick={handleSearch} className="search-button">
+            검색
+          </button>
         </div>
-      </div>
-
-      <div className="search-container">
-        <input
-          type="text"
-          placeholder="챔피언 이름 검색"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          onKeyDown={handleKeyDown}
-          className="search-input"
-        />
-        <button onClick={handleSearch} className="search-button">
-          검색
-        </button>
       </div>
 
       {sortedData.length > 0 && (
