@@ -137,7 +137,7 @@ export default function Users() {
       setGameReports(formattedReports);
     } catch (error) {
       console.error('데이터 가져오기 실패:', error);
-      window.alert('닉네임과 태그를 확인해주세요.');
+      window.alert('소환사의 닉네임과 태그를 확인해주세요.');
     } finally {
       setLoading(false);
     }
@@ -224,9 +224,6 @@ export default function Users() {
   return (
     <div className='users-container'>
       <NavHeader />
-      <div className='nav-link'>
-        <NavLink to='/logout'>로그아웃</NavLink>
-      </div>
 
       <div className='users-header'>
         <h1 className='header-title'>소환사 검색</h1>

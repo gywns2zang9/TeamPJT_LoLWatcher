@@ -1,12 +1,10 @@
 .users-container {
-  background-image: url('../assets/background.jpg');
+  background-image: url("../assets/background.jpg");
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
-  opacity: 1;
-  min-height: 100vh;
-  width: 100vw;
   display: flex;
+  min-height: 100vh;
   flex-direction: column;
   align-items: center;
   position: relative;
@@ -16,13 +14,6 @@
   box-shadow: inset 0 0 150px rgba(0, 0, 0, 0.8); /* 더 강렬한 내부 그림자 */
   border: 1px solid rgba(255, 255, 255, 0.1); /* 부드러운 외곽선 */
   padding: 20px; /* 내부 여백 */
-}
-
-.nav-link {
-  position: absolute;
-  right: 10px;
-  margin-top: 10px;
-  margin-right: 5%;
 }
 
 .users-header {
@@ -63,7 +54,7 @@
   background-color: #007bff;
   color: white;
   border: none;
-  cursor: url('../assets/cursor/hover-cursor.png'), pointer;
+  cursor: url("../assets/cursor/hover-cursor.png"), pointer;
 }
 
 .header-btn:hover {
@@ -88,11 +79,12 @@
   top: 5%;
   width: 25%;
   height: 90%;
-  margin-right: 5%;
+  margin-right: 24px;
 }
 
 .article-games {
   width: 70%;
+  flex-grow: 1;
 }
 
 .loading-spinner {
