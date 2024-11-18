@@ -175,8 +175,8 @@ export default function ReportModal({
           data: zScoreData, // z-score 위치에만 값 설정
           borderColor: 'rgba(255, 99, 132, 1)', // z-score 표시 색상
           backgroundColor: 'rgba(255, 99, 132, 0.2)', // z-score 점 색상
-          pointRadius: 5, // z-score 위치 점 크기
-          pointHoverRadius: 10, // 호버 시 점 크기 증가
+          pointRadius: 12, // z-score 위치 점 크기
+          pointHoverRadius: 15, // 호버 시 점 크기 증가
           pointStyle: 'circle',
         },
       ],
@@ -276,14 +276,16 @@ export default function ReportModal({
                     setSelectedField(field);
                     setIsComparisonActive(false);
                   }}
-                  style={{ display: 'flex' }}
+                  style={{ display: 'flex', justifyContent: 'space-between' }}
                 >
                   <div
                     style={{
                       fontWeight: 'bold',
                       fontSize: '20px',
-                      wordBreak: 'break-word', // 텍스트가 단어 중간에서라도 줄바꿈 되도록 설정
-                      whiteSpace: 'normal', // 텍스트 줄바꿈 허용
+                      textOverflow: 'ellipsis', // 줄임표
+                      whiteSpace: 'nowrap', // 한 줄 유지
+                      overflow: 'hidden', // 넘치는 텍스트 숨김
+                      maxWidth: '70%', // 부모 요소 너비 기준으로 제한
                     }}
                   >
                     {getTranslatedField(field)}
@@ -370,11 +372,19 @@ export default function ReportModal({
                 height={250}
                 options={{
                   scales: {
+                    x: {
+                      grid: {
+                        display: false, // x축 격자선 제거
+                      },
+                    },
                     y: {
                       min: 0,
                       max: chartData ? Math.max(...(chartData.datasets[0].data as number[])) * 1.1 : undefined,
                       ticks: {
                         display: false,
+                      },
+                      grid: {
+                        display: false, // x축 격자선 제거
                       },
                     },
                   },
