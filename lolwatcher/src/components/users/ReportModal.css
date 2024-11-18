@@ -24,7 +24,7 @@
   border-radius: 50%;
   text-align: center;
   margin: auto;
-  border: 1px solid black; 
+  border: 1px solid black;
 }
 
 .champion-name {
@@ -43,9 +43,13 @@
   border-radius: 15px;
   transition: background-color 0.3s ease; /* 부드러운 전환 효과 */
   border-radius: 15px 0px 0px 15px;
+  cursor: url('../../assets/cursor/hover-cursor.png'), pointer;
+  white-space: nowrap; /* 텍스트를 한 줄로 유지 */
+  overflow: hidden; /* 넘치는 텍스트를 숨김 */
+  text-overflow: ellipsis; /* 숨겨진 텍스트를 줄임표로 표시 */
 }
 
-.score-item:hover{
+.score-item:hover {
   background-color: white;
   size: 10px;
   border-radius: 15px 0px 0px 15px;
@@ -80,13 +84,12 @@
   border-radius: 15px;
   width: 100%;
   height: 100%;
-  padding:10px;
-  text-align: center;
-  align-content: center;
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
   background-color: white;
+  box-sizing: border-box;
+  justify-content: center;
+  padding-inline: 20px;
 }
 
 .close-button {
@@ -116,6 +119,7 @@
   padding-block: 7px;
   border-radius: 15px 0px 0px 15px;
   margin-bottom: 20px;
+  cursor: url('../../assets/cursor/hover-cursor.png'), pointer;
 }
 
 .comparison-button:hover {
@@ -130,4 +134,8 @@
   color: black;
   border-radius: 15px 0px 0px 15px;
   transition: background-color 0.3s ease;
+}
+
+.chart-container {
+  width: 100%; /* 필요 시 너비도 조정 */
 }
