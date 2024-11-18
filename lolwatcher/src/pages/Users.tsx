@@ -5,6 +5,8 @@ import GameList from '../components/users/GameList';
 import Profile from '../components/users/Profile';
 import axios from 'axios';
 import './Users.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
 const API_URL = process.env.REACT_APP_LOLWATCHER_API_URL;
 interface User {
   championName: string; //"Garen"
@@ -61,7 +63,7 @@ export default function Users() {
   const [gameReports, setGameReports] = useState<any[]>([]); // reports 상태 추가
   const [userInfo, setUserInfo] = useState<UserInfo[]>([]);
   const [summoner, setSummoner] = useState<Summoner | null>(null);
-
+  const [showAutocomplete, setShowAutocomplete] = useState<boolean>(false);
   const [loading, setLoading] = useState(true);
   const [remainingTime, setRemainingTime] = useState<number | null>(null);
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
@@ -168,12 +170,30 @@ export default function Users() {
     fetchData();
   }, [name, tag]);
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = e.target.value;
+
+    // # 입력 시 자동 완성 표시
+    if (inputValue.includes('#')) {
+      setShowAutocomplete(true);
+    } else {
+      setShowAutocomplete(false);
+    }
+
+    setNickName(inputValue);
+  };
+
+  const handleAutocompleteClick = () => {
+    // 자동 완성을 클릭하면 값 설정
+    setNickName((prev) => `${prev.split('#')[0]}#KR1`);
+    setShowAutocomplete(false); // 자동 완성 닫기
+  };
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const [searchName, searchTag] = nickName.split('#');
     if (!searchTag) {
-      const defaultTag = 'KR1';
-      navigate(`/users?name=${searchName}&tag=#${defaultTag}`);
+      alert('태그를 입력해주세요!');
       return;
     }
     navigate(`/users?name=${searchName}&tag=${searchTag}`);
@@ -192,19 +212,30 @@ export default function Users() {
           className='header-form'
           onSubmit={handleSearch}
         >
-          <input
-            type='text'
-            value={nickName}
-            onChange={(e) => setNickName(e.target.value)}
-            placeholder='Hide on bush#KR1'
-            maxLength={30}
-            className='header-input'
-          />
+          <div className='autocomplete-container'>
+            <input
+              type='text'
+              value={nickName}
+              onChange={handleInputChange}
+              placeholder='Hide on bush#KR1'
+              maxLength={30}
+              className='header-input'
+            />
+            {/* 자동 완성 추천 표시 */}
+            {showAutocomplete && (
+              <div
+                className='autocomplete-item'
+                onClick={handleAutocompleteClick}
+              >
+                {nickName}KR1
+              </div>
+            )}
+          </div>
           <button
             type='submit'
             className='header-btn'
           >
-            검색
+            <FontAwesomeIcon icon={faSearch} /> <b>검색</b>
           </button>
         </form>
       </div>
