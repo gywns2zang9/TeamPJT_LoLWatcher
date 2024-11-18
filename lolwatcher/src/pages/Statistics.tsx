@@ -5,6 +5,9 @@ import { functionAccessToken } from "../api/authApi";
 import "./Statistics.css";
 import StatisticsModal from "../components/statistics/StatisticsModal";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
+
 import BRONZE from "../assets/tiers/bronze.png";
 import CHALLENGER from "../assets/tiers/challenger.png";
 import DIAMOND from "../assets/tiers/diamond.png";
@@ -20,7 +23,6 @@ const API_URL = process.env.REACT_APP_LOLWATCHER_API_URL;
 const CHAMPION_IMG_BASE_URL =
   "https://ddragon.leagueoflegends.com/cdn/14.22.1/img/champion/";
 
-// 티어 이미지 맵핑
 const tierImages: { [key: string]: string } = {
   iron: IRON,
   bronze: BRONZE,
@@ -34,14 +36,12 @@ const tierImages: { [key: string]: string } = {
   challenger: CHALLENGER
 };
 
-// 챔피언 정보(Riot 제공)
 interface Champion {
   id: string;
   key: string;
   name: string;
 }
 
-// 챔피언 통계(LoLWatcher 제공)
 interface ChampionStats {
   championId: number; // 챔피언 ID (각 챔피언에 고유한 ID 번호)
   totalGamesPlayed: number; // 해당 티어에서의 총 경기 수
@@ -64,120 +64,129 @@ interface ChampionStats {
 }
 
 export default function Statistics() {
-  // 티어와 디비전 상태를 관리하는 useState 훅 - 기본값은 "bronze"와 "i"로 설정
   const [tier, setTier] = useState("challenger");
   const [division, setDivision] = useState("i");
-
-  // 챔피언 데이터 및 통계 데이터 상태 관리용 useState 훅들
-  const [champions, setChampions] = useState<Champion[]>([]); // 챔피언 데이터 목록
-  const [stats, setStats] = useState<ChampionStats[]>([]); // 챔피언 통계 데이터 목록
-  const [mergedData, setMergedData] = useState<any[]>([]); // 챔피언과 통계 데이터를 병합한 결과
+  const [champions, setChampions] = useState<Champion[]>([]);
+  const [stats, setStats] = useState<ChampionStats[]>([]);
+  const [mergedData, setMergedData] = useState<any[]>([]);
   const totalGamesPlayed = stats.length > 0 ? stats[0].totalGamesPlayed : null;
-
-  // 정렬 설정 상태 - 정렬할 키와 방향(오름차순/내림차순)을 저장
   const [sortConfig, setSortConfig] = useState<{
     key: string;
     direction: "asc" | "desc";
   } | null>(null);
-
   const [selectedChampion, setSelectedChampion] =
-    useState<ChampionStats | null>(null); // 선택된 챔피언 저장
-  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 열림 상태 관리
+    useState<ChampionStats | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const tableRef = useRef<HTMLTableElement>(null);
-  // 챔피언 데이터를 가져오는 useEffect 훅 - 컴포넌트가 마운트될 때 실행됨
+  const [searchedChampionIndex, setSearchedChampionIndex] = useState<
+    number | null
+  >(null);
+
+  useEffect(() => {
+    const checkAccessToken = async () => {
+      try {
+        const hasAccessToken = await functionAccessToken(); // AccessToken 확인 함수 호출
+        if (!hasAccessToken) {
+          alert("로그인이 필요합니다.");
+          window.location.href = "/"; // AccessToken이 없으면 로그인 페이지로 이동
+        }
+      } catch (error) {
+        alert("로그인이 필요합니다.");
+        window.location.href = "/"; // 오류가 발생해도 안전하게 이동
+      }
+    };
+
+    checkAccessToken(); // 컴포넌트 마운트 시 실행
+  }, []);
+
   useEffect(() => {
     const fetchChampions = async () => {
       try {
-        // Riot API에서 챔피언 데이터를 가져옴
         const response = await axios.get(
           "https://ddragon.leagueoflegends.com/cdn/14.22.1/data/ko_KR/champion.json"
         );
         const data = response.data.data;
-
-        // 가져온 데이터를 배열 형태로 변환하여 챔피언 객체 목록 생성
         const championsArray = Object.keys(data).map((key) => ({
           id: data[key].id, // 챔피언 ID
           key: data[key].key, // 챔피언 고유 키
           name: data[key].name // 챔피언 이름
         }));
-
-        // 챔피언 이름을 한글 기준으로 정렬 (이름순)
         championsArray.sort((a, b) => a.name.localeCompare(b.name, "ko"));
-        setChampions(championsArray); // 챔피언 데이터 상태 업데이트
+        setChampions(championsArray);
       } catch (error) {}
     };
-
-    fetchChampions(); // 챔피언 데이터 요청 함수 호출
+    fetchChampions();
   }, []);
 
-  // 챔피언 통계 데이터를 가져오는 useEffect 훅 - 티어와 디비전이 변경될 때마다 실행됨
   useEffect(() => {
     const fetchChampionStats = async () => {
       if (tier) {
-        // 티어가 설정된 경우에만 요청 수행
-        const accessToken = await functionAccessToken(); // API 호출을 위한 액세스 토큰 가져오기
+        const accessToken = await functionAccessToken();
         try {
-          // division이 없는 티어 (master, grandmaster, challenger)일 때와 아닐 때 구분하여 params 설정
           const params = ["master", "grandmaster", "challenger"].includes(tier)
-            ? { tier: `${tier}` } // division이 필요 없는 티어일 경우
-            : { tier: `${tier}_${division}` }; // division이 필요한 경우
+            ? { tier: `${tier}` }
+            : { tier: `${tier}_${division}` };
 
-          // 챔피언 통계 데이터를 API에서 가져옴
           const response = await axios.get(`${API_URL}/riot/champion`, {
-            params, // 설정된 params를 전송
-            headers: { Authorization: `Bearer ${accessToken}` } // 액세스 토큰을 헤더에 추가
+            params,
+            headers: { Authorization: `Bearer ${accessToken}` }
           });
-          setStats(response.data); // 통계 데이터 상태 업데이트
-          console.log(response.data); // 가져온 데이터 콘솔에 출력 (디버깅용)
+          setStats(response.data);
         } catch (error) {}
       }
     };
+    fetchChampionStats();
+  }, [tier, division]);
 
-    fetchChampionStats(); // 챔피언 통계 데이터 요청 함수 호출
-  }, [tier, division]); // 티어 또는 디비전이 변경될 때마다 실행
-
-  // 챔피언 데이터와 통계 데이터를 병합하는 useEffect 훅
   useEffect(() => {
     const merged = champions.map((champion) => {
-      // 챔피언의 통계 데이터를 찾아서 챔피언 데이터와 병합
       const stat = stats.find(
         (stat) => stat.championId.toString() === champion.key
       );
-      return { ...champion, ...stat }; // 챔피언 데이터와 통계를 병합하여 반환
+      return { ...champion, ...stat };
     });
-    setMergedData(merged); // 병합된 데이터를 상태에 저장
-  }, [champions, stats]); // 챔피언 또는 통계 데이터가 변경될 때마다 실행
+    setMergedData(merged);
+  }, [champions, stats]);
 
-  // 정렬 처리 함수 - 특정 키를 기준으로 데이터를 오름차순 또는 내림차순으로 정렬
   const handleSort = (key: string) => {
-    let direction: "asc" | "desc" = "desc"; // 기본 정렬 방향을 내림차순(desc)으로 설정
+    let direction: "asc" | "desc" = "desc";
     if (
       sortConfig &&
       sortConfig.key === key &&
       sortConfig.direction === "desc"
     ) {
-      direction = "asc"; // 이미 내림차순인 경우, 오름차순으로 변경
+      direction = "asc";
     }
-    setSortConfig({ key, direction }); // 새로운 정렬 설정 저장
+    setSortConfig({ key, direction });
+    setSearchedChampionIndex(null);
   };
 
-  // 정렬된 데이터를 memoized 처리하여 리렌더링 최적화
   const sortedData = React.useMemo(() => {
-    if (!sortConfig) return mergedData; // 정렬 설정이 없으면 병합 데이터 그대로 반환
+    if (!sortConfig) return mergedData;
     const sorted = [...mergedData].sort((a, b) => {
       if (a[sortConfig.key] < b[sortConfig.key])
-        return sortConfig.direction === "asc" ? -1 : 1; // 오름차순 정렬
+        return sortConfig.direction === "asc" ? -1 : 1;
       if (a[sortConfig.key] > b[sortConfig.key])
-        return sortConfig.direction === "asc" ? 1 : -1; // 내림차순 정렬
-      return 0; // 값이 같은 경우
+        return sortConfig.direction === "asc" ? 1 : -1;
+      return 0;
     });
-    return sorted; // 정렬된 데이터 반환
-  }, [mergedData, sortConfig]); // 병합 데이터 또는 정렬 설정이 변경될 때마다 실행
+    return sorted;
+  }, [mergedData, sortConfig]);
+
+  useEffect(() => {
+    if (tableRef.current) {
+      const row = tableRef.current.querySelectorAll("tbody tr")[0];
+      row?.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+      });
+    }
+  }, [sortedData]);
 
   const openModal = (championStats: ChampionStats) => {
-    setSelectedChampion(championStats); // 선택된 챔피언 데이터 설정
-    setIsModalOpen(true); // 모달 열기
+    setSelectedChampion(championStats);
+    setIsModalOpen(true);
   };
 
   const closeModal = () => {
@@ -187,42 +196,62 @@ export default function Statistics() {
 
   const handleSearch = () => {
     if (tableRef.current && searchTerm) {
-      // Step 1: 검색어와 일치하는 챔피언 id 찾기
       const champion = champions.find((champ) => champ.name === searchTerm);
-
       if (champion) {
-        // Step 2: 찾은 챔피언 id로 ChampionStats에서 일치하는 championId의 인덱스를 찾기
+        const championKey = Number(champion.key);
         const championIndex = sortedData.findIndex(
-          (champStats) => champStats.championId.toString() === champion.key
+          (champ) => champ.championId === championKey
         );
 
         if (championIndex !== -1) {
-          // Step 3: 일치하는 행으로 스크롤
+          setSearchedChampionIndex(championIndex);
           const row =
             tableRef.current.querySelectorAll("tbody tr")[championIndex];
           row?.scrollIntoView({ behavior: "smooth", block: "center" });
         } else {
-          alert("해당 챔피언의 통계 데이터가 없습니다.");
+          setSearchedChampionIndex(null);
         }
       } else {
-        alert("검색된 챔피언이 없습니다.");
+        setSearchedChampionIndex(null);
       }
     }
   };
 
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === "Enter") {
+      handleSearch();
+    }
+  };
+
+  useEffect(() => {
+    setSearchedChampionIndex(null);
+    if (tableRef.current) {
+      tableRef.current.scrollTop = 0;
+    }
+  }, [tier, division]);
+
   return (
     <div className="statistics-container">
-      <NavHeader />
-      <h1 className="statistics-container-title">LoL Watcher 통계</h1>
-
       <div className="statistics-header">
+        <NavHeader />
         <div className="statistics-header-tier">
           {Object.keys(tierImages).map((tierKey) => (
             <div key={tierKey}>
               <img
                 src={tierImages[tierKey]}
                 alt={tierKey}
-                onClick={() => setTier(tierKey)} // 클릭 시 티어 업데이트
+                onClick={() => {
+                  setTier(tierKey);
+                  setSearchedChampionIndex(null);
+                  if (tableRef.current) {
+                    const row =
+                      tableRef.current.querySelectorAll("tbody tr")[0];
+                    row?.scrollIntoView({
+                      behavior: "smooth",
+                      block: "center"
+                    });
+                  }
+                }}
                 className={`header-tier-icon ${
                   tier === tierKey ? "selected" : ""
                 }`}
@@ -232,45 +261,56 @@ export default function Statistics() {
         </div>
 
         <div className="statistics-header-msg">
-          {/* tier가 master, grandmaster, challenger가 아닌 경우에만 division을 표시 */}
           <span>
-            {tier.toUpperCase()}{" "}
-            {!["master", "grandmaster", "challenger"].includes(tier) &&
-              division.toUpperCase()}
-            의 {totalGamesPlayed} 게임 자료입니다.
+            {tier.toUpperCase()}
+            {!["master", "grandmaster", "challenger"].includes(tier) && (
+              <div className="statistics-header-division">
+                {["iv", "iii", "ii", "i"].map((divisionKey) => (
+                  <button
+                    key={divisionKey}
+                    onClick={() => {
+                      setDivision(divisionKey);
+                      setSearchedChampionIndex(null);
+                      if (tableRef.current) {
+                        const row =
+                          tableRef.current.querySelectorAll("tbody tr")[0];
+                        row?.scrollIntoView({
+                          behavior: "smooth",
+                          block: "center"
+                        });
+                      }
+                    }}
+                    className={`header-division-btn ${
+                      division === divisionKey ? "selected" : ""
+                    }`}
+                    disabled={["master", "grandmaster", "challenger"].includes(
+                      tier
+                    )}
+                  >
+                    {divisionKey.toUpperCase()}
+                  </button>
+                ))}
+              </div>
+            )}{" "}
+            티어의 {totalGamesPlayed} 게임 통계입니다.
           </span>
         </div>
 
-        <div className="statistics-header-division">
-          {["iv", "iii", "ii", "i"].map((divisionKey) => (
-            <button
-              key={divisionKey}
-              onClick={() => setDivision(divisionKey)} // 클릭 시 디비전 업데이트
-              className={`header-division-btn ${
-                division === divisionKey ? "selected" : ""
-              }`}
-              disabled={["master", "grandmaster", "challenger"].includes(tier)} // division이 없는 티어일 경우 버튼 비활성화
-            >
-              {divisionKey.toUpperCase()}
-            </button>
-          ))}
+        <div className="search-container">
+          <input
+            type="text"
+            placeholder="챔피언 검색"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            onKeyDown={handleKeyDown}
+            className="search-input"
+          />
+          <button onClick={handleSearch} className="search-button">
+            <FontAwesomeIcon icon={faSearch} /> <b>검색</b>
+          </button>
         </div>
       </div>
 
-      <div className="search-container">
-        <input
-          type="text"
-          placeholder="챔피언 이름 검색"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="search-input"
-        />
-        <button onClick={handleSearch} className="search-button">
-          검색
-        </button>
-      </div>
-
-      {/* 챔피언 통계 테이블 */}
       {sortedData.length > 0 && (
         <table ref={tableRef} className="champions-table">
           <thead>
@@ -285,11 +325,16 @@ export default function Statistics() {
           </thead>
           <tbody>
             {sortedData.map((champion, index) => (
-              <tr key={champion.id}>
+              <tr
+                key={champion.id}
+                className={
+                  index === searchedChampionIndex ? "highlighted-row" : ""
+                }
+              >
                 <td>#{index + 1}</td>
                 <td
                   className="table-champion-info"
-                  onClick={() => openModal(champion)} // 클릭 시 모달 열기
+                  onClick={() => openModal(champion)}
                   style={{ cursor: "pointer" }}
                 >
                   <img
@@ -321,7 +366,6 @@ export default function Statistics() {
         </table>
       )}
 
-      {/* 선택된 챔피언 정보를 모달로 표시 */}
       {isModalOpen && selectedChampion && (
         <div className="statistics-modal-backdrop" onClick={closeModal}>
           <div
@@ -333,10 +377,16 @@ export default function Statistics() {
               onClose={closeModal}
               championStats={selectedChampion}
               championName={
-                champions.find((champ) => champ.key === selectedChampion?.championId.toString())?.name
+                champions.find(
+                  (champ) =>
+                    champ.key === selectedChampion?.championId.toString()
+                )?.name
               }
               championImgUrl={
-                champions.find((champ) => champ.key === selectedChampion?.championId.toString())?.id
+                champions.find(
+                  (champ) =>
+                    champ.key === selectedChampion?.championId.toString()
+                )?.id
               }
             />
           </div>

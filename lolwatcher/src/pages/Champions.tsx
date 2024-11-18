@@ -3,6 +3,7 @@ import axios from "axios";
 import NavHeader from "../components/common/NavHeader";
 import ChampionDetail from "../components/champions/ChampionDetail";
 import "./Champions.css";
+import { functionAccessToken } from "../api/authApi";
 
 interface Champion {
   id: string;
@@ -18,6 +19,23 @@ export default function Champions() {
   const [selectedChampion, setSelectedChampion] = useState<Champion | null>(
     null
   );
+
+  useEffect(() => {
+    const checkAccessToken = async () => {
+      try {
+        const hasAccessToken = await functionAccessToken(); // AccessToken 확인 함수 호출
+        if (!hasAccessToken) {
+          alert("로그인이 필요합니다.");
+          window.location.href = "/"; // AccessToken이 없으면 로그인 페이지로 이동
+        }
+      } catch (error) {
+        alert("로그인이 필요합니다.");
+        window.location.href = "/"; // 오류가 발생해도 안전하게 이동
+      }
+    };
+
+    checkAccessToken(); // 컴포넌트 마운트 시 실행
+  }, []);
 
   useEffect(() => {
     const fetchChampions = async () => {

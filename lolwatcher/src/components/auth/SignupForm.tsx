@@ -21,26 +21,20 @@ export default function SignupForm({ toggleForm }: SignupFormProps) {
       window.alert("아이디와 비밀번호를 입력해주세요.");
       return;
     } else if (userId) {
-      window.alert("임시로 막았지롱~ㅋ");
+      window.alert("현재 회원가입은 불가합니다.");
       return;
     }
 
     try {
-      console.log("회원가입 시도");
       await postSignupAPI(userId, password, riotId, riotPassword);
-      console.log("회원가입 성공");
-      console.log("로그인 시도");
       await postLoginAPI(userId, password);
-      window.alert("안녕하세요.");
       navigate("/users");
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   };
 
   return (
     <div className="form-container">
-      <h1>※회원가입 막음※</h1>
+      <h1 style={{ color: "red" }}>※회원가입 불가※</h1>
       <div className="form-main">
         <div className="input-box">
           <input
