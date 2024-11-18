@@ -124,3 +124,34 @@
   font-weight: 600;
   font-size: 18px;
 }
+
+.statistics-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 99;
+}
+.statistics-modal-content {
+  border-radius: 10px;
+  position: relative;
+  width: 50%;
+  height: auto;
+  padding: 20px;
+  display: flex;
+  transform: translateY(100%); /* 시작 위치 */
+  opacity: 0; /* 시작 투명도 */
+  transition: transform 1s ease, opacity 1s ease;
+  background-color: #1f1f1f;
+  border: 2px solid goldenrod;
+  color: #508fe2;
+}
+
+.statistics-modal-content.open {
+  animation: slideUp 0.7s ease forwards; /* 슬라이드 업 애니메이션 */
+}

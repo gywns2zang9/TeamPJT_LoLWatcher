@@ -3,6 +3,7 @@ import axios from "axios";
 import NavHeader from "../components/common/NavHeader";
 import { functionAccessToken } from "../api/authApi";
 import "./Statistics.css";
+import StatisticsModal from "../components/statistics/StatisticsModal";
 
 import BRONZE from "../assets/tiers/bronze.png";
 import CHALLENGER from "../assets/tiers/challenger.png";
@@ -51,15 +52,15 @@ interface ChampionStats {
   winRate: number; // 승률 (총 승리 수 / 총 경기 수 * 100)
   banRate: number; // 밴률 (밴 횟수 / 총 경기 수 * 100)
   pickRate: number; // 픽률 (픽 횟수 / 총 경기 수 * 100)
-  // avgDPM: number; // 분당 평균 피해량
-  // avgTDM: number; // 평균 팀 기여도
-  // avgGrowth: number; // 평균 성장률
-  // totalCarnage: number; // 총 학살 횟수
-  // totalSupport: number; // 총 지원 횟수
-  // avgClairvoyance: number; // 평균 투시력
-  // avgDominance: number; // 평균 지배력
-  // avgSalvation: number; // 평균 구원
-  // totalEvasion: number; // 총 회피 횟수
+  avgDPM: number; // 분당 평균 피해량
+  avgTDM: number; // 평균 팀 기여도
+  avgGrowth: number; // 평균 성장률
+  totalCarnage: number; // 총 학살 횟수
+  totalSupport: number; // 총 지원 횟수
+  avgClairvoyance: number; // 평균 투시력
+  avgDominance: number; // 평균 지배력
+  avgSalvation: number; // 평균 구원
+  totalEvasion: number; // 총 회피 횟수
 }
 
 export default function Statistics() {
@@ -78,6 +79,10 @@ export default function Statistics() {
     key: string;
     direction: "asc" | "desc";
   } | null>(null);
+
+  const [selectedChampion, setSelectedChampion] =
+    useState<ChampionStats | null>(null); // 선택된 챔피언 저장
+  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 열림 상태 관리
 
   // 챔피언 데이터를 가져오는 useEffect 훅 - 컴포넌트가 마운트될 때 실행됨
   useEffect(() => {
@@ -173,6 +178,19 @@ export default function Statistics() {
     return sorted; // 정렬된 데이터 반환
   }, [mergedData, sortConfig]); // 병합 데이터 또는 정렬 설정이 변경될 때마다 실행
 
+  const openModal = (championStats: ChampionStats) => {
+    console.log("Modal Open Triggered"); // 모달 열림 여부 확인
+    console.log("Selected Champion:", championStats); // 선택된 챔피언 데이터 확인
+    setSelectedChampion(championStats); // 선택된 챔피언 데이터 설정
+    setIsModalOpen(true); // 모달 열기
+  };
+
+  const closeModal = () => {
+    console.log("Modal Close Triggered"); // 모달 닫힘 여부 확인
+    setSelectedChampion(null); // 선택된 챔피언 데이터 초기화
+    setIsModalOpen(false); // 모달 닫기
+  };
+
   return (
     <div className="statistics-container">
       <NavHeader />
@@ -225,7 +243,7 @@ export default function Statistics() {
         <table className="champions-table">
           <thead>
             <tr>
-              {/* 클릭 시 각 컬럼별로 정렬 */}
+              <th>#</th>
               <th onClick={() => handleSort("name")}>챔피언 이름</th>
               <th onClick={() => handleSort("pickRate")}>픽률(게임)</th>
               <th onClick={() => handleSort("winRate")}>승률(승리)</th>
@@ -234,10 +252,14 @@ export default function Statistics() {
             </tr>
           </thead>
           <tbody>
-            {/* 정렬된 데이터를 테이블 행으로 출력 */}
-            {sortedData.map((champion) => (
+            {sortedData.map((champion, index) => (
               <tr key={champion.id}>
-                <td className="table-champion-info">
+                <td>{index + 1}</td>
+                <td
+                  className="table-champion-info"
+                  onClick={() => openModal(champion)} // 클릭 시 모달 열기
+                  style={{ cursor: "pointer" }}
+                >
                   <img
                     src={`${CHAMPION_IMG_BASE_URL}${champion.id}.png`}
                     alt={champion.name}
@@ -271,6 +293,22 @@ export default function Statistics() {
             ))}
           </tbody>
         </table>
+      )}
+
+      {/* 선택된 챔피언 정보를 모달로 표시 */}
+      {isModalOpen && selectedChampion && (
+        <div className="statistics-modal-backdrop" onClick={closeModal}>
+          <div
+            className={`statistics-modal-content ${isModalOpen ? "open" : ""}`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <StatisticsModal
+              isOpen={isModalOpen}
+              onClose={closeModal}
+              championStats={selectedChampion}
+            />
+          </div>
+        </div>
       )}
     </div>
   );
