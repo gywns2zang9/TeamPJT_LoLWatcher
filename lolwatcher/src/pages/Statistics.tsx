@@ -33,146 +33,191 @@ const tierImages: { [key: string]: string } = {
   challenger: CHALLENGER
 };
 
-// 챔피언 정보 인터페이스
+// 챔피언 정보(Riot 제공)
 interface Champion {
   id: string;
   key: string;
   name: string;
 }
 
-// 챔피언 통계 인터페이스
+// 챔피언 통계(LoLWatcher 제공)
 interface ChampionStats {
-  championId: number;
-  totalGamesPlayed: number;
-  totalWins: number;
-  winRate: number;
-  avgKDA: number;
-  pickRate: number;
-  banRate: number;
+  championId: number; // 챔피언 ID (각 챔피언에 고유한 ID 번호)
+  totalGamesPlayed: number; // 해당 티어에서의 총 경기 수
+  totalWins: number; // 해당 티어에서의 총 승리 수
+  totalBans: number; // 총 밴 횟수
+  totalPicks: number; // 총 픽 횟수
+  avgKDA: number; // 평균 KDA (킬-데스-어시스트 비율)
+  winRate: number; // 승률 (총 승리 수 / 총 경기 수 * 100)
+  banRate: number; // 밴률 (밴 횟수 / 총 경기 수 * 100)
+  pickRate: number; // 픽률 (픽 횟수 / 총 경기 수 * 100)
+  // avgDPM: number; // 분당 평균 피해량
+  // avgTDM: number; // 평균 팀 기여도
+  // avgGrowth: number; // 평균 성장률
+  // totalCarnage: number; // 총 학살 횟수
+  // totalSupport: number; // 총 지원 횟수
+  // avgClairvoyance: number; // 평균 투시력
+  // avgDominance: number; // 평균 지배력
+  // avgSalvation: number; // 평균 구원
+  // totalEvasion: number; // 총 회피 횟수
 }
 
 export default function Statistics() {
-  const [tier, setTier] = useState("bronze");
+  // 티어와 디비전 상태를 관리하는 useState 훅 - 기본값은 "bronze"와 "i"로 설정
+  const [tier, setTier] = useState("challenger");
   const [division, setDivision] = useState("i");
-  const [champions, setChampions] = useState<Champion[]>([]);
-  const [stats, setStats] = useState<ChampionStats[]>([]);
-  const [mergedData, setMergedData] = useState<any[]>([]);
+
+  // 챔피언 데이터 및 통계 데이터 상태 관리용 useState 훅들
+  const [champions, setChampions] = useState<Champion[]>([]); // 챔피언 데이터 목록
+  const [stats, setStats] = useState<ChampionStats[]>([]); // 챔피언 통계 데이터 목록
+  const [mergedData, setMergedData] = useState<any[]>([]); // 챔피언과 통계 데이터를 병합한 결과
+  const totalGamesPlayed = stats.length > 0 ? stats[0].totalGamesPlayed : null;
+
+  // 정렬 설정 상태 - 정렬할 키와 방향(오름차순/내림차순)을 저장
   const [sortConfig, setSortConfig] = useState<{
     key: string;
     direction: "asc" | "desc";
   } | null>(null);
 
-  // 챔피언 데이터 가져오기
+  // 챔피언 데이터를 가져오는 useEffect 훅 - 컴포넌트가 마운트될 때 실행됨
   useEffect(() => {
     const fetchChampions = async () => {
       try {
+        // Riot API에서 챔피언 데이터를 가져옴
         const response = await axios.get(
           "https://ddragon.leagueoflegends.com/cdn/14.22.1/data/ko_KR/champion.json"
         );
         const data = response.data.data;
+
+        // 가져온 데이터를 배열 형태로 변환하여 챔피언 객체 목록 생성
         const championsArray = Object.keys(data).map((key) => ({
-          id: data[key].id,
-          key: data[key].key,
-          name: data[key].name
+          id: data[key].id, // 챔피언 ID
+          key: data[key].key, // 챔피언 고유 키
+          name: data[key].name // 챔피언 이름
         }));
 
+        // 챔피언 이름을 한글 기준으로 정렬 (이름순)
         championsArray.sort((a, b) => a.name.localeCompare(b.name, "ko"));
-        setChampions(championsArray);
+        setChampions(championsArray); // 챔피언 데이터 상태 업데이트
       } catch (error) {
-        console.error("챔피언 데이터 요청 실패:", error);
+        console.error("챔피언 데이터 요청 실패:", error); // 오류 발생 시 콘솔에 메시지 출력
       }
     };
 
-    fetchChampions();
+    fetchChampions(); // 챔피언 데이터 요청 함수 호출
   }, []);
 
-  // 챔피언 통계 데이터 가져오기
+  // 챔피언 통계 데이터를 가져오는 useEffect 훅 - 티어와 디비전이 변경될 때마다 실행됨
   useEffect(() => {
     const fetchChampionStats = async () => {
-      if (tier && division) {
-        const accessToken = await functionAccessToken();
+      if (tier) {
+        // 티어가 설정된 경우에만 요청 수행
+        const accessToken = await functionAccessToken(); // API 호출을 위한 액세스 토큰 가져오기
         try {
+          // division이 없는 티어 (master, grandmaster, challenger)일 때와 아닐 때 구분하여 params 설정
+          const params = ["master", "grandmaster", "challenger"].includes(tier)
+            ? { tier: `${tier}` } // division이 필요 없는 티어일 경우
+            : { tier: `${tier}_${division}` }; // division이 필요한 경우
+
+          // 챔피언 통계 데이터를 API에서 가져옴
           const response = await axios.get(`${API_URL}/riot/champion`, {
-            params: { tier: `${tier}_${division}` },
-            headers: { Authorization: `Bearer ${accessToken}` }
+            params, // 설정된 params를 전송
+            headers: { Authorization: `Bearer ${accessToken}` } // 액세스 토큰을 헤더에 추가
           });
-          setStats(response.data);
+          setStats(response.data); // 통계 데이터 상태 업데이트
+          console.log(response.data); // 가져온 데이터 콘솔에 출력 (디버깅용)
         } catch (error) {
-          console.error("데이터 요청 실패:", error);
+          console.error("데이터 요청 실패:", error); // 오류 발생 시 콘솔에 메시지 출력
         }
       }
     };
 
-    fetchChampionStats();
-  }, [tier, division]);
+    fetchChampionStats(); // 챔피언 통계 데이터 요청 함수 호출
+  }, [tier, division]); // 티어 또는 디비전이 변경될 때마다 실행
 
-  // 챔피언 데이터와 통계 데이터 병합
+  // 챔피언 데이터와 통계 데이터를 병합하는 useEffect 훅
   useEffect(() => {
     const merged = champions.map((champion) => {
+      // 챔피언의 통계 데이터를 찾아서 챔피언 데이터와 병합
       const stat = stats.find(
         (stat) => stat.championId.toString() === champion.key
       );
-      return { ...champion, ...stat };
+      return { ...champion, ...stat }; // 챔피언 데이터와 통계를 병합하여 반환
     });
-    setMergedData(merged);
-  }, [champions, stats]);
+    setMergedData(merged); // 병합된 데이터를 상태에 저장
+  }, [champions, stats]); // 챔피언 또는 통계 데이터가 변경될 때마다 실행
 
-  // 정렬 처리
+  // 정렬 처리 함수 - 특정 키를 기준으로 데이터를 오름차순 또는 내림차순으로 정렬
   const handleSort = (key: string) => {
-    let direction: "asc" | "desc" = "asc";
+    let direction: "asc" | "desc" = "desc"; // 기본 정렬 방향을 내림차순(desc)으로 설정
     if (
       sortConfig &&
       sortConfig.key === key &&
-      sortConfig.direction === "asc"
+      sortConfig.direction === "desc"
     ) {
-      direction = "desc";
+      direction = "asc"; // 이미 내림차순인 경우, 오름차순으로 변경
     }
-    setSortConfig({ key, direction });
+    setSortConfig({ key, direction }); // 새로운 정렬 설정 저장
   };
 
+  // 정렬된 데이터를 memoized 처리하여 리렌더링 최적화
   const sortedData = React.useMemo(() => {
-    if (!sortConfig) return mergedData;
+    if (!sortConfig) return mergedData; // 정렬 설정이 없으면 병합 데이터 그대로 반환
     const sorted = [...mergedData].sort((a, b) => {
       if (a[sortConfig.key] < b[sortConfig.key])
-        return sortConfig.direction === "asc" ? -1 : 1;
+        return sortConfig.direction === "asc" ? -1 : 1; // 오름차순 정렬
       if (a[sortConfig.key] > b[sortConfig.key])
-        return sortConfig.direction === "asc" ? 1 : -1;
-      return 0;
+        return sortConfig.direction === "asc" ? 1 : -1; // 내림차순 정렬
+      return 0; // 값이 같은 경우
     });
-    return sorted;
-  }, [mergedData, sortConfig]);
+    return sorted; // 정렬된 데이터 반환
+  }, [mergedData, sortConfig]); // 병합 데이터 또는 정렬 설정이 변경될 때마다 실행
 
   return (
     <div className="statistics-container">
       <NavHeader />
-      <h1>통계</h1>
+      <h1 className="statistics-container-title">LoL Watcher 통계</h1>
 
-      {/* 티어 선택 */}
-      <div className="tier-selection">
-        {Object.keys(tierImages).map((tierKey) => (
-          <img
-            key={tierKey}
-            src={tierImages[tierKey]}
-            alt={tierKey}
-            onClick={() => setTier(tierKey)}
-            className={`tier-icon ${tier === tierKey ? "selected" : ""}`}
-          />
-        ))}
-      </div>
+      <div className="statistics-header">
+        <div className="statistics-header-tier">
+          {Object.keys(tierImages).map((tierKey) => (
+            <div key={tierKey}>
+              <img
+                src={tierImages[tierKey]}
+                alt={tierKey}
+                onClick={() => setTier(tierKey)} // 클릭 시 티어 업데이트
+                className={`header-tier-icon ${
+                  tier === tierKey ? "selected" : ""
+                }`}
+              />
+            </div>
+          ))}
+        </div>
 
-      {/* 디비전 선택 */}
-      <div className="division-selection">
-        {["i", "ii", "iii", "iv"].map((divisionKey) => (
-          <button
-            key={divisionKey}
-            onClick={() => setDivision(divisionKey)}
-            className={`division-button ${
-              division === divisionKey ? "selected" : ""
-            }`}
-          >
-            {divisionKey.toUpperCase()}
-          </button>
-        ))}
+        <div className="statistics-header-msg">
+          {/* tier가 master, grandmaster, challenger가 아닌 경우에만 division을 표시 */}
+          <span>
+            {tier.toUpperCase()}{" "}
+            {!["master", "grandmaster", "challenger"].includes(tier) &&
+              division.toUpperCase()}
+            의 {totalGamesPlayed} 게임 자료입니다.
+          </span>
+        </div>
+
+        <div className="statistics-header-division">
+          {["iv", "iii", "ii", "i"].map((divisionKey) => (
+            <button
+              key={divisionKey}
+              onClick={() => setDivision(divisionKey)} // 클릭 시 디비전 업데이트
+              className={`header-division-btn ${
+                division === divisionKey ? "selected" : ""
+              }`}
+              disabled={["master", "grandmaster", "challenger"].includes(tier)} // division이 없는 티어일 경우 버튼 비활성화
+            >
+              {divisionKey.toUpperCase()}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* 챔피언 통계 테이블 */}
@@ -180,40 +225,48 @@ export default function Statistics() {
         <table className="champions-table">
           <thead>
             <tr>
+              {/* 클릭 시 각 컬럼별로 정렬 */}
               <th onClick={() => handleSort("name")}>챔피언 이름</th>
-              <th onClick={() => handleSort("totalGamesPlayed")}>총 경기수</th>
-              <th onClick={() => handleSort("totalWins")}>총 승리수</th>
-              <th onClick={() => handleSort("winRate")}>승률</th>
+              <th onClick={() => handleSort("pickRate")}>픽률(게임)</th>
+              <th onClick={() => handleSort("winRate")}>승률(승리)</th>
+              <th onClick={() => handleSort("banRate")}>밴률(밴)</th>
               <th onClick={() => handleSort("avgKDA")}>평균 KDA</th>
-              <th onClick={() => handleSort("pickRate")}>픽률</th>
-              <th onClick={() => handleSort("banRate")}>밴률</th>
             </tr>
           </thead>
           <tbody>
+            {/* 정렬된 데이터를 테이블 행으로 출력 */}
             {sortedData.map((champion) => (
               <tr key={champion.id}>
-                <td>
+                <td className="table-champion-info">
                   <img
                     src={`${CHAMPION_IMG_BASE_URL}${champion.id}.png`}
                     alt={champion.name}
-                    className="champion-icon"
+                    className="table-champion-icon"
                   />
-                  {champion.name}
+                  <span className="table-champion-name">{champion.name}</span>
                 </td>
-                <td>{champion.totalGamesPlayed || "N/A"}</td>
-                <td>{champion.totalWins || "N/A"}</td>
-                <td>
-                  {champion.winRate ? `${champion.winRate.toFixed(1)}%` : "N/A"}
-                </td>
-                <td>{champion.avgKDA ? champion.avgKDA.toFixed(2) : "N/A"}</td>
+                {/* 픽률 */}
                 <td>
                   {champion.pickRate
-                    ? `${champion.pickRate.toFixed(1)}%`
+                    ? `${champion.pickRate.toFixed(1)}%(${champion.totalPicks})`
                     : "N/A"}
-                </td>
+                </td>{" "}
+                {/* 승률 */}
                 <td>
-                  {champion.banRate ? `${champion.banRate.toFixed(1)}%` : "N/A"}
-                </td>
+                  {champion.winRate
+                    ? `${champion.winRate.toFixed(1)}%(${champion.totalWins})`
+                    : "N/A"}
+                </td>{" "}
+                {/* 밴률 */}
+                <td>
+                  {champion.banRate
+                    ? `${champion.banRate.toFixed(1)}%(${champion.totalBans})`
+                    : "N/A"}
+                </td>{" "}
+                {/* 평균 KDA */}
+                <td>
+                  {champion.avgKDA ? champion.avgKDA.toFixed(2) : "N/A"}
+                </td>{" "}
               </tr>
             ))}
           </tbody>
