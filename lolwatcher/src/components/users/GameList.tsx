@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef } from "react";
 import "./GameList.css";
 import GameDetail from "./GameDetail";
 
@@ -52,23 +52,28 @@ export default function GameList({
   gameInfos,
   reports: gameReports
 }: GameListProps) {
-  const [selectedInfoId, setSelectedInfoId] = useState<number | null>(null);
-  const [closingDetailId, setClosingDetailId] = useState<number | null>(null); // 닫히는 Detail ID
-  const [contentHeight, setContentHeight] = useState<number | null>(null);
-  const detailRef = useRef<HTMLDivElement | null>(null);
-  
+  const [openInfoIds, setOpenInfoIds] = useState<number[]>([]); // 여러 개의 열린 상태를 관리
+  const [contentHeights, setContentHeights] = useState<{
+    [key: number]: number;
+  }>({}); // 각 항목의 높이를 관리
+  const detailRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
+
   const handleClick = (id: number) => {
-    if (selectedInfoId === id) {
-      // 닫기
-      setContentHeight(detailRef.current?.scrollHeight || 0); // 현재 높이 설정
-      setTimeout(() => setContentHeight(0), 0); // 0으로 트랜지션
-      setTimeout(() => setSelectedInfoId(null), 500); // 트랜지션 후 닫기
+    if (openInfoIds.includes(id)) {
+      // 닫기: 애니메이션을 위해 높이를 0으로 설정 후 일정 시간 뒤에 ID 제거
+      setContentHeights((prevHeights) => ({ ...prevHeights, [id]: 0 }));
+      setTimeout(() => {
+        setOpenInfoIds(openInfoIds.filter((openId) => openId !== id));
+      }, 500); // 애니메이션 시간과 동일하게 설정 (0.5초)
     } else {
       // 열기
-      setSelectedInfoId(id); // ID 설정
+      setOpenInfoIds([...openInfoIds, id]);
       setTimeout(() => {
-        if (detailRef.current) {
-          setContentHeight(detailRef.current.scrollHeight); // 콘텐츠 높이 계산
+        if (detailRefs.current[id]) {
+          setContentHeights((prevHeights) => ({
+            ...prevHeights,
+            [id]: detailRefs.current[id]!.scrollHeight
+          }));
         }
       }, 0);
     }
@@ -103,30 +108,16 @@ export default function GameList({
     return `${minutes}분 ${seconds}초`;
   };
 
-  //KDA
+  // KDA 계산 함수
   const calculateKDA = (kills: number, assists: number, deaths: number) => {
     return deaths === 0 ? "노데스" : ((kills + assists) / deaths).toFixed(2);
   };
 
-  //분당 CS
+  // 분당 CS 계산 함수
   const calculateCSPerMinute = (cs: number, duration: number) => {
     const minutes = duration / 60;
     return (cs / minutes).toFixed(1);
   };
-
-  useEffect(() => {
-    if (selectedInfoId !== null) {
-      // 새로 열릴 때
-      setTimeout(() => {
-        if (detailRef.current) {
-          setContentHeight(detailRef.current.scrollHeight); // DOM 렌더링 후 높이 계산
-        }
-      }, 0);
-    } else {
-      // 닫힐 때
-      setContentHeight(0); // 높이를 0으로 설정
-    }
-  }, [selectedInfoId]);
 
   return (
     <div className="list-container">
@@ -139,7 +130,6 @@ export default function GameList({
                 ? "win-background"
                 : "lose-background"
             }`}
-            onClick={() => handleClick(info.id)}
           >
             <div className="item-match-section">
               <div className="match-end-time">
@@ -148,8 +138,13 @@ export default function GameList({
               <div className="match-data">
                 <p>
                   {isWin(info.winTeam, info.mainUser?.teamId) ? "승" : "패"}
-                  <span className="match-type">{info.rank}</span>
                 </p>
+                <div>
+                  <span className="match-type">{info.rank}</span>
+                  <span className="match-tier">
+                    {info.tier} {info.division}
+                  </span>
+                </div>
               </div>
               <div className="match-play-time">
                 {formatDuration(info.gameDuration)}
@@ -191,10 +186,22 @@ export default function GameList({
               </div>
             )}
 
-            <div className="point-section">
+            <div
+              className={`point-section ${
+                openInfoIds.includes(info.id) ? "open" : ""
+              }`}
+              onClick={() => handleClick(info.id)}
+            >
               <div>
-                ??
-                <span className="point-tag">점</span>
+                {openInfoIds.includes(info.id) ? (
+                  <>
+                    <span>Watcher</span> <span>Score</span> <span>Close</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Watcher</span> <span>Score</span> <span>Check</span>
+                  </>
+                )}
               </div>
             </div>
 
@@ -226,19 +233,26 @@ export default function GameList({
               </div>
             </div>
           </div>
-          {selectedInfoId === info.id && (
-          <div
-            ref={detailRef}
-            className="game-detail"
-            style={{
-              height: contentHeight !== null ? `${contentHeight}px` : "0", // 높이를 동적으로 설정
-              overflow: "hidden",
-              transition: "height 0.5s ease-out",
-            }}
-          >
-            <GameDetail users={info.users} report={gameReports[index]} />
-          </div>
-        )}
+          {openInfoIds.includes(info.id) && (
+            <div
+              ref={(el) => (detailRefs.current[info.id] = el)}
+              className="game-detail"
+              style={{
+                height:
+                  contentHeights[info.id] !== undefined
+                    ? `${contentHeights[info.id]}px`
+                    : "0",
+                overflow: "hidden",
+                transition: "height 0.5s ease-out"
+              }}
+            >
+              <GameDetail
+                users={info.users}
+                report={gameReports[index]}
+                winTeam={info.winTeam} // winTeam을 전달
+              />
+            </div>
+          )}
         </React.Fragment>
       ))}
     </div>

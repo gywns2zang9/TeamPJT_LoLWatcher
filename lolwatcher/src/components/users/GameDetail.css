@@ -1,14 +1,14 @@
 .detail-container {
   width: 100%;
   height: 350px;
-  border: 2px solid goldenrod;
+  border: 2px solid gold;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 10px;
+  margin-top: 4px;
   border-radius: 10px;
   flex-direction: column;
-  background: #e9e9e9;
+  background: #ffffff;
   color: black;
 
   box-sizing: border-box;
@@ -21,37 +21,39 @@
   justify-content: center;
   align-items: center;
   position: relative;
-}
-
-.header-title {
-  display: flex;
-  width: 100%;
-  justify-content: center;
-  font-size: 30px;
+  padding: 4px;
+  font-size: 24px;
   font-weight: 600;
-  padding-top: 5px;
 }
 
-.blue-team-score {
-  color: blue;
-  padding-right: 24px;
-}
-.blue-team-score span {
-  font-size: 20px;
-  margin-right: 8px;
-}
-.red-team-score {
-  color: red;
-  padding-left: 24px;
-}
-.red-team-score span {
-  font-size: 20px;
-  margin-left: 8px;
+.score-bar {
+  display: flex;
+  height: 40px;
+  width: 96%;
+  min-width: 700px;
+  text-align: center;
+  font-weight: 600;
+  border-radius: 4px;
+  border: 3px solid black;
+  overflow: hidden; /* 텍스트가 막대 영역 밖으로 넘치지 않도록 */
+  gap: 2px;
+  background-color: black;
 }
 
-.header-link {
-  position: absolute;
-  right: 5%;
+.team-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.win-bar {
+  background-color: #70b6f7;
+  /* background-color: #99cbfa; */
+}
+
+.lose-bar {
+  background-color: #f99fd0;
+  /* background-color: #fdddef; */
 }
 
 .detail-main {
@@ -61,49 +63,44 @@
   border-radius: 10px;
 }
 
-.blue-team-section {
-  width: 100%;
-  min-width: 400px;
-  display: flex;
-  border-radius: 10px;
-  background-color: #99cbfa;
-  text-align: center;
-  border-radius: 10px;
-  
-  color: white;
-  text-shadow: 
-    -1px -1px 0 #0d47a1, /* 위 왼쪽 */
-    1px -1px 0 #0d47a1, /* 위 오른쪽 */
-    -1px 1px 0 #0d47a1,  /* 아래 왼쪽 */
-    1px 1px 0 #0d47a1;   /* 아래 오른쪽 */
-}
-.blue-team-section .team-section :hover {
-  background-color: #70b6f7;
-  border-radius: 10px;
-
-}
-
+/* 기본 팀 섹션 스타일 - 배경색과 텍스트 효과 제거 */
+.blue-team-section,
 .red-team-section {
   width: 100%;
   min-width: 400px;
   display: flex;
   border-radius: 10px;
-  background-color: #fdddef;
   text-align: center;
-  border-radius: 10px;
-  
-  
   color: white;
-  text-shadow: 
-    -1px -1px 0 rgb(255, 89, 89), /* 위 왼쪽 */
-    1px -1px 0 rgb(255, 89, 89),
-    -1px 1px 0 rgb(255, 89, 89),
-    1px 1px 0 rgb(255, 89, 89),
 }
-.red-team-section .team-section :hover {
-  background-color: #f99fd0;
+
+/* 승리한 팀의 배경색 및 텍스트 스타일 */
+.win {
+  background-color: #99cbfa; /* 이긴 팀의 배경색 */
+  color: white;
+  text-shadow: -1px -1px 0 #0d47a1, 1px -1px 0 #0d47a1, -1px 1px 0 #0d47a1,
+    1px 1px 0 #0d47a1;
+}
+
+/* 패배한 팀의 배경색 및 텍스트 스타일 */
+.lose {
+  background-color: #fdddef; /* 진 팀의 배경색 */
+  color: white;
+  text-shadow: -1px -1px 0 rgb(255, 89, 89), 1px -1px 0 rgb(255, 89, 89),
+    -1px 1px 0 rgb(255, 89, 89), 1px 1px 0 rgb(255, 89, 89);
+}
+
+/* Hover 효과 - 승리와 패배에 따라 다르게 설정 */
+.win .team-item:hover {
+  background-color: #70b6f7; /* 승리한 팀의 아이템 호버 색상 */
   border-radius: 10px;
 }
+
+.lose .team-item:hover {
+  background-color: #f99fd0; /* 패배한 팀의 아이템 호버 색상 */
+  border-radius: 10px;
+}
+
 .main-position-section {
   width: 10%;
   min-width: 40px;
@@ -142,14 +139,13 @@
   align-items: center;
   font-weight: bold;
   border-radius: 10px;
-  padding: 5px;
+  padding: 4px;
   box-sizing: border-box; /* padding과 border 포함 */
   overflow: hidden; /* 넘침 방지 */
 }
 
 .team-item:hover {
   cursor: url("../../assets/cursor/hover-cursor.png"), pointer;
-  
 }
 
 .rotated-line {
@@ -166,11 +162,11 @@
 }
 
 .user-detail {
-  width: 30%;
-  font-size: 17px;
+  width: 25%;
+  font-size: 16px;
 }
 .user-point {
-  width: 20%;
+  width: 25%;
 }
 
 .modal-backdrop {

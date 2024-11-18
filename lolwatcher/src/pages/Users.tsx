@@ -134,6 +134,7 @@ export default function Users() {
       setGameReports(formattedReports);
     } catch (error) {
       console.error('데이터 가져오기 실패:', error);
+      window.alert('닉네임과 태그를 확인해주세요.');
     } finally {
       setLoading(false);
     }
