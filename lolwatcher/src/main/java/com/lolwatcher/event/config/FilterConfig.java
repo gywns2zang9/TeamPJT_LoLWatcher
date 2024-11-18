@@ -17,7 +17,7 @@ public class FilterConfig {
         FilterRegistrationBean<RecordUpdateRequestFilter> registrationBean = new FilterRegistrationBean<>();
 
         registrationBean.setFilter(recordUpdateRequestFilter);
-        registrationBean.addUrlPatterns("/info/*");  // /info/* 모든 요청에 적용하도록 변경
+        registrationBean.addUrlPatterns("/riot/info/*");  // /info/* 모든 요청에 적용하도록 변경
 
         return registrationBean;
     }
