@@ -68,9 +68,18 @@
   font-size: 36px;
   font-weight: 600;
 }
-.match-type {
+.match-data div {
+  display: flex;
+  flex-direction: column;
   font-size: 18px;
-  margin-left: 12px;
+  margin: auto;
+  margin-left: 16px;
+}
+.match-type {
+  margin-top: 4px;
+}
+.match-tier {
+  margin-top: 2px;
 }
 
 /* main-user */
@@ -81,6 +90,10 @@
   align-items: center;
   color: black;
 }
+.item-user-section :hover {
+  filter: grayscale(100%);
+}
+
 .main-user-champion {
   width: 100px;
   height: 100px;
@@ -88,7 +101,9 @@
   border: 2px solid gold;
   background-size: 120%;
   background-position: center;
+  cursor: url("../../assets/cursor/hover-cursor.png"), pointer;
 }
+
 .main-user-data {
   margin: auto;
   padding: 12px 0;
@@ -104,6 +119,7 @@
 
 .point-section {
   width: 100px;
+  min-width: 100px;
   height: 100px;
   margin: auto;
   display: flex;

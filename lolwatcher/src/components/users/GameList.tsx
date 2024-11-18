@@ -138,8 +138,13 @@ export default function GameList({
               <div className="match-data">
                 <p>
                   {isWin(info.winTeam, info.mainUser?.teamId) ? "승" : "패"}
-                  <span className="match-type">{info.rank}</span>
                 </p>
+                <div>
+                  <span className="match-type">{info.rank}</span>
+                  <span className="match-tier">
+                    {info.tier} {info.division}
+                  </span>
+                </div>
               </div>
               <div className="match-play-time">
                 {formatDuration(info.gameDuration)}
