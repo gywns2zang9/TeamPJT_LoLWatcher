@@ -108,11 +108,13 @@ export default function GameDetail({
     const userReport = report[team][role];
     const opponentTeam = team === "team_100" ? "team_200" : "team_100";
     const opponentReport = report[opponentTeam][role];
-    const opponentIndex = roles.indexOf(role);
+
+    // 상대 팀의 동일한 role을 가진 사용자를 정확히 찾기
     const opponentUser = users.find(
-      (user, index) =>
+      (user) =>
         user.teamId === (team === "team_100" ? 200 : 100) &&
-        index === opponentIndex
+        roles[users.filter((u) => u.teamId === user.teamId).indexOf(user)] ===
+          role
     );
 
     if (opponentUser) {
