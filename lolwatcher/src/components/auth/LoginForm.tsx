@@ -20,13 +20,9 @@ export default function LoginForm({ toggleForm }: LoginFormProps) {
       return;
     }
     try {
-      console.log("로그인 시도");
       await postLoginAPI(userId, password);
-      window.alert("안녕하세요.");
       navigate("/users");
     } catch (err) {
-      console.log("로그인 실패");
-      console.log(err);
       window.alert("아이디와 비밀번호를 확인해주세요.");
     }
   };
