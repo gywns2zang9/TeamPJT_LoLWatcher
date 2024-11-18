@@ -31,4 +31,10 @@ public class RecordRepositoryCustomImpl implements RecordRepositoryCustom {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<Record> findExistRecords(List<String> ids) {
+        Query query = new Query(Criteria.where("matchId").in(ids));
+        return mongoTemplate.find(query, Record.class);
+    }
+
 }

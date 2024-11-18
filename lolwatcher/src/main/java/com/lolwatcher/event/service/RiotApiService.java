@@ -52,13 +52,16 @@ public class RiotApiService {
         List<String> matchIds = riotAsiaApiClient.getMatchIds(accountDto.puuid());
         List<String> nonExistsMatchIds = recordRepository.findNonExistingIds(matchIds);
         if(!nonExistsMatchIds.isEmpty()) {
-            Response res = matchDtoToRecordDtoAndSave(nonExistsMatchIds);
-            log.info("data analytic response: {}", res);
-            if(res.status() != 200 && res.status() != 404 ) {
-                throw new RuntimeException("Error saving record");
+            List<String> ids = matchDtoToRecordDtoAndSave(nonExistsMatchIds);
+            if(ids != null) {
+                Response res = pythonApiClient.postMatchData(ids);
+                log.info("data analytic response: {}", res);
+                if(res.status() != 200 && res.status() != 404 ) {
+                    throw new RuntimeException("Error saving record");
+                }
             }
         }
-        List<Record> recordList = recordRepository.findAllById(matchIds);
+        List<Record> recordList = recordRepository.findExistRecords(matchIds);
         RecordDto recordDto = new RecordDto(
                 recordList
                         .stream()
@@ -78,7 +81,7 @@ public class RiotApiService {
         return recordDto;
     }
 
-    private Response matchDtoToRecordDtoAndSave(List<String> ids) {
+    private List<String> matchDtoToRecordDtoAndSave(List<String> ids) {
 
         List<Record> records = new ArrayList<>();
 
@@ -159,13 +162,13 @@ public class RiotApiService {
             }
         }
         if(records.isEmpty()) {
-            return Response.builder().status(200).build();
+            return null;
         }
         for(String id : findRankedIds) {
             System.out.println(id);
         }
         recordRepository.saveAll(records);
-        return pythonApiClient.postMatchData(findRankedIds);
+        return findRankedIds;
     }
 
     public int customCompareTo(Tier tier1, Division division1, Tier tier2, Division division2) {
