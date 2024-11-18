@@ -17,12 +17,11 @@
 .list-item {
   display: flex;
   border: 1px solid black;
-  margin-top: 8px;
+  margin: 8px auto 4px;
   width: 100%;
   height: 150px;
   border-radius: 8px;
   border-width: 2px;
-  cursor: url("../../assets/cursor/hover-cursor.png"), pointer;
 }
 
 .win-background {
@@ -69,9 +68,18 @@
   font-size: 36px;
   font-weight: 600;
 }
-.match-type {
+.match-data div {
+  display: flex;
+  flex-direction: column;
   font-size: 18px;
-  margin-left: 12px;
+  margin: auto;
+  margin-left: 16px;
+}
+.match-type {
+  margin-top: 4px;
+}
+.match-tier {
+  margin-top: 2px;
 }
 
 /* main-user */
@@ -82,6 +90,10 @@
   align-items: center;
   color: black;
 }
+.item-user-section :hover {
+  filter: grayscale(100%);
+}
+
 .main-user-champion {
   width: 100px;
   height: 100px;
@@ -89,7 +101,9 @@
   border: 2px solid gold;
   background-size: 120%;
   background-position: center;
+  cursor: url("../../assets/cursor/hover-cursor.png"), pointer;
 }
+
 .main-user-data {
   margin: auto;
   padding: 12px 0;
@@ -104,15 +118,34 @@
 }
 
 .point-section {
-  width: 12%;
-  min-width: 120px;
+  width: 100px;
+  min-width: 100px;
+  height: 100px;
   margin: auto;
   display: flex;
-  font-size: 50px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* 수직으로도 중앙 정렬 */
+  text-align: center;
+  background-color: #ffffff;
+  border-radius: 50%;
+  border: 2px solid gold;
+  font-size: 16px; /* 폰트 크기와 두께는 여기서 지정 */
+  font-weight: 600;
+  cursor: url("../../assets/cursor/hover-cursor.png"), pointer;
 }
-.point-tag {
-  font-size: 25px;
-  margin-left: 10px;
+
+.point-section div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.point-section:hover {
+  background-color: #f0f0f0; /* 호버 시 배경색 */
+}
+
+.point-section.open {
 }
 
 .item-team-section {
