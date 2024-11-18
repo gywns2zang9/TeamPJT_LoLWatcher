@@ -8,26 +8,27 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-
-.statistics-container-title {
-  color: white;
-  text-align: center;
-  margin-top: 80px;
+  position: relative;
 }
 
 /* Header Section */
 .statistics-header {
-  margin-top: 12px;
+  position: sticky; /* Keeps the header fixed at the top */
+  top: 0;
   width: 100%;
+  background-color: rgba(31, 31, 31, 0.9); /* Slight opacity */
+  padding: 10px 0;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  z-index: 1;
 }
 
 /* Tier Selection Section */
 .statistics-header-tier {
+  margin-top: 80px;
   width: 80%;
   max-width: 1200px;
   min-width: 1000px;
@@ -47,25 +48,35 @@
   filter: grayscale(100%);
 }
 
-.header-tier-icon.selected {
+.header-tier-icon.selected,
+.header-tier-icon:hover {
   filter: grayscale(0%);
 }
 
-.header-tier-icon:hover {
-  filter: grayscale(0%);
+/* Message Section */
+.statistics-header-msg {
+  margin: 0 auto 12px;
+  color: white;
+}
+
+.statistics-header-msg span {
+  display: flex;
+  font-size: 30px;
+  font-weight: 600;
+  justify-content: center;
+  align-items: center;
 }
 
 /* Division Button Section */
 .statistics-header-division {
   display: flex;
-  width: 480px;
   justify-content: center;
-  gap: 20px;
+  margin: 0 4px;
 }
 
 .header-division-btn {
-  width: 50px;
-  height: 50px;
+  width: 36px;
+  height: 36px;
   background-color: white;
   cursor: url("../assets/cursor/hover-cursor.png"), pointer;
 }
@@ -74,14 +85,6 @@
 .header-division-btn:hover {
   background-color: #99cbfa;
   color: white;
-}
-
-/* Message Section */
-.statistics-header-msg {
-  color: white;
-  font-size: 30px;
-  font-weight: 600;
-  margin: 0 auto 12px;
 }
 
 /* Search Section */

@@ -156,7 +156,11 @@ export default function Statistics() {
 
   useEffect(() => {
     if (tableRef.current) {
-      tableRef.current.scrollTop = 0;
+      const row = tableRef.current.querySelectorAll("tbody tr")[0];
+      row?.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+      });
     }
   }, [sortedData]);
 
@@ -208,10 +212,8 @@ export default function Statistics() {
 
   return (
     <div className="statistics-container">
-      <NavHeader />
-      <h1 className="statistics-container-title">LoL Watcher 통계</h1>
-
       <div className="statistics-header">
+        <NavHeader />
         <div className="statistics-header-tier">
           {Object.keys(tierImages).map((tierKey) => (
             <div key={tierKey}>
@@ -221,6 +223,14 @@ export default function Statistics() {
                 onClick={() => {
                   setTier(tierKey);
                   setSearchedChampionIndex(null);
+                  if (tableRef.current) {
+                    const row =
+                      tableRef.current.querySelectorAll("tbody tr")[0];
+                    row?.scrollIntoView({
+                      behavior: "smooth",
+                      block: "center"
+                    });
+                  }
                 }}
                 className={`header-tier-icon ${
                   tier === tierKey ? "selected" : ""
@@ -232,7 +242,7 @@ export default function Statistics() {
 
         <div className="statistics-header-msg">
           <span>
-            {tier.toUpperCase()}{" "}
+            {tier.toUpperCase()}
             {!["master", "grandmaster", "challenger"].includes(tier) && (
               <div className="statistics-header-division">
                 {["iv", "iii", "ii", "i"].map((divisionKey) => (
@@ -241,6 +251,14 @@ export default function Statistics() {
                     onClick={() => {
                       setDivision(divisionKey);
                       setSearchedChampionIndex(null);
+                      if (tableRef.current) {
+                        const row =
+                          tableRef.current.querySelectorAll("tbody tr")[0];
+                        row?.scrollIntoView({
+                          behavior: "smooth",
+                          block: "center"
+                        });
+                      }
                     }}
                     className={`header-division-btn ${
                       division === divisionKey ? "selected" : ""
@@ -253,10 +271,11 @@ export default function Statistics() {
                   </button>
                 ))}
               </div>
-            )}
-            구간 {totalGamesPlayed} 게임 통계입니다.
+            )}{" "}
+            티어의 {totalGamesPlayed} 게임 통계입니다.
           </span>
         </div>
+
         <div className="search-container">
           <input
             type="text"
