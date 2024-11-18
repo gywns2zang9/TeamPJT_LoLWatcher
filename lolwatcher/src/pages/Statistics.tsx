@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import NavHeader from "../components/common/NavHeader";
 import { functionAccessToken } from "../api/authApi";
@@ -83,7 +83,8 @@ export default function Statistics() {
   const [selectedChampion, setSelectedChampion] =
     useState<ChampionStats | null>(null); // 선택된 챔피언 저장
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달 열림 상태 관리
-
+  const [searchTerm, setSearchTerm] = useState("");
+  const tableRef = useRef<HTMLTableElement>(null);
   // 챔피언 데이터를 가져오는 useEffect 훅 - 컴포넌트가 마운트될 때 실행됨
   useEffect(() => {
     const fetchChampions = async () => {
@@ -104,9 +105,7 @@ export default function Statistics() {
         // 챔피언 이름을 한글 기준으로 정렬 (이름순)
         championsArray.sort((a, b) => a.name.localeCompare(b.name, "ko"));
         setChampions(championsArray); // 챔피언 데이터 상태 업데이트
-      } catch (error) {
-        console.error("챔피언 데이터 요청 실패:", error); // 오류 발생 시 콘솔에 메시지 출력
-      }
+      } catch (error) {}
     };
 
     fetchChampions(); // 챔피언 데이터 요청 함수 호출
@@ -131,9 +130,7 @@ export default function Statistics() {
           });
           setStats(response.data); // 통계 데이터 상태 업데이트
           console.log(response.data); // 가져온 데이터 콘솔에 출력 (디버깅용)
-        } catch (error) {
-          console.error("데이터 요청 실패:", error); // 오류 발생 시 콘솔에 메시지 출력
-        }
+        } catch (error) {}
       }
     };
 
@@ -179,16 +176,38 @@ export default function Statistics() {
   }, [mergedData, sortConfig]); // 병합 데이터 또는 정렬 설정이 변경될 때마다 실행
 
   const openModal = (championStats: ChampionStats) => {
-    console.log("Modal Open Triggered"); // 모달 열림 여부 확인
-    console.log("Selected Champion:", championStats); // 선택된 챔피언 데이터 확인
     setSelectedChampion(championStats); // 선택된 챔피언 데이터 설정
     setIsModalOpen(true); // 모달 열기
   };
 
   const closeModal = () => {
-    console.log("Modal Close Triggered"); // 모달 닫힘 여부 확인
-    setSelectedChampion(null); // 선택된 챔피언 데이터 초기화
-    setIsModalOpen(false); // 모달 닫기
+    setSelectedChampion(null);
+    setIsModalOpen(false);
+  };
+
+  const handleSearch = () => {
+    if (tableRef.current && searchTerm) {
+      // Step 1: 검색어와 일치하는 챔피언 id 찾기
+      const champion = champions.find((champ) => champ.name === searchTerm);
+
+      if (champion) {
+        // Step 2: 찾은 챔피언 id로 ChampionStats에서 일치하는 championId의 인덱스를 찾기
+        const championIndex = sortedData.findIndex(
+          (champStats) => champStats.championId.toString() === champion.key
+        );
+
+        if (championIndex !== -1) {
+          // Step 3: 일치하는 행으로 스크롤
+          const row =
+            tableRef.current.querySelectorAll("tbody tr")[championIndex];
+          row?.scrollIntoView({ behavior: "smooth", block: "center" });
+        } else {
+          alert("해당 챔피언의 통계 데이터가 없습니다.");
+        }
+      } else {
+        alert("검색된 챔피언이 없습니다.");
+      }
+    }
   };
 
   return (
@@ -238,9 +257,22 @@ export default function Statistics() {
         </div>
       </div>
 
+      <div className="search-container">
+        <input
+          type="text"
+          placeholder="챔피언 이름 검색"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="search-input"
+        />
+        <button onClick={handleSearch} className="search-button">
+          검색
+        </button>
+      </div>
+
       {/* 챔피언 통계 테이블 */}
       {sortedData.length > 0 && (
-        <table className="champions-table">
+        <table ref={tableRef} className="champions-table">
           <thead>
             <tr>
               <th>#</th>
@@ -254,7 +286,7 @@ export default function Statistics() {
           <tbody>
             {sortedData.map((champion, index) => (
               <tr key={champion.id}>
-                <td>{index + 1}</td>
+                <td>#{index + 1}</td>
                 <td
                   className="table-champion-info"
                   onClick={() => openModal(champion)} // 클릭 시 모달 열기
@@ -267,28 +299,22 @@ export default function Statistics() {
                   />
                   <span className="table-champion-name">{champion.name}</span>
                 </td>
-                {/* 픽률 */}
                 <td>
                   {champion.pickRate
                     ? `${champion.pickRate.toFixed(1)}%(${champion.totalPicks})`
                     : "N/A"}
-                </td>{" "}
-                {/* 승률 */}
+                </td>
                 <td>
                   {champion.winRate
                     ? `${champion.winRate.toFixed(1)}%(${champion.totalWins})`
                     : "N/A"}
-                </td>{" "}
-                {/* 밴률 */}
+                </td>
                 <td>
                   {champion.banRate
                     ? `${champion.banRate.toFixed(1)}%(${champion.totalBans})`
                     : "N/A"}
-                </td>{" "}
-                {/* 평균 KDA */}
-                <td>
-                  {champion.avgKDA ? champion.avgKDA.toFixed(2) : "N/A"}
-                </td>{" "}
+                </td>
+                <td>{champion.avgKDA ? champion.avgKDA.toFixed(2) : "N/A"}</td>
               </tr>
             ))}
           </tbody>
