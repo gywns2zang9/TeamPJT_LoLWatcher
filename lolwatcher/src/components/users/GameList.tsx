@@ -1,8 +1,10 @@
 import React, { useState, useRef } from "react";
 import "./GameList.css";
 import GameDetail from "./GameDetail";
-
+import { FaChartBar } from 'react-icons/fa';
+import { FaSearchPlus, FaSearchMinus } from "react-icons/fa";
 const CHAMPION_IMG_BASE_URL = process.env.REACT_APP_CHAMPION_IMG_BASE_URL;
+
 
 interface User {
   championName: string; //"Garen"
@@ -194,13 +196,13 @@ export default function GameList({
             >
               <div>
                 {openInfoIds.includes(info.id) ? (
-                  <>
-                    <span>Watcher</span> <span>Score</span> <span>Close</span>
-                  </>
+                  <div className="icon">
+                    <FaSearchMinus size={60} />
+                  </div>
                 ) : (
-                  <>
-                    <span>Watcher</span> <span>Score</span> <span>Check</span>
-                  </>
+                  <div className="icon">
+                    <FaSearchPlus size={60} />
+                  </div>
                 )}
               </div>
             </div>
