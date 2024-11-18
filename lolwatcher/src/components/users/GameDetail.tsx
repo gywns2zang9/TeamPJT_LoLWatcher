@@ -163,7 +163,7 @@ export default function GameDetail({
               )}%`
             }}
           >
-            <span style={{ color: "blue", fontWeight: "bold" }}>
+            <span>
               블루팀 (
               {Math.round(
                 (teamBlue.reduce((sum, user) => sum + user.score, 0) /
@@ -185,7 +185,7 @@ export default function GameDetail({
               )}%`
             }}
           >
-            <span style={{ color: "red", fontWeight: "bold" }}>
+            <span>
               레드팀 (
               {Math.round(
                 (teamRed.reduce((sum, user) => sum + user.score, 0) /
