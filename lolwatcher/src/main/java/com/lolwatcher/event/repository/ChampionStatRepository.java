@@ -23,7 +23,7 @@ public class ChampionStatRepository {
     private final MongoTemplate mongoTemplate;
 
     public List<ChampionStatistics> getChampionStatisticsByObjectId(String collectionName) {
-        String objectId = "673ab72aa8d7df664d13b49d";
+        String objectId = "673ba27f991281001f2c1a71";
         Query query = new Query(Criteria.where("_id").is(new ObjectId(objectId)));
         Document document = mongoTemplate.findOne(query, Document.class, "analytics");
         if(document == null) {
