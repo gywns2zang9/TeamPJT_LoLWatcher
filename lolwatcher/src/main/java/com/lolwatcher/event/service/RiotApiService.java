@@ -161,6 +161,9 @@ public class RiotApiService {
         if(records.isEmpty()) {
             return Response.builder().status(200).build();
         }
+        for(String id : findRankedIds) {
+            System.out.println(id);
+        }
         recordRepository.saveAll(records);
         return pythonApiClient.postMatchData(findRankedIds);
     }
