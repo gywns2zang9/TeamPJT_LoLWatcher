@@ -45,6 +45,7 @@ public class RecordUpdateRequestFilter extends OncePerRequestFilter {
         }
 
         if (accountDto != null) {
+            log.info("RecordUpdateRequestFilter: account = {}", accountDto);
             request.setAttribute("account", accountDto);
             int remainTime = recordRequestRedisUtil.fetchRemainingTime(accountDto.puuid());
             if (remainTime > 0) {
