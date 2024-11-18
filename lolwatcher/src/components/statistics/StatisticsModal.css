@@ -4,17 +4,18 @@
   text-align: center;
   justify-content: center;
   margin: auto;
+  min-width: 600px;
 }
 
 .statistics-modal-content {
 }
 
 .statistics-modal-title {
-
 }
 
 .radar-chart-container {
   width: 500px;
+  margin: auto;
 }
 
 .close-button {
@@ -24,7 +25,7 @@
 .close-button:hover {
 }
 
-.statistics-modal-body{
+.statistics-modal-body {
   flex-direction: column;
   width: 100%;
   align-items: center;
@@ -38,4 +39,5 @@
   background-size: 120%;
   background-position: center;
   margin: auto;
+  margin-top: 12px;
 }
