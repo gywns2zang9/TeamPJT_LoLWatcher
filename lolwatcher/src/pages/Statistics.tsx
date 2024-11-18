@@ -85,6 +85,10 @@ export default function Statistics() {
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달 열림 상태 관리
   const [searchTerm, setSearchTerm] = useState("");
   const tableRef = useRef<HTMLTableElement>(null);
+  const [searchedChampionIndex, setSearchedChampionIndex] = useState<
+    number | null
+  >(null);
+
   // 챔피언 데이터를 가져오는 useEffect 훅 - 컴포넌트가 마운트될 때 실행됨
   useEffect(() => {
     const fetchChampions = async () => {
@@ -184,28 +188,32 @@ export default function Statistics() {
     setSelectedChampion(null);
     setIsModalOpen(false);
   };
-
   const handleSearch = () => {
     if (tableRef.current && searchTerm) {
-      // Step 1: 검색어와 일치하는 챔피언 id 찾기
       const champion = champions.find((champ) => champ.name === searchTerm);
+      console.log("Step 1 - 검색된 챔피언:", champion);
 
       if (champion) {
-        // Step 2: 찾은 챔피언 id로 ChampionStats에서 일치하는 championId의 인덱스를 찾기
+        const championKey = Number(champion.key);
+        console.log("championKey:", championKey);
+
         const championIndex = sortedData.findIndex(
-          (champStats) => champStats.championId.toString() === champion.key
+          (champ) => champ.championId === championKey
         );
+        console.log("Step 2 - 검색된 챔피언의 통계 인덱스:", championIndex);
 
         if (championIndex !== -1) {
-          // Step 3: 일치하는 행으로 스크롤
+          setSearchedChampionIndex(championIndex); // 검색된 인덱스를 상태에 저장
           const row =
             tableRef.current.querySelectorAll("tbody tr")[championIndex];
           row?.scrollIntoView({ behavior: "smooth", block: "center" });
         } else {
           alert("해당 챔피언의 통계 데이터가 없습니다.");
+          setSearchedChampionIndex(null);
         }
       } else {
         alert("검색된 챔피언이 없습니다.");
+        setSearchedChampionIndex(null);
       }
     }
   };
@@ -270,7 +278,6 @@ export default function Statistics() {
         </button>
       </div>
 
-      {/* 챔피언 통계 테이블 */}
       {sortedData.length > 0 && (
         <table ref={tableRef} className="champions-table">
           <thead>
@@ -285,11 +292,23 @@ export default function Statistics() {
           </thead>
           <tbody>
             {sortedData.map((champion, index) => (
-              <tr key={champion.id}>
+              <tr
+                key={champion.id}
+                className={
+                  index === searchedChampionIndex ? "highlighted-row" : ""
+                }
+                onClick={() =>
+                  console.log(
+                    `Row ${index + 1} has class: ${
+                      index === searchedChampionIndex ? "highlighted-row" : ""
+                    }`
+                  )
+                }
+              >
                 <td>#{index + 1}</td>
                 <td
                   className="table-champion-info"
-                  onClick={() => openModal(champion)} // 클릭 시 모달 열기
+                  onClick={() => openModal(champion)}
                   style={{ cursor: "pointer" }}
                 >
                   <img

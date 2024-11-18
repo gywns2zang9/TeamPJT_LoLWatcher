@@ -103,7 +103,6 @@
   cursor: pointer;
 }
 .champions-table td {
-  background: #2c2c2c;
 }
 
 .table-champion-info {
@@ -182,4 +181,8 @@
 
 .search-button:hover {
   background-color: #45a049;
+}
+
+.highlighted-row {
+  background-color: #f99fd0;
 }
