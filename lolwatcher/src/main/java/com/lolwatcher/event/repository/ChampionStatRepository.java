@@ -25,7 +25,7 @@ public class ChampionStatRepository {
         Query query = new Query(Criteria.where("_id").is(new ObjectId(objectId)));
         ChampionStatAnalysis championStatistics = mongoTemplate.findOne(query, ChampionStatAnalysis.class, "analytic");
 
-        return Objects.requireNonNull(championStatistics).getData().get("collectionName");
+        return Objects.requireNonNull(championStatistics).getData().get(collectionName);
     }
 
 
