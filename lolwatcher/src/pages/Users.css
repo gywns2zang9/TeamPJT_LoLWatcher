@@ -51,6 +51,7 @@
 .header-input {
   padding: 10px;
   font-size: 20px;
+  font-weight: bold;
 }
 
 .header-btn {
@@ -117,4 +118,27 @@
   100% {
     transform: rotate(360deg);
   }
+}
+
+.autocomplete-container {
+  position: relative;
+}
+
+.autocomplete-item {
+  position: absolute;
+  top: 102%;
+  left: 0;
+  background: #fff;
+  border: 1.5px solid #ccc;
+  padding: 5px 10px;
+  cursor: pointer;
+  z-index: 10;
+  width: 92%; /* input 너비에 맞추기 */
+  color: black;
+  text-align: left;
+  font-weight: bold;
+}
+
+.autocomplete-item:hover {
+  background: #f0f0f0;
 }
