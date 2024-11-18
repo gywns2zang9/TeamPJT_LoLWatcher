@@ -40,6 +40,7 @@ public class RiotApiService {
     public RecordDto getMatchDataBySummoner(AccountDto accountDto) {
         log.info("puuid: {}", accountDto.puuid());
         SummonerDTO summoner = riotKrApiClient.getSummoner(accountDto.puuid());
+        log.info("summoner: {}", summoner);
         Set<LeagueEntryDTO> summonerInfo = riotKrApiClient.getLeagueInfo(summoner.id());
         Set<RecordUserLeagueInfo> userInfo = new HashSet<>();
         for(LeagueEntryDTO leagueEntryDTO : summonerInfo) {
