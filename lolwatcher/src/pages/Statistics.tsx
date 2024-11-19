@@ -301,7 +301,7 @@ export default function Statistics() {
                 fontSize: "28px"
               }}
             >
-              {totalGamesPlayed}
+              {totalGamesPlayed?.toLocaleString()}
             </b>
             게임 통계입니다.
           </span>
@@ -423,17 +423,23 @@ export default function Statistics() {
                 </td>
                 <td>
                   {champion.pickRate
-                    ? `${champion.pickRate.toFixed(1)}%(${champion.totalPicks})`
+                    ? `${champion.pickRate.toFixed(
+                        1
+                      )}%(${champion.totalPicks?.toLocaleString()})`
                     : "N/A"}
                 </td>
                 <td>
                   {champion.winRate
-                    ? `${champion.winRate.toFixed(1)}%(${champion.totalWins})`
+                    ? `${champion.winRate.toFixed(
+                        1
+                      )}%(${champion.totalWins?.toLocaleString()})`
                     : "N/A"}
                 </td>
                 <td>
                   {champion.banRate
-                    ? `${champion.banRate.toFixed(1)}%(${champion.totalBans})`
+                    ? `${champion.banRate.toFixed(
+                        1
+                      )}%(${champion.totalBans?.toLocaleString()})`
                     : "N/A"}
                 </td>
                 <td>{champion.avgKDA ? champion.avgKDA.toFixed(2) : "N/A"}</td>
