@@ -27,7 +27,7 @@
 /* Tier Selection Section */
 .statistics-header-tier {
   margin-top: 80px;
-  margin-bottom: 16spx;
+  margin-bottom: 4px;
   width: 80%;
   max-width: 1200px;
   min-width: 1000px;
@@ -41,8 +41,8 @@
 }
 
 .header-tier-icon {
-  width: 100px;
-  height: 100px;
+  width: 80px;
+  height: 80px;
   cursor: url("../assets/cursor/hover-cursor.png"), pointer;
   filter: grayscale(100%);
 }
@@ -60,7 +60,7 @@
 
 .statistics-header-msg span {
   display: flex;
-  font-size: 30px;
+  font-size: 28px;
   font-weight: 600;
   justify-content: center;
   align-items: center;
@@ -70,17 +70,17 @@
 .statistics-header-division {
   display: flex;
   justify-content: center;
-  margin: 0 4px;
-  gap: 4px;
+  margin: 0 8px;
+  gap: 8px;
 }
 
 .header-division-btn {
-  width: 36px;
-  height: 36px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   border: none;
   background-color: white;
-  font-size: 20px;
+  font-size: 18px;
   cursor: url("../assets/cursor/hover-cursor.png"), pointer;
 }
 
@@ -95,7 +95,7 @@
   display: flex;
   align-items: center;
   gap: 16px;
-  margin: 12px auto 24px;
+  margin: 4px auto 16px;
 }
 
 .search-input {
