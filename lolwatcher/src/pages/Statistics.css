@@ -120,11 +120,75 @@
   background-color: #0056b3;
 }
 
+.statistics-main {
+  width: 90%;
+  border: 1px solid #333;
+  border-radius: 12px;
+  align-items: flex-start; /* 상단 정렬 */
+  justify-content: space-between; /* 두 요소 간격 유지 */
+  display: flex;
+  margin-top: 20px;
+  position: relative;
+}
+
+.watcher-picks {
+  position: sticky;
+  top: 250px;
+  width: 200px;
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 16px;
+  background-color: #1f1f1f;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  font-family: "Arial", sans-serif;
+}
+
+.watcher-picks h1 {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 16px;
+  text-align: center;
+  color: gold;
+}
+
+.watcher-picks ul {
+  width: 100%;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.watcher-picks ul li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #2c2c2c;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #fff;
+  transition: background-color 0.3s ease;
+}
+
+.watcher-picks ul li:hover {
+  background-color: #99cbfa;
+  cursor: url("../assets/cursor/hover-cursor.png"), pointer;
+}
+
+.watcher-picks ul li:last-child {
+  margin-bottom: 0; /* 마지막 아이템은 마진 제거 */
+}
+
 /* Table Section */
 .champions-table {
-  width: 70%;
+  width: 80%;
   border-collapse: collapse;
-  margin-top: 20px;
   border: 1px solid #333;
   border-radius: 12px;
   align-items: center;
