@@ -37,4 +37,11 @@ public class RecordRepositoryCustomImpl implements RecordRepositoryCustom {
         return mongoTemplate.find(query, Record.class);
     }
 
+    @Override
+    public long countExistRecords(List<String> ids) {
+        Query query = new Query(Criteria.where("matchId").in(ids));
+        return mongoTemplate.count(query, Record.class);
+    }
+
+
 }
