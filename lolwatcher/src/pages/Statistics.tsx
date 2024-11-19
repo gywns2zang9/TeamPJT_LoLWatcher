@@ -261,7 +261,7 @@ export default function Statistics() {
         </div>
 
         <div className="statistics-header-msg">
-          <span>
+          <span style={{ fontSize: "" }}>
             {tier.toUpperCase()}
             {!["master", "grandmaster", "challenger"].includes(tier) && (
               <div className="statistics-header-division">
@@ -292,7 +292,18 @@ export default function Statistics() {
                 ))}
               </div>
             )}{" "}
-            티어의 {totalGamesPlayed} 게임 통계입니다.
+            티어의
+            <b
+              style={{
+                color: "red",
+                marginLeft: "12px",
+                marginRight: "12px",
+                fontSize: "36px"
+              }}
+            >
+              {totalGamesPlayed}
+            </b>
+            게임 통계입니다.
           </span>
         </div>
 
@@ -315,12 +326,82 @@ export default function Statistics() {
         <table ref={tableRef} className="champions-table">
           <thead>
             <tr>
-              <th>#</th>
-              <th onClick={() => handleSort("name")}>챔피언 이름</th>
-              <th onClick={() => handleSort("pickRate")}>픽률(게임)</th>
-              <th onClick={() => handleSort("winRate")}>승률(승리)</th>
-              <th onClick={() => handleSort("banRate")}>밴률(밴)</th>
-              <th onClick={() => handleSort("avgKDA")}>평균 KDA</th>
+              <th>#순위</th>
+              <th
+                onClick={() => handleSort("name")}
+                style={{
+                  color: sortConfig?.key === "name" ? "#70b6f7" : "inherit",
+                  cursor: "pointer"
+                }}
+              >
+                {`챔피언 이름${
+                  sortConfig?.key === "name"
+                    ? sortConfig.direction === "asc"
+                      ? "🔼"
+                      : "🔽"
+                    : ""
+                }`}
+              </th>
+              <th
+                onClick={() => handleSort("pickRate")}
+                style={{
+                  color: sortConfig?.key === "pickRate" ? "#70b6f7" : "inherit",
+                  cursor: "pointer"
+                }}
+              >
+                {`픽률(게임 수)${
+                  sortConfig?.key === "pickRate"
+                    ? sortConfig.direction === "asc"
+                      ? "🔼"
+                      : "🔽"
+                    : ""
+                }`}
+              </th>
+              <th
+                onClick={() => handleSort("winRate")}
+                style={{
+                  color: sortConfig?.key === "winRate" ? "#70b6f7" : "inherit",
+                  cursor: "pointer"
+                }}
+              >
+                {`승률(게임 수)${
+                  sortConfig?.key === "winRate"
+                    ? sortConfig.direction === "asc"
+                      ? "🔼"
+                      : "🔽"
+                    : ""
+                }`}
+              </th>
+              <th
+                onClick={() => handleSort("banRate")}
+                style={{
+                  color: sortConfig?.key === "banRate" ? "#70b6f7" : "inherit",
+                  cursor: "pointer"
+                }}
+              >
+                {`밴률(게임 수)${
+                  sortConfig?.key === "banRate"
+                    ? sortConfig.direction === "asc"
+                      ? "🔼"
+                      : "🔽"
+                    : ""
+                }`}
+              </th>
+              <th
+                onClick={() => handleSort("avgKDA")}
+                style={{
+                  color: sortConfig?.key === "avgKDA" ? "#70b6f7" : "inherit",
+                  cursor: "pointer"
+                }}
+              >
+                {`평균 KDA${
+                  sortConfig?.key === "avgKDA"
+                    ? sortConfig.direction === "asc"
+                      ? "🔼"
+                      : "🔽"
+                    : ""
+                }`}
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -335,7 +416,6 @@ export default function Statistics() {
                 <td
                   className="table-champion-info"
                   onClick={() => openModal(champion)}
-                  style={{ cursor: "pointer" }}
                 >
                   <img
                     src={`${CHAMPION_IMG_BASE_URL}${champion.id}.png`}
