@@ -174,15 +174,15 @@ export default function Statistics() {
     return sorted;
   }, [mergedData, sortConfig]);
 
-  useEffect(() => {
-    if (tableRef.current) {
-      const row = tableRef.current.querySelectorAll("tbody tr")[0];
-      row?.scrollIntoView({
-        behavior: "smooth",
-        block: "center"
-      });
-    }
-  }, [sortedData]);
+  // useEffect(() => {
+  //   if (tableRef.current) {
+  //     const row = tableRef.current.querySelectorAll("tbody tr")[0];
+  //     row?.scrollIntoView({
+  //       behavior: "smooth",
+  //       block: "center"
+  //     });
+  //   }
+  // }, [sortedData]);
 
   const openModal = (championStats: ChampionStats) => {
     setSelectedChampion(championStats);
@@ -244,9 +244,9 @@ export default function Statistics() {
                   setTier(tierKey);
                   setSearchedChampionIndex(null);
                   if (tableRef.current) {
-                    const row =
-                      tableRef.current.querySelectorAll("tbody tr")[0];
-                    row?.scrollIntoView({
+                    const headerCell =
+                      tableRef.current.querySelector("thead th");
+                    headerCell?.scrollIntoView({
                       behavior: "smooth",
                       block: "center"
                     });
@@ -272,9 +272,9 @@ export default function Statistics() {
                       setDivision(divisionKey);
                       setSearchedChampionIndex(null);
                       if (tableRef.current) {
-                        const row =
-                          tableRef.current.querySelectorAll("tbody tr")[0];
-                        row?.scrollIntoView({
+                        const headerCell =
+                          tableRef.current.querySelector("thead th");
+                        headerCell?.scrollIntoView({
                           behavior: "smooth",
                           block: "center"
                         });
@@ -330,8 +330,7 @@ export default function Statistics() {
               <th
                 onClick={() => handleSort("name")}
                 style={{
-                  color: sortConfig?.key === "name" ? "#70b6f7" : "inherit",
-                  cursor: "pointer"
+                  color: sortConfig?.key === "name" ? "#70b6f7" : "inherit"
                 }}
               >
                 {`챔피언 이름${
@@ -345,8 +344,7 @@ export default function Statistics() {
               <th
                 onClick={() => handleSort("pickRate")}
                 style={{
-                  color: sortConfig?.key === "pickRate" ? "#70b6f7" : "inherit",
-                  cursor: "pointer"
+                  color: sortConfig?.key === "pickRate" ? "#70b6f7" : "inherit"
                 }}
               >
                 {`픽률(게임 수)${
@@ -360,8 +358,7 @@ export default function Statistics() {
               <th
                 onClick={() => handleSort("winRate")}
                 style={{
-                  color: sortConfig?.key === "winRate" ? "#70b6f7" : "inherit",
-                  cursor: "pointer"
+                  color: sortConfig?.key === "winRate" ? "#70b6f7" : "inherit"
                 }}
               >
                 {`승률(게임 수)${
@@ -375,8 +372,7 @@ export default function Statistics() {
               <th
                 onClick={() => handleSort("banRate")}
                 style={{
-                  color: sortConfig?.key === "banRate" ? "#70b6f7" : "inherit",
-                  cursor: "pointer"
+                  color: sortConfig?.key === "banRate" ? "#70b6f7" : "inherit"
                 }}
               >
                 {`밴률(게임 수)${
@@ -390,8 +386,7 @@ export default function Statistics() {
               <th
                 onClick={() => handleSort("avgKDA")}
                 style={{
-                  color: sortConfig?.key === "avgKDA" ? "#70b6f7" : "inherit",
-                  cursor: "pointer"
+                  color: sortConfig?.key === "avgKDA" ? "#70b6f7" : "inherit"
                 }}
               >
                 {`평균 KDA${
