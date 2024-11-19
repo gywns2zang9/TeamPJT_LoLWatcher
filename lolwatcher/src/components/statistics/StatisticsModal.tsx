@@ -50,18 +50,18 @@ export default function StatisticsModal({
   onClose,
   championStats,
   championName,
-  championImgUrl, // 새로운 props
+  championImgUrl // 새로운 props
 }: StatisticsModalProps) {
   if (!isOpen || !championStats) return null;
   // 전달된 championStats 데이터 확인
-  console.log("Modal Data:", championStats);
+  // console.log("Modal Data:", championStats);
   const data = {
     labels: [
       "분당 평균 피해량",
       "팀 기여도",
       "성장률",
       "학살 횟수",
-      "지원 횟수",
+      "지원 횟수"
     ],
     datasets: [
       {
@@ -71,7 +71,7 @@ export default function StatisticsModal({
           championStats.avgTDM,
           championStats.avgGrowth,
           championStats.totalCarnage,
-          championStats.totalSupport,
+          championStats.totalSupport
         ],
         backgroundColor: "rgba(34, 202, 236, 0.2)",
         borderColor: "rgba(34, 202, 236, 1)",
@@ -83,48 +83,51 @@ export default function StatisticsModal({
   return (
     <div className="statistics-modal-container">
       <div className="statistics-modal-body">
-        <div style={{width:'100%'}}>
-          <div className="champion-image" style={{backgroundImage: `url(${CHAMPION_IMG_BASE_URL}${championImgUrl}.png)`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",}}></div>
+        <div style={{ width: "100%" }}>
+          <div
+            className="champion-image"
+            style={{
+              backgroundImage: `url(${CHAMPION_IMG_BASE_URL}${championImgUrl}.png)`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat"
+            }}
+          ></div>
         </div>
-        <h2 className="statistics-modal-title">
-          {championName}
-        </h2>
+        <h2 className="statistics-modal-title">{championName}</h2>
         <div className="radar-chart-container">
-        <Bar
+          <Bar
             data={data}
             options={{
               indexAxis: "y", // Bar 차트를 수평 방향으로 설정
               plugins: {
                 legend: {
-                  display: false, // 범례 숨기기
-                },
+                  display: false // 범례 숨기기
+                }
               },
               scales: {
                 x: {
                   grid: {
-                    color: "goldenrod", // X축 격자 색상
+                    color: "goldenrod" // X축 격자 색상
                   },
                   ticks: {
-                    color: "white", // X축 눈금 색상
+                    color: "white" // X축 눈금 색상
                   },
-                  beginAtZero: true,
+                  beginAtZero: true
                 },
                 y: {
                   grid: {
-                    color: "goldenrod", // Y축 격자 색상
+                    color: "goldenrod" // Y축 격자 색상
                   },
                   ticks: {
                     color: "white", // Y축 라벨 색상
                     font: {
                       size: 15, // Y축 라벨 크기
-                      weight: "bold",
-                    },
-                  },
-                },
-              },
+                      weight: "bold"
+                    }
+                  }
+                }
+              }
             }}
           />
         </div>

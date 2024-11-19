@@ -149,10 +149,9 @@
   transition: color 0.3s ease; /* 색상 전환 부드럽게 */
 }
 
-.icon:hover{
+.icon:hover {
   color: black;
 }
-
 
 .item-team-section {
   width: 36%;
@@ -193,6 +192,8 @@
   overflow: hidden; /* 넘치는 텍스트 숨기기 */
   text-overflow: ellipsis; /* 말줄임표(...) 추가 */
   font-weight: 500;
+  cursor: url("../../assets/cursor/hover-cursor.png"), pointer;
+  text-decoration: underline;
 }
 
 .user-detail {

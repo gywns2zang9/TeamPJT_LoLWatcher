@@ -56,8 +56,9 @@ export default function Users() {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   // URL의 params에서 name과 tag를 가져오거나 기본값을 설정
-  const name = searchParams.get("name") || "카림sk";
-  const tag = searchParams.get("tag") || "KR1";
+  const name = searchParams.get("name") || "bUlldOg";
+  const tag = searchParams.get("tag") || "KR3";
+  const puuid = searchParams.get("puuid") || "";
 
   const [nickName, setNickName] = useState<string>("");
   const [gameInfos, setGameInfos] = useState<GameInfo[]>([]);
@@ -87,19 +88,32 @@ export default function Users() {
         throw new Error("AccessToken is missing."); // AccessToken이 없으면 에러 발생
       }
 
-      const response = await axios.get(`${API_URL}/riot/info/by-name`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`
-        },
-        params: { name, tag }
-      });
+      let response;
+
+      if (puuid) {
+        // puuid가 있을 경우 /riot/info/by-puuid로 요청
+        response = await axios.get(`${API_URL}/riot/info/by-puuid`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          },
+          params: { puuid }
+        });
+      } else {
+        // puuid가 없으면 /riot/info/by-name으로 요청
+        response = await axios.get(`${API_URL}/riot/info/by-name`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          },
+          params: { name, tag }
+        });
+      }
 
       const data = response.data;
 
       setUserInfo(data.recordDto.userInfo);
       setSummoner(data.recordDto.summoner);
 
-      console.log(data);
+      // console.log(data);
 
       const remainingSeconds = response.data.remainTime;
       setEndTime(Date.now() + remainingSeconds * 1000);
@@ -153,7 +167,7 @@ export default function Users() {
         alert("로그인이 필요합니다.");
         navigate("/");
       } else {
-        window.alert("소환사의 닉네임과 태그를 확인해주세요.");
+        window.alert("소환사를 찾지 못했습니다.");
       }
     } finally {
       setLoading(false);
@@ -242,7 +256,7 @@ export default function Users() {
     <div className="users-container">
       <div className="users-header">
         <NavHeader />
-        <h1 className="header-title">소환사 검색</h1>
+        <p className="header-title">소환사 검색</p>
         <form className="header-form" onSubmit={handleSearch}>
           <div className="autocomplete-container">
             <input

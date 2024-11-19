@@ -298,7 +298,7 @@ export default function Statistics() {
                 color: "red",
                 marginLeft: "12px",
                 marginRight: "12px",
-                fontSize: "36px"
+                fontSize: "28px"
               }}
             >
               {totalGamesPlayed}
@@ -412,11 +412,13 @@ export default function Statistics() {
                   className="table-champion-info"
                   onClick={() => openModal(champion)}
                 >
-                  <img
-                    src={`${CHAMPION_IMG_BASE_URL}${champion.id}.png`}
-                    alt={champion.name}
-                    className="table-champion-icon"
-                  />
+                  <div>
+                    <img
+                      src={`${CHAMPION_IMG_BASE_URL}${champion.id}.png`}
+                      alt={champion.name}
+                      className="table-champion-icon"
+                    />
+                  </div>
                   <span className="table-champion-name">{champion.name}</span>
                 </td>
                 <td>

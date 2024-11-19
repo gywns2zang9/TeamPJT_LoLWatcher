@@ -9,20 +9,19 @@
 }
 
 .champion-list {
-  margin: 3%;
-  margin-top: 80px;
+  margin: 48px;
   width: 100%;
   height: 95%;
   overflow-y: auto;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
   scrollbar-width: none;
 }
 
 .champion-details {
   position: sticky;
   top: 0;
-  width: 50%;
+  width: 600px;
   height: 100vh;
   background-color: black;
 }
@@ -36,8 +35,8 @@
 }
 
 .champion-item img {
-  width: 72px;
-  height: 72px;
+  width: 60px;
+  height: 60px;
   object-fit: cover;
   border: 1px solid gold;
   border-radius: 12px;
@@ -54,7 +53,7 @@
 
 .champion-item p {
   margin-top: 8px;
-  font-size: 16px;
+  font-size: 12px;
   font-weight: bold;
   color: white;
 }
