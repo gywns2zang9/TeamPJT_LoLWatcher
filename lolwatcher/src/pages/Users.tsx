@@ -113,7 +113,7 @@ export default function Users() {
       setUserInfo(data.recordDto.userInfo);
       setSummoner(data.recordDto.summoner);
 
-      console.log(data);
+      // console.log(data);
 
       const remainingSeconds = response.data.remainTime;
       setEndTime(Date.now() + remainingSeconds * 1000);
@@ -167,7 +167,7 @@ export default function Users() {
         alert("로그인이 필요합니다.");
         navigate("/");
       } else {
-        window.alert("소환사의 닉네임과 태그를 확인해주세요.");
+        window.alert("소환사를 찾지 못했습니다.");
       }
     } finally {
       setLoading(false);

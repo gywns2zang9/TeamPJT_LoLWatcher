@@ -53,7 +53,7 @@ export default function Champions() {
         championsArray.sort((a, b) => a.name.localeCompare(b.name, "ko"));
         setChampions(championsArray);
       } catch (error) {
-        console.error(error);
+        // console.error(error);
       }
     };
 

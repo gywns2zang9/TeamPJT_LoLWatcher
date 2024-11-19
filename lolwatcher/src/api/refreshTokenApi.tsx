@@ -39,7 +39,7 @@ refreshTokenApi.interceptors.response.use(
         // 원래 요청 다시 시도
         return refreshTokenApi(originalRequest);
       } catch (err) {
-        console.error("토큰 갱신 실패:", err);
+        // console.error("토큰 갱신 실패:", err);
         sessionStorage.clear(); // 세션 정리
         window.location.href = "/login"; // 로그인 페이지로 리디렉션
         return Promise.reject(err);

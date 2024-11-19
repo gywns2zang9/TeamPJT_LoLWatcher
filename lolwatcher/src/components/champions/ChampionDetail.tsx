@@ -92,7 +92,7 @@ export default function ChampionDetail({
         setSelectedSpellType(null);
         setSelectedVideoUrl(null);
       } catch (error) {
-        console.error(error);
+        // console.error(error);
       }
     };
 
@@ -114,7 +114,7 @@ export default function ChampionDetail({
         setSkins(skinsData);
         setSelectedSkinIndex(0);
       } catch (error) {
-        console.error(error);
+        // console.error(error);
       }
     };
 
