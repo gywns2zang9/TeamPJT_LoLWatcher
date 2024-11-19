@@ -56,8 +56,8 @@ export default function Users() {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   // URL의 params에서 name과 tag를 가져오거나 기본값을 설정
-  const name = searchParams.get("name") || "카림sk";
-  const tag = searchParams.get("tag") || "KR1";
+  const name = searchParams.get("name") || "bUlldOg";
+  const tag = searchParams.get("tag") || "KR3";
 
   const [nickName, setNickName] = useState<string>("");
   const [gameInfos, setGameInfos] = useState<GameInfo[]>([]);
@@ -242,7 +242,7 @@ export default function Users() {
     <div className="users-container">
       <div className="users-header">
         <NavHeader />
-        <h1 className="header-title">소환사 검색</h1>
+        <p className="header-title">소환사 검색</p>
         <form className="header-form" onSubmit={handleSearch}>
           <div className="autocomplete-container">
             <input

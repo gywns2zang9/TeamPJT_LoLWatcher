@@ -1,13 +1,13 @@
 .info-container {
-  background-size: cover;
+  background-size: contain; /* 이미지 전체가 보이도록 조정 */
+  background-repeat: no-repeat; /* 이미지 반복 방지 */
   background-position: center;
   height: 100vh;
   color: white;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   overflow: hidden;
-  padding: 5%;
   width: 100%;
 }
 
@@ -39,22 +39,23 @@
 
 .info-content {
   position: relative;
-  margin: 5% 0;
+  margin-top: 10%;
   height: 90%;
   background: rgba(0, 0, 0, 0.4);
   color: wheat;
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: auto;
 }
 
 .eye-btn {
   margin: 0;
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 40px;
-  height: 40px;
+  top: 10px;
+  left: 10px;
+  width: 36px;
+  height: 36px;
   background: none;
   border: none;
   display: flex;
@@ -65,10 +66,10 @@
 .close-btn {
   margin: 0;
   position: absolute;
-  top: 0;
-  right: 0;
-  width: 40px;
-  height: 40px;
+  top: 10px;
+  right: 10px;
+  width: 36px;
+  height: 36px;
   background: none;
   border: none;
   display: flex;
@@ -78,15 +79,14 @@
 
 .info-name {
   position: absolute;
-  margin: 2%;
   padding: 0;
-  font-size: 30px;
+  font-size: 28px;
   cursor: url("../../assets/cursor/hover-cursor.png"), pointer;
   text-decoration: underline;
 }
 
 .info-title {
-  margin: 25% 0 1% 0;
+  margin: 20% 0 1% 0;
   padding: 0;
   font-size: 20px;
 }
@@ -106,8 +106,8 @@
 }
 
 .spell-item img {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   border: 1px solid #ddd;
   transition: transform 0.2s ease;
@@ -117,6 +117,9 @@
 .spell-item img:hover {
   transform: scale(1.1);
 }
+.video-modal {
+  width: 90%;
+}
 
 .selected-spell img {
   border: 2px solid gold;
@@ -124,7 +127,7 @@
 }
 
 .spell-video {
-  width: 90%;
+  width: 100%;
   margin: 2% auto;
   object-fit: cover;
   cursor: url("../../assets/cursor/hover-cursor.png"), pointer;
@@ -141,7 +144,7 @@
 .skin-selector {
   position: absolute;
   bottom: 1%;
-  width: 90%;
+  width: 100%;
   display: flex;
   justify-content: center;
   gap: 5px;

@@ -26,23 +26,19 @@
 
 /* Tier Selection Section */
 .statistics-header-tier {
-  margin-top: 80px;
+  margin-top: 50px;
   margin-bottom: 4px;
   width: 80%;
-  max-width: 1200px;
-  min-width: 1000px;
+  max-width: 1000px;
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.statistics-header-tier div {
-  flex-grow: 1;
+  gap: 16px;
 }
 
 .header-tier-icon {
-  width: 80px;
-  height: 80px;
+  width: 64px;
+  height: 64px;
   cursor: url("../assets/cursor/hover-cursor.png"), pointer;
   filter: grayscale(100%);
 }
@@ -54,13 +50,13 @@
 
 /* Message Section */
 .statistics-header-msg {
-  margin: 8px auto 16px;
+  margin: 4px auto 12px;
   color: white;
 }
 
 .statistics-header-msg span {
   display: flex;
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 600;
   justify-content: center;
   align-items: center;
@@ -71,16 +67,16 @@
   display: flex;
   justify-content: center;
   margin: 0 8px;
-  gap: 8px;
+  gap: 4px;
 }
 
 .header-division-btn {
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   border: none;
   background-color: white;
-  font-size: 18px;
+  font-size: 12px;
   cursor: url("../assets/cursor/hover-cursor.png"), pointer;
 }
 
@@ -100,23 +96,23 @@
 
 .search-input {
   padding: 10px;
-  font-size: 16px;
+  font-size: 12px;
   font-weight: bold;
   border-radius: 4px;
   border: 1px solid #ccc;
-  width: 250px;
+  width: 200px;
 }
 
 .search-button {
   justify-content: center;
   align-items: center;
-  font-size: 16px;
+  font-size: 12px;
   background-color: #007bff;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: url("../assets/cursor/hover-cursor.png"), pointer;
-  width: 100px;
+  width: 80px;
   padding: 10px;
 }
 
@@ -141,11 +137,12 @@
   padding: 10px;
   text-align: center;
   border: none;
-  font-size: 18px;
+  font-size: 16px;
+  flex-grow: 1;
 }
 
-.champions-table td {
-  height: 48px;
+.champions-table th {
+  border-bottom: 1px solid #fff;
 }
 
 .champions-table th {
@@ -156,6 +153,8 @@
   color: white;
   display: flex;
   align-items: center;
+  justify-self: start;
+  width: 100%;
 }
 
 .table-champion-info:hover {
@@ -164,10 +163,15 @@
   color: black;
 }
 
+.table-champion-info div {
+  display: flex;
+  margin-left: 24px;
+  align-items: center;
+}
+
 .table-champion-icon {
-  margin-left: 50px;
-  width: 36px;
-  height: 36px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   border: 1px solid gold;
 }

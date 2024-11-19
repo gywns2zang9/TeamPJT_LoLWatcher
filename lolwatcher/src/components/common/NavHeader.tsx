@@ -6,13 +6,13 @@ export default function NavHeader() {
   const navigate = useNavigate();
 
   return (
-    <div className="nav-header-container">
-      <div className="nav-wrapper">
-        <button onClick={() => navigate("/users")}>전적 검색</button>
-        <button onClick={() => navigate("/statistics")}>챔피언 통계</button>
-        <button onClick={() => navigate("/champions")}>챔피언 정보</button>
-        <button onClick={() => navigate("/")}>로그아웃</button>
-      </div>
-    </div>
+    <nav className="nav-header-container">
+      <ul className="nav-list">
+        <li onClick={() => navigate("/users")}>전적 검색</li>
+        <li onClick={() => navigate("/statistics")}>챔피언 통계</li>
+        <li onClick={() => navigate("/champions")}>챔피언 정보</li>
+        <li onClick={() => navigate("/")}>로그아웃</li>
+      </ul>
+    </nav>
   );
 }
