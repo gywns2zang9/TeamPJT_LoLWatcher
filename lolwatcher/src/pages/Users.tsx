@@ -240,9 +240,8 @@ export default function Users() {
 
   return (
     <div className="users-container">
-      <NavHeader />
-
       <div className="users-header">
+        <NavHeader />
         <h1 className="header-title">소환사 검색</h1>
         <form className="header-form" onSubmit={handleSearch}>
           <div className="autocomplete-container">
