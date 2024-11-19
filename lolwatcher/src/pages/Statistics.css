@@ -160,7 +160,7 @@
 
 .table-champion-info:hover {
   cursor: url("../assets/cursor/hover-cursor.png"), pointer;
-  background-color: #f99fd0;
+  background-color: #99cbfa;
   color: black;
 }
 
@@ -178,7 +178,7 @@
 }
 
 .highlighted-row {
-  background-color: #99cbfa;
+  background-color: #f99fd0;
 }
 
 /* Modal Section */
