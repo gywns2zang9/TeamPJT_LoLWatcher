@@ -58,6 +58,7 @@ export default function Users() {
   // URL의 params에서 name과 tag를 가져오거나 기본값을 설정
   const name = searchParams.get("name") || "bUlldOg";
   const tag = searchParams.get("tag") || "KR3";
+  const puuid = searchParams.get("puuid") || "";
 
   const [nickName, setNickName] = useState<string>("");
   const [gameInfos, setGameInfos] = useState<GameInfo[]>([]);
@@ -87,12 +88,25 @@ export default function Users() {
         throw new Error("AccessToken is missing."); // AccessToken이 없으면 에러 발생
       }
 
-      const response = await axios.get(`${API_URL}/riot/info/by-name`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`
-        },
-        params: { name, tag }
-      });
+      let response;
+
+      if (puuid) {
+        // puuid가 있을 경우 /riot/info/by-puuid로 요청
+        response = await axios.get(`${API_URL}/riot/info/by-puuid`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          },
+          params: { puuid }
+        });
+      } else {
+        // puuid가 없으면 /riot/info/by-name으로 요청
+        response = await axios.get(`${API_URL}/riot/info/by-name`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          },
+          params: { name, tag }
+        });
+      }
 
       const data = response.data;
 

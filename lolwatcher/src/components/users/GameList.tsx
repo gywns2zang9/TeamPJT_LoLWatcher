@@ -1,10 +1,9 @@
 import React, { useState, useRef } from "react";
 import "./GameList.css";
 import GameDetail from "./GameDetail";
-import { FaChartBar } from 'react-icons/fa';
+import { FaChartBar } from "react-icons/fa";
 import { FaSearchPlus, FaSearchMinus } from "react-icons/fa";
 const CHAMPION_IMG_BASE_URL = process.env.REACT_APP_CHAMPION_IMG_BASE_URL;
-
 
 interface User {
   championName: string; //"Garen"
@@ -216,7 +215,19 @@ export default function GameList({
                       alt={user.championName}
                       className="team-user-champion"
                     />
-                    <span className="team-user-name">{user.summonerName}</span>
+                    <span
+                      className="team-user-name"
+                      onClick={() => {
+                        const confirmAction = window.confirm(
+                          `${user.summonerName}님을 검색하시겠습니까?`
+                        );
+                        if (confirmAction) {
+                          window.open(`/users?puuid=${user.puuid}`, "_blank");
+                        }
+                      }}
+                    >
+                      {user.summonerName}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -229,7 +240,19 @@ export default function GameList({
                       alt={user.championName}
                       className="team-user-champion"
                     />
-                    <span className="team-user-name">{user.summonerName}</span>
+                    <span
+                      className="team-user-name"
+                      onClick={() => {
+                        const confirmAction = window.confirm(
+                          `${user.summonerName}님을 검색하시겠습니까?`
+                        );
+                        if (confirmAction) {
+                          window.open(`/users?puuid=${user.puuid}`, "_blank");
+                        }
+                      }}
+                    >
+                      {user.summonerName}
+                    </span>
                   </div>
                 ))}
               </div>
