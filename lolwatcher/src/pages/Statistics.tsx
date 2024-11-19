@@ -63,12 +63,19 @@ interface ChampionStats {
   totalEvasion: number; // 총 회피 횟수
 }
 
+interface MergedChampion extends ChampionStats {
+  name: string;
+}
+
 export default function Statistics() {
   const [tier, setTier] = useState("challenger");
   const [division, setDivision] = useState("i");
   const [champions, setChampions] = useState<Champion[]>([]);
   const [stats, setStats] = useState<ChampionStats[]>([]);
   const [mergedData, setMergedData] = useState<any[]>([]);
+  const [filteredChampions, setFilteredChampions] = useState<MergedChampion[]>(
+    []
+  );
   const totalGamesPlayed = stats.length > 0 ? stats[0].totalGamesPlayed : null;
   const [sortConfig, setSortConfig] = useState<{
     key: string;
@@ -146,8 +153,18 @@ export default function Statistics() {
       );
       return { ...champion, ...stat };
     });
-    setMergedData(merged);
+    setMergedData(merged as MergedChampion[]);
   }, [champions, stats]);
+
+  useEffect(() => {
+    const filtered = mergedData.filter(
+      (champion) =>
+        champion.banRate >= 5 &&
+        champion.pickRate >= 5 &&
+        champion.winRate >= 53
+    );
+    setFilteredChampions(filtered);
+  }, [mergedData]);
 
   const handleSort = (key: string) => {
     let direction: "asc" | "desc" = "desc";
@@ -229,6 +246,11 @@ export default function Statistics() {
       tableRef.current.scrollTop = 0;
     }
   }, [tier, division]);
+
+  const handleChampionClick = (championName: string) => {
+    setSearchTerm(championName); // 검색창에 챔피언 이름 설정
+    handleSearch(); // 검색 기능 실행
+  };
 
   return (
     <div className="statistics-container">
@@ -323,130 +345,149 @@ export default function Statistics() {
       </div>
 
       {sortedData.length > 0 && (
-        <table ref={tableRef} className="champions-table">
-          <thead>
-            <tr>
-              <th>#순위</th>
-              <th
-                onClick={() => handleSort("name")}
-                style={{
-                  color: sortConfig?.key === "name" ? "#70b6f7" : "inherit"
-                }}
-              >
-                {`챔피언 이름${
-                  sortConfig?.key === "name"
-                    ? sortConfig.direction === "asc"
-                      ? "🔼"
-                      : "🔽"
-                    : ""
-                }`}
-              </th>
-              <th
-                onClick={() => handleSort("pickRate")}
-                style={{
-                  color: sortConfig?.key === "pickRate" ? "#70b6f7" : "inherit"
-                }}
-              >
-                {`픽률(게임 수)${
-                  sortConfig?.key === "pickRate"
-                    ? sortConfig.direction === "asc"
-                      ? "🔼"
-                      : "🔽"
-                    : ""
-                }`}
-              </th>
-              <th
-                onClick={() => handleSort("winRate")}
-                style={{
-                  color: sortConfig?.key === "winRate" ? "#70b6f7" : "inherit"
-                }}
-              >
-                {`승률(게임 수)${
-                  sortConfig?.key === "winRate"
-                    ? sortConfig.direction === "asc"
-                      ? "🔼"
-                      : "🔽"
-                    : ""
-                }`}
-              </th>
-              <th
-                onClick={() => handleSort("banRate")}
-                style={{
-                  color: sortConfig?.key === "banRate" ? "#70b6f7" : "inherit"
-                }}
-              >
-                {`밴률(게임 수)${
-                  sortConfig?.key === "banRate"
-                    ? sortConfig.direction === "asc"
-                      ? "🔼"
-                      : "🔽"
-                    : ""
-                }`}
-              </th>
-              <th
-                onClick={() => handleSort("avgKDA")}
-                style={{
-                  color: sortConfig?.key === "avgKDA" ? "#70b6f7" : "inherit"
-                }}
-              >
-                {`평균 KDA${
-                  sortConfig?.key === "avgKDA"
-                    ? sortConfig.direction === "asc"
-                      ? "🔼"
-                      : "🔽"
-                    : ""
-                }`}
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {sortedData.map((champion, index) => (
-              <tr
-                key={champion.id}
-                className={
-                  index === searchedChampionIndex ? "highlighted-row" : ""
-                }
-              >
-                <td>#{index + 1}</td>
-                <td
-                  className="table-champion-info"
-                  onClick={() => openModal(champion)}
+        <div className="statistics-main">
+          <div className="watcher-picks">
+            <h1>Watcher picks!</h1>
+            <ul>
+              {filteredChampions.map((champion, index) => (
+                <li
+                  key={champion.championId}
+                  onClick={() => handleChampionClick(champion.name)} // 클릭 시 이름 검색
                 >
-                  <div>
-                    <img
-                      src={`${CHAMPION_IMG_BASE_URL}${champion.id}.png`}
-                      alt={champion.name}
-                      className="table-champion-icon"
-                    />
-                  </div>
-                  <span className="table-champion-name">{champion.name}</span>
-                </td>
-                <td>
-                  {champion.pickRate
-                    ? `${champion.pickRate.toFixed(
-                        1
-                      )}%(${champion.totalPicks?.toLocaleString()})`
-                    : "N/A"}
-                </td>
-                <td>
-                  {champion.winRate
-                    ? `${champion.winRate.toFixed(
-                        1
-                      )}%(${champion.totalWins?.toLocaleString()})`
-                    : "N/A"}
-                </td>
-                <td>
-                  {champion.banRate
-                    ? `${champion.banRate.toFixed(
-                        1
-                      )}%(${champion.totalBans?.toLocaleString()})`
-                    : "N/A"}
-                </td>
-                <td>{champion.avgKDA ? champion.avgKDA.toFixed(2) : "N/A"}</td>
+                  {index + 1}. {champion.name}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <table ref={tableRef} className="champions-table">
+            <thead>
+              <tr>
+                <th>#순위</th>
+                <th
+                  onClick={() => handleSort("name")}
+                  style={{
+                    color: sortConfig?.key === "name" ? "#70b6f7" : "inherit"
+                  }}
+                >
+                  {`챔피언 이름${
+                    sortConfig?.key === "name"
+                      ? sortConfig.direction === "asc"
+                        ? "🔼"
+                        : "🔽"
+                      : ""
+                  }`}
+                </th>
+                <th
+                  onClick={() => handleSort("pickRate")}
+                  style={{
+                    color:
+                      sortConfig?.key === "pickRate" ? "#70b6f7" : "inherit"
+                  }}
+                >
+                  {`픽률(게임 수)${
+                    sortConfig?.key === "pickRate"
+                      ? sortConfig.direction === "asc"
+                        ? "🔼"
+                        : "🔽"
+                      : ""
+                  }`}
+                </th>
+                <th
+                  onClick={() => handleSort("winRate")}
+                  style={{
+                    color: sortConfig?.key === "winRate" ? "#70b6f7" : "inherit"
+                  }}
+                >
+                  {`승률(게임 수)${
+                    sortConfig?.key === "winRate"
+                      ? sortConfig.direction === "asc"
+                        ? "🔼"
+                        : "🔽"
+                      : ""
+                  }`}
+                </th>
+                <th
+                  onClick={() => handleSort("banRate")}
+                  style={{
+                    color: sortConfig?.key === "banRate" ? "#70b6f7" : "inherit"
+                  }}
+                >
+                  {`밴률(게임 수)${
+                    sortConfig?.key === "banRate"
+                      ? sortConfig.direction === "asc"
+                        ? "🔼"
+                        : "🔽"
+                      : ""
+                  }`}
+                </th>
+                <th
+                  onClick={() => handleSort("avgKDA")}
+                  style={{
+                    color: sortConfig?.key === "avgKDA" ? "#70b6f7" : "inherit"
+                  }}
+                >
+                  {`평균 KDA${
+                    sortConfig?.key === "avgKDA"
+                      ? sortConfig.direction === "asc"
+                        ? "🔼"
+                        : "🔽"
+                      : ""
+                  }`}
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {sortedData.map((champion, index) => (
+                <tr
+                  key={champion.id}
+                  className={
+                    index === searchedChampionIndex ? "highlighted-row" : ""
+                  }
+                >
+                  <td>#{index + 1}</td>
+                  <td
+                    className="table-champion-info"
+                    onClick={() => openModal(champion)}
+                  >
+                    <div>
+                      <img
+                        src={`${CHAMPION_IMG_BASE_URL}${champion.id}.png`}
+                        alt={champion.name}
+                        className="table-champion-icon"
+                      />
+                    </div>
+                    <span className="table-champion-name">{champion.name}</span>
+                  </td>
+                  <td>
+                    {champion.pickRate
+                      ? `${champion.pickRate.toFixed(
+                          1
+                        )}%(${champion.totalPicks?.toLocaleString()})`
+                      : "N/A"}
+                  </td>
+                  <td>
+                    {champion.winRate
+                      ? `${champion.winRate.toFixed(
+                          1
+                        )}%(${champion.totalWins?.toLocaleString()})`
+                      : "N/A"}
+                  </td>
+                  <td>
+                    {champion.banRate
+                      ? `${champion.banRate.toFixed(
+                          1
+                        )}%(${champion.totalBans?.toLocaleString()})`
+                      : "N/A"}
+                  </td>
+                  <td>
+                    {champion.avgKDA ? champion.avgKDA.toFixed(2) : "N/A"}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
 
       {isModalOpen && selectedChampion && (
