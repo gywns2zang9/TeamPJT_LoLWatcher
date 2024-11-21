@@ -1,0 +1,52 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: lolwatcher
+
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  data:
+    redis:
+      host: ${REDIS_HOST_IP}
+      port: 6379
+      password: ${REDIS_PASSWORD}  # 비밀번호가 설정된 경우
+    mongodb:
+      host: ${MONGO_DB_URL}
+      port: ${MONGO_DB_PORT}
+      database: ${MONGO_DB_DATABASE}
+      username: ${MONGO_DB_USERNAME}
+      password: ${MONGO_DB_PASSWORD}
+
+  jwt:
+    secret: ${JWT_KEY}
+    # 유효기간은 15분
+    access-token-expiration: 86400000 #300000
+    refresh-token-expiration: 86400000 #36000000
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect  # 여기에 명시적으로 dialect 설정
+
+
+  config:
+    import: optional:file:.env[.properties]
+  profiles:
+    active: local
+
+analytic:
+  url: ${DATA_SERVER_URL}
+
+riot:
+  lol:
+    kr-url: https://kr.api.riotgames.com
+    asia-url: https://asia.api.riotgames.com  #?? ??? ??? ???? ??.
+    api-key: ${RIOT_API_KEY}
+
+
