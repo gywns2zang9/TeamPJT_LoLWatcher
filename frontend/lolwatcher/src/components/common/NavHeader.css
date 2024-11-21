@@ -1,0 +1,29 @@
+.nav-header-container {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 16px 0;
+}
+
+.nav-list {
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 32px;
+}
+
+.nav-list li {
+  font-size: 18px;
+  color: white;
+  cursor: url("../../assets/cursor/hover-cursor.png"), pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.nav-list li:hover {
+  color: #70b6f7;
+}
