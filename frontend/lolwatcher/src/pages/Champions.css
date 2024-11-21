@@ -1,0 +1,67 @@
+.champions-container {
+  display: flex;
+  background-image: url("../assets/background.jpg");
+  background-size: cover;
+  background-position: center;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.champion-list {
+  margin: 48px;
+  width: 100%;
+  height: 95%;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  scrollbar-width: none;
+}
+
+.champion-details {
+  position: sticky;
+  top: 0;
+  width: 600px;
+  height: 100vh;
+  background-color: black;
+}
+
+.champion-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: url("../assets/cursor/hover-cursor.png"), pointer;
+  text-align: center;
+}
+
+.champion-item img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border: 1px solid gold;
+  border-radius: 12px;
+  filter: grayscale(100%);
+}
+
+.champion-item:hover img {
+  filter: grayscale(0%);
+}
+
+.champion-item.selected img {
+  filter: grayscale(0%);
+}
+
+.champion-item p {
+  margin-top: 8px;
+  font-size: 12px;
+  font-weight: bold;
+  color: white;
+}
+
+.champion-item:hover p {
+  color: gold;
+}
+
+.champion-item.selected p {
+  color: gold;
+}

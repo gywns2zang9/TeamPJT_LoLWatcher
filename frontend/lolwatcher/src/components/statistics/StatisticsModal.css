@@ -1,0 +1,43 @@
+.statistics-modal-container {
+  display: flex;
+  z-index: 999;
+  text-align: center;
+  justify-content: center;
+  margin: auto;
+  min-width: 600px;
+}
+
+.statistics-modal-content {
+}
+
+.statistics-modal-title {
+}
+
+.radar-chart-container {
+  width: 500px;
+  margin: auto;
+}
+
+.close-button {
+  top: 10px;
+}
+
+.close-button:hover {
+}
+
+.statistics-modal-body {
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+}
+
+.champion-image {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 1px solid gold;
+  background-size: 120%;
+  background-position: center;
+  margin: auto;
+  margin-top: 12px;
+}
