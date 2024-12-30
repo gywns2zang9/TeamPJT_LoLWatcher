@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: lolwatcher-data-collect
+  data:
+    mongodb:
+      host: ${DB_URL}
+      port: ${DB_PORT}
+      database: ${DB_DATABASE}
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+  config:
+    import: optional:file:.env[.properties]
+  cloud:
+    openfeign:
+      client:
+        config:
+          default:
+            connectTimeout: 5000
+            readTimeout: 10000
+
+riot:
+  kr-url: https://kr.api.riotgames.com
+  asia-url: https://asia.api.riotgames.com
+  api-key: ${RIOT_API_KEY}
+server:
+  port: 8060
